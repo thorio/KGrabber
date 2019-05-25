@@ -57,27 +57,47 @@ KG.knownServers = {
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
-		buttonColor: "#548602"
-	}
-}
-
-KG.status = {
-	url: "",
-	episodes: [],
-	start: 0,
-	end: 0,
-	current: 0,
+		buttonColor: "#548602",
+		buttonTextColor: "#fff",
+	},
+	"kimcartoon.to": {
+		contentPath: "/Cartoon/*",
+		buttonColor: "#ecc835",
+		buttonTextColor: "#000",
+		optsPosition: 1,
+	},
+	"kissasian.sh": {
+		contentPath: "/Drama/*",
+		buttonColor: "#F5B54B",
+		buttonTextColor: "#000",
+	},
 }
 
 //applies regex to html page to find a link
 KG.findLink = (regexString) => {
 	var re = new RegExp(regexString);
-	return document.body.innerHTML.match(re);
+	return document.body.innerHTML.match(re)[0]
+		.split('"')[1];
 }
 
 //wildcard-enabled string comparison
 KG.if = (str, rule) => {
 	return new RegExp("^" + rule.split("*").join(".*") + "$").test(str);
+}
+
+//iterates over an array with supplied function
+//either (array, min, max, func)
+//or     (array, func)
+KG.for = (array, min, max, func) => {
+	if (typeof min == "function") {
+		func = min;
+		max = array.length - 1;
+	}
+	min = Math.max(0, min) || 0;
+	max = Math.min(array.length - 1, max);
+	for (var i = min; i <= max; i++) {
+		func(i, array[i]);
+	}
 }
 
 //entry function
@@ -88,28 +108,48 @@ KG.siteLoad = () => {
 	}
 
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
-		KG.getShowData();
 		KG.injectWidgets();
+	}
+
+	if (KG.loadStatus()) {
+		KG.steps[KG.status.func]();
 	}
 }
 
-//extracts metadata from page
-KG.getShowData = () => {
-	KG.showData = {
-		episodeCount: $(".listing tr").length - 2,
-		showTitle: $(".bigBarContainer .bigChar").text(),
-	};
+//saves data to session storage
+KG.saveStatus = () => {
+	sessionStorage["KG-status"] = JSON.stringify(KG.status);
+}
+
+//attempts to load data from session storage
+KG.loadStatus = () => {
+	if (!sessionStorage["KG-status"]) {
+		return false;
+	}
+	try {
+		KG.status = JSON.parse(sessionStorage["KG-status"]);
+	} catch (e) {
+		console.error("KG: unable to parse JSON");
+		return false;
+	}
+	return true;
+}
+
+//clears data from session storage
+KG.clearStatus = () => {
+ sessionStorage.clear("KG-data");
 }
 
 //injects element into page
 KG.injectWidgets = () => {
-	var epCount = KG.showData.episodeCount;
+	var site = KG.supportedSites[location.hostname];
+	var epCount = $(".listing a").length;
 
 	//css
 	$(document.head).append(`<style>${grabberCSS}</style>`);
 
 	//box on the right
-	$("#rightside .clear2:eq(0)").after(optsHTML);
+	$(`#rightside .clear2:eq(${site.optsPosition || 0})`).after(optsHTML);
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
 	$("#KG-input-from").attr("max", epCount);
@@ -119,6 +159,7 @@ KG.injectWidgets = () => {
 			.appendTo("#KG-input-server");
 	}
 	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"));
+	KG.loadPreferredServer();
 
 	//links in the middle
 	$("#leftside").prepend(linkListHTML);
@@ -127,10 +168,15 @@ KG.injectWidgets = () => {
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
 	$(".listing tr:gt(1)").each((i, obj) => {
 		$(obj).prepend(`<td class="KG-episodelist-number">${epCount-i}</td>`)
-			.children(":eq(1)").prepend(`<input type="button" value="grab" class="KG-episodelist-button" onclick="KG.grabEpisode(${epCount-i})">&nbsp;`);
+			.children(":eq(1)").prepend(`<input type="button" value="grab" class="KG-episodelist-button" onclick="KG.startSingle(${epCount-i})">&nbsp;`);
 	});
+
+	//colors
+	$(".KG-episodelist-button").add(".KG-button")
+		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
 }
 
+//grays out servers that aren't available on the url
 KG.markAvailableServers = async (url) => {
 	var servers = []
 	var html = await $.get(url + "&s=rapidvideo");
@@ -140,25 +186,96 @@ KG.markAvailableServers = async (url) => {
 	if (servers.length == 0) {
 		throw "KG: no servers found";
 	}
-	var $selector = $("#KG-input-server option");
-	$selector.each((i, obj) => {
-		if (servers.indexOf(obj.value) < 0){
+
+	$("#KG-input-server option").each((i, obj) => {
+		if (servers.indexOf(obj.value) < 0) {
 			$(obj).css("color", "#888");
 		}
 	});
 }
 
 //gets link for single episode
-KG.grabEpisode = (num) => {
-	alert("not implemented");
+KG.startSingle = (num) => {
+	KG.startRange(num, num);
+}
+
+//gets links for a range of episodes
+KG.startRange = (start, end) => {
+	KG.status = {
+		url: location.href,
+		title: $(".bigBarContainer .bigChar").text(),
+		server: $("#KG-input-server").val(),
+		episodes: [],
+		start: start,
+		current: 0,
+		func: "defaultGetLink",
+	}
+	var epCount = $(".listing a").length;
+	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
+		KG.status.episodes.push({
+			kissLink: obj.href,
+			grabLink: "",
+			num: i + 1,
+		});
+	});
+	KG.saveStatus();
+	location.href = KG.status.episodes[KG.status.current].kissLink + `&s=${KG.status.server}`;
+}
+
+KG.displayLinks = () => {
+	var html = "";
+	var padLength = Math.max(2, $(".listing a").length.toString().length);
+	KG.for(KG.status.episodes, (i, obj) => {
+		var num = obj.num.toString().padStart(padLength, "0");
+		var number = `<div class="KG-linkdisplay-episodenumber">E${num}:</div>`;
+		var link = `<a href="${obj.grabLink}" target="_blank">${obj.grabLink}</a>`;
+		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
+	});
+	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
+	$("#KG-linkdisplay").show();
 }
 
 //hides the linkdisplay
 KG.closeLinkdisplay = () => {
 	$("#KG-linkdisplay").hide();
+	KG.clearStatus();
 }
 
-//HTML pasted here because Tampermonkey apparently doesn't allow resources to be updated
+//saves a new preferred server
+KG.updatePreferredServer = () => {
+	localStorage["KG-preferredServer"] = $("#KG-input-server").val();
+}
+
+KG.loadPreferredServer = () => {
+	$("#KG-input-server").val(localStorage["KG-preferredServer"]);
+}
+
+//allows multiple different approaches to collecting links, if sites differ greatly
+KG.steps = {};
+
+//default
+KG.steps.defaultGetLink = () => {
+	if (!KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath)) { //captcha
+		return;
+	}
+	link = KG.findLink(KG.knownServers[KG.status.server].regex);
+	KG.status.episodes[KG.status.current].grabLink = link || "error (selected server may not be available)";
+
+	KG.status.current++;
+	if (KG.status.current >= KG.status.episodes.length) {
+		KG.status.func = "defaultFinished";
+		location.href = KG.status.url;
+	} else {
+		location.href = KG.status.episodes[KG.status.current].kissLink + `&s=${KG.status.server}`;
+	}
+	KG.saveStatus();
+}
+
+KG.steps.defaultFinished = () => {
+	KG.displayLinks();
+}
+
+//HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
 //if you have a solution for including extra files that are updated when the script is reinstalled please let me know: thorio.git@gmail.com
 
 //the grabber widget injected into the page
@@ -170,15 +287,7 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 		<div class="arrow-general">
 			&nbsp;
 		</div>
-		<select id="KG-input-server" onchange="//KAsavePreferredServer()" style="">
-			<!--option value="openload" selected>Openload</option>
-			<option value="rapidvideo">RapidVideo (no captcha)</option>
-			<option value="beta2">Beta2 Server</option>
-			<option value="p2p">P2P Server</option>
-			<option value="mp4upload">Mp4Upload</option>
-			<option value="streamango">Streamango</option>
-			<option value="nova">Nova Server</option>
-			<option value="beta">Beta Server</option-->
+		<select id="KG-input-server" onchange="KG.updatePreferredServer()" style="">
 		</select>
 		<p>
 			from
@@ -187,7 +296,7 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 		</p>
 		<p>
 			<div class="KG-button-container">
-				<input type="button" class="KG-button" value="Extract Links" onclick="alert(1)">
+				<input type="button" class="KG-button" value="Extract Links" onclick="KG.startRange($('#KG-input-from').val(),$('#KG-input-to').val())">
 			</div>
 		</p>
 	</div>
@@ -263,13 +372,25 @@ var grabberCSS = `.KG-episodelist-header {
 	height: 34px;
 }
 
+#KG-linkdisplay-title {
+	width: 80%;
+	float: left;
+}
+
 #KG-linkdisplay-text {
 	word-break: break-all;
 }
 
-#KG-linkdisplay-title {
-	width: 80%;
-	float: left;
+.KG-linkdisplay-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.KG-linkdisplay-episodenumber {
+	width: 30px;
+	text-align: right;
+	user-select: none;
+	margin-right: 5px;
 }
 
 #KG-linkdisplay-close {

@@ -45,13 +45,25 @@
 	height: 34px;
 }
 
+#KG-linkdisplay-title {
+	width: 80%;
+	float: left;
+}
+
 #KG-linkdisplay-text {
 	word-break: break-all;
 }
 
-#KG-linkdisplay-title {
-	width: 80%;
-	float: left;
+.KG-linkdisplay-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.KG-linkdisplay-episodenumber {
+	width: 30px;
+	text-align: right;
+	user-select: none;
+	margin-right: 5px;
 }
 
 #KG-linkdisplay-close {

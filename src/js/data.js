@@ -36,14 +36,18 @@ KG.knownServers = {
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
-		buttonColor: "#548602"
-	}
-}
-
-KG.status = {
-	url: "",
-	episodes: [],
-	start: 0,
-	end: 0,
-	current: 0,
+		buttonColor: "#548602",
+		buttonTextColor: "#fff",
+	},
+	"kimcartoon.to": {
+		contentPath: "/Cartoon/*",
+		buttonColor: "#ecc835",
+		buttonTextColor: "#000",
+		optsPosition: 1,
+	},
+	"kissasian.sh": {
+		contentPath: "/Drama/*",
+		buttonColor: "#F5B54B",
+		buttonTextColor: "#000",
+	},
 }

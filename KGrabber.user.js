@@ -163,6 +163,9 @@ KG.injectWidgets = () => {
 
 	//links in the middle
 	$("#leftside").prepend(linkListHTML);
+	for (var i in KG.exporters) {
+		$("#KG-input-export").append(`<option value="${i}">${KG.exporters[i].name}</option>`);
+	}
 
 	//numbers and buttons on each episode
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
@@ -235,6 +238,12 @@ KG.displayLinks = () => {
 	$("#KG-linkdisplay").show();
 }
 
+KG.exportData = (exporter) => {
+	var text = KG.exporters[exporter].export(KG.status);
+	$("#KG-linkdisplay-export-text").text(text);
+	$("#KG-linkdisplay-export").show();
+}
+
 //hides the linkdisplay
 KG.closeLinkdisplay = () => {
 	$("#KG-linkdisplay").hide();
@@ -275,6 +284,23 @@ KG.steps.defaultFinished = () => {
 	KG.displayLinks();
 }
 
+//allows for multiple ways to export collected data
+KG.exporters = {};
+
+KG.exporters.json = {
+	name: "json",
+	export: (data) => {
+		return "json? never heard of that";
+	},
+}
+
+KG.exporters.csv = {
+	name: "csv",
+	export: (data) => {
+		return "wtf is csv";
+	}
+}
+
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
 //if you have a solution for including extra files that are updated when the script is reinstalled please let me know: thorio.git@gmail.com
 
@@ -294,11 +320,9 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 			<input type="number" id="KG-input-from" class="KG-episode-input" value=1 min=1> to
 			<input type="number" id="KG-input-to" class="KG-episode-input" min=1>
 		</p>
-		<p>
-			<div class="KG-button-container">
-				<input type="button" class="KG-button" value="Extract Links" onclick="KG.startRange($('#KG-input-from').val(),$('#KG-input-to').val())">
-			</div>
-		</p>
+		<div class="KG-button-container">
+			<input type="button" class="KG-button" value="Extract Links" onclick="KG.startRange($('#KG-input-from').val(),$('#KG-input-to').val())">
+		</div>
 	</div>
 </div>
 <div class="clear2">
@@ -319,7 +343,12 @@ var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="disp
 			&nbsp;</div>
 		<div id="KG-linkdisplay-text"></div>
 		<div class="KG-button-container">
-			<input id="KG-button-exportjson" class="KG-button" type="button" value="Export JSON" onclick="alert(1)" style="display: none;">
+			<select id="KG-input-export" onchange="KG.exportData(this.value)">
+				<option value="" selected disabled hidden>Export as</option>
+			</select>
+		</div>
+		<div id="KG-linkdisplay-export" style="display: none;">
+			<textarea id="KG-linkdisplay-export-text" spellcheck="false"></textarea>
 		</div>
 	</div>
 </div>`;
@@ -369,6 +398,7 @@ var grabberCSS = `.KG-episodelist-header {
 }
 
 .KG-button-container {
+	margin-top: 10px;
 	height: 34px;
 }
 
@@ -387,10 +417,24 @@ var grabberCSS = `.KG-episodelist-header {
 }
 
 .KG-linkdisplay-episodenumber {
-	width: 30px;
+	min-width: 30px;
 	text-align: right;
 	user-select: none;
 	margin-right: 5px;
+}
+
+#KG-linkdisplay-export {
+	margin-top: 10px;
+}
+
+#KG-linkdisplay-export-text {
+	width: 100%;
+	height: 150px;
+	min-height: 40px;
+	resize: vertical;
+	background-color: #222;
+	color: #fff;
+	border: none;
 }
 
 #KG-linkdisplay-close {

@@ -61,6 +61,9 @@ KG.injectWidgets = () => {
 
 	//links in the middle
 	$("#leftside").prepend(linkListHTML);
+	for (var i in KG.exporters) {
+		$("#KG-input-export").append(`<option value="${i}">${KG.exporters[i].name}</option>`);
+	}
 
 	//numbers and buttons on each episode
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
@@ -131,6 +134,12 @@ KG.displayLinks = () => {
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
 	$("#KG-linkdisplay").show();
+}
+
+KG.exportData = (exporter) => {
+	var text = KG.exporters[exporter].export(KG.status);
+	$("#KG-linkdisplay-export-text").text(text);
+	$("#KG-linkdisplay-export").show();
 }
 
 //hides the linkdisplay

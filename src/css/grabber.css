@@ -42,6 +42,7 @@
 }
 
 .KG-button-container {
+	margin-top: 10px;
 	height: 34px;
 }
 
@@ -60,10 +61,24 @@
 }
 
 .KG-linkdisplay-episodenumber {
-	width: 30px;
+	min-width: 30px;
 	text-align: right;
 	user-select: none;
 	margin-right: 5px;
+}
+
+#KG-linkdisplay-export {
+	margin-top: 10px;
+}
+
+#KG-linkdisplay-export-text {
+	width: 100%;
+	height: 150px;
+	min-height: 40px;
+	resize: vertical;
+	background-color: #222;
+	color: #fff;
+	border: none;
 }
 
 #KG-linkdisplay-close {

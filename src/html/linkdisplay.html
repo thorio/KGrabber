@@ -12,7 +12,12 @@
 			&nbsp;</div>
 		<div id="KG-linkdisplay-text"></div>
 		<div class="KG-button-container">
-			<input id="KG-button-exportjson" class="KG-button" type="button" value="Export JSON" onclick="alert(1)" style="display: none;">
+			<select id="KG-input-export" onchange="KG.exportData(this.value)">
+				<option value="" selected disabled hidden>Export as</option>
+			</select>
+		</div>
+		<div id="KG-linkdisplay-export" style="display: none;">
+			<textarea id="KG-linkdisplay-export-text" spellcheck="false"></textarea>
 		</div>
 	</div>
 </div>

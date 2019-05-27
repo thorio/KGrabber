@@ -15,7 +15,7 @@
 	cursor: pointer;
 }
 
-.KG-episode-input {
+.KG-input-episode {
 	width: 40px;
 	border: 1px solid #666666;
 	background: #393939;
@@ -27,6 +27,11 @@
 	width: 100%;
 	font-size: 14.5px;
 	color: #fff;
+}
+
+#KG-input-export {
+ 	margin: 6px;
+ 	float: left;
 }
 
 .KG-button {

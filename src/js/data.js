@@ -33,6 +33,54 @@ KG.knownServers = {
 	},
 }
 
+KG.serverOverrides = {
+	"kissanime.ru": {},
+	"kimcartoon.to": {
+		"rapidvideo": null,
+		"p2p": null,
+		"beta2": null,
+		"nova": null,
+		"mp4upload": null,
+		"rapid": {
+			regex: '"https://www.rapidvideo.com/e/.*?"',
+			name: "RapidVideo",
+		},
+		"fs": {
+			regex: '"https://video.xx.fbcdn.net/v/.*?"',
+			name: "FS (fbcdn.net)",
+		},
+		"gp": {
+			regex: '"https://lh3.googleusercontent.com/.*?"',
+			name: "GP (googleusercontent.com)",
+		},
+		"fe": {
+			regex: '"https://www.luxubu.review/v/.*?"',
+			name: "FE (luxubu.review)",
+		},
+	},
+	"kissasian.sh": {
+		"rapidvideo": null,
+		"p2p": null,
+		"beta2": null,
+		"nova": null,
+		"mp4upload": null,
+		"streamango": null,
+		"beta": null, //should work, but script can't load data because of https/http session storage separation
+		"rapid": {
+			regex: '"https://www.rapidvideo.com/e/.*?"',
+			name: "RapidVideo",
+		},
+		"fe": {
+			regex: '"https://www.gaobook.review/v/.*?"',
+			name: "FE (gaobook.review)",
+		},
+		"mp": {
+			regex: '"https://www.mp4upload.com/embed-.*?"',
+			name: "MP (mp4upload)",
+		},
+	},
+}
+
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",

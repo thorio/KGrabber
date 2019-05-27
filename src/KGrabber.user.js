@@ -1,13 +1,16 @@
 // ==UserScript==
-// @name					KissGrabber
-// @namespace			thorou.tk
-// @version				2.0~beta1
-// @description		gets embed links from kissanime.ru
-// @author				Thorou
-// @homepageURL		https://github.com/thorio/kaGrabber/
-// @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @downloadURL		https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @match					https://kissanime.ru/*
+// @name          KissGrabber
+// @namespace     thorou.tk
+// @version       2.0~beta1
+// @description   extracts embed links from kiss sites
+// @author        Thorou
+// @homepageURL   https://github.com/thorio/kaGrabber/
+// @updateURL     https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
+// @downloadURL   https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
+// @match         https://kissanime.ru/*
+// @match         https://kissanime.ru/*
+// @match         https://kimcartoon.to/*
+// @match         https://kissasian.sh/*
 // @noframes
 // ==/UserScript==
 //

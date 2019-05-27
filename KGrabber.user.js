@@ -1,13 +1,16 @@
 // ==UserScript==
-// @name					KissGrabber
-// @namespace			thorou.tk
-// @version				2.0~beta1
-// @description		gets embed links from kissanime.ru
-// @author				Thorou
-// @homepageURL		https://github.com/thorio/kaGrabber/
-// @updateURL			https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @downloadURL		https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @match					https://kissanime.ru/*
+// @name          KissGrabber
+// @namespace     thorou.tk
+// @version       2.0~beta1
+// @description   extracts embed links from kiss sites
+// @author        Thorou
+// @homepageURL   https://github.com/thorio/kaGrabber/
+// @updateURL     https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
+// @downloadURL   https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
+// @match         https://kissanime.ru/*
+// @match         https://kissanime.ru/*
+// @match         https://kimcartoon.to/*
+// @match         https://kissasian.sh/*
 // @noframes
 // ==/UserScript==
 //
@@ -54,6 +57,54 @@ KG.knownServers = {
 	},
 }
 
+KG.serverOverrides = {
+	"kissanime.ru": {},
+	"kimcartoon.to": {
+		"rapidvideo": null,
+		"p2p": null,
+		"beta2": null,
+		"nova": null,
+		"mp4upload": null,
+		"rapid": {
+			regex: '"https://www.rapidvideo.com/e/.*?"',
+			name: "RapidVideo",
+		},
+		"fs": {
+			regex: '"https://video.xx.fbcdn.net/v/.*?"',
+			name: "FS (fbcdn.net)",
+		},
+		"gp": {
+			regex: '"https://lh3.googleusercontent.com/.*?"',
+			name: "GP (googleusercontent.com)",
+		},
+		"fe": {
+			regex: '"https://www.luxubu.review/v/.*?"',
+			name: "FE (luxubu.review)",
+		},
+	},
+	"kissasian.sh": {
+		"rapidvideo": null,
+		"p2p": null,
+		"beta2": null,
+		"nova": null,
+		"mp4upload": null,
+		"streamango": null,
+		"beta": null, //should work, but script can't load data because of https/http session storage separation
+		"rapid": {
+			regex: '"https://www.rapidvideo.com/e/.*?"',
+			name: "RapidVideo",
+		},
+		"fe": {
+			regex: '"https://www.gaobook.review/v/.*?"',
+			name: "FE (gaobook.review)",
+		},
+		"mp": {
+			regex: '"https://www.mp4upload.com/embed-.*?"',
+			name: "MP (mp4upload)",
+		},
+	},
+}
+
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
@@ -76,8 +127,11 @@ KG.supportedSites = {
 //applies regex to html page to find a link
 KG.findLink = (regexString) => {
 	var re = new RegExp(regexString);
-	return document.body.innerHTML.match(re)[0]
-		.split('"')[1];
+	var result = document.body.innerHTML.match(re);
+	if (result && result.length > 0) {
+		return result[0].split('"')[1];
+	}
+	return "";
 }
 
 //wildcard-enabled string comparison
@@ -107,6 +161,8 @@ KG.siteLoad = () => {
 		return;
 	}
 
+	KG.applyServerOverrides();
+	
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
 		KG.injectWidgets();
 	}
@@ -138,6 +194,22 @@ KG.loadStatus = () => {
 //clears data from session storage
 KG.clearStatus = () => {
 	sessionStorage.clear("KG-data");
+}
+
+//patches the knownServers object based on the current url
+KG.applyServerOverrides = () => {
+	var over = KG.serverOverrides[location.hostname]
+	for (var i in over) {
+		if (KG.knownServers[i]) {
+			if (over[i] === null) { //server should be removed
+				delete KG.knownServers[i];
+			} else { //server should be patched
+				console.err("KG: patching server entries not implemented");
+			}
+		} else { //server should be added
+			KG.knownServers[i] = over[i];
+		}
+	}
 }
 
 //injects element into page
@@ -378,8 +450,8 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 		</select>
 		<p>
 			from
-			<input type="number" id="KG-input-from" class="KG-episode-input" value=1 min=1> to
-			<input type="number" id="KG-input-to" class="KG-episode-input" min=1>
+			<input type="number" id="KG-input-from" class="KG-input-episode" value=1 min=1> to
+			<input type="number" id="KG-input-to" class="KG-input-episode" min=1>
 		</p>
 		<div class="KG-button-container">
 			<input type="button" class="KG-button" value="Extract Links" onclick="KG.startRange($('#KG-input-from').val(),$('#KG-input-to').val())">
@@ -437,7 +509,7 @@ var grabberCSS = `.KG-episodelist-header {
 	cursor: pointer;
 }
 
-.KG-episode-input {
+.KG-input-episode {
 	width: 40px;
 	border: 1px solid #666666;
 	background: #393939;
@@ -449,6 +521,11 @@ var grabberCSS = `.KG-episodelist-header {
 	width: 100%;
 	font-size: 14.5px;
 	color: #fff;
+}
+
+#KG-input-export {
+ 	margin: 6px;
+ 	float: left;
 }
 
 .KG-button {

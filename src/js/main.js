@@ -5,6 +5,8 @@ KG.siteLoad = () => {
 		return;
 	}
 
+	KG.applyServerOverrides();
+	
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
 		KG.injectWidgets();
 	}
@@ -36,6 +38,22 @@ KG.loadStatus = () => {
 //clears data from session storage
 KG.clearStatus = () => {
 	sessionStorage.clear("KG-data");
+}
+
+//patches the knownServers object based on the current url
+KG.applyServerOverrides = () => {
+	var over = KG.serverOverrides[location.hostname]
+	for (var i in over) {
+		if (KG.knownServers[i]) {
+			if (over[i] === null) { //server should be removed
+				delete KG.knownServers[i];
+			} else { //server should be patched
+				console.err("KG: patching server entries not implemented");
+			}
+		} else { //server should be added
+			KG.knownServers[i] = over[i];
+		}
+	}
 }
 
 //injects element into page

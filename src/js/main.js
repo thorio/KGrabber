@@ -35,7 +35,7 @@ KG.loadStatus = () => {
 
 //clears data from session storage
 KG.clearStatus = () => {
- sessionStorage.clear("KG-data");
+	sessionStorage.clear("KG-data");
 }
 
 //injects element into page
@@ -61,9 +61,6 @@ KG.injectWidgets = () => {
 
 	//links in the middle
 	$("#leftside").prepend(linkListHTML);
-	for (var i in KG.exporters) {
-		$("#KG-input-export").append(`<option value="${i}">${KG.exporters[i].name}</option>`);
-	}
 
 	//numbers and buttons on each episode
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
@@ -133,12 +130,27 @@ KG.displayLinks = () => {
 		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
+	$("#KG-linkdisplay-title").text(`Extracted Links | ${KG.status.title}`);
+
+	var onSamePage = KG.status.url == location.href;
+	for (var i in KG.exporters) {
+		var disable = KG.exporters[i].requireSamePage && !onSamePage;
+		var disabled = disable ? "disabled" : "";
+		$("#KG-input-export").append(`<option value="${i}" ${disabled}>${KG.exporters[i].name}</option>`);
+	}
+
 	$("#KG-linkdisplay").show();
 }
 
 KG.exportData = (exporter) => {
+	$("#KG-input-export").val("");
+
 	var text = KG.exporters[exporter].export(KG.status);
 	$("#KG-linkdisplay-export-text").text(text);
+	$("#KG-input-export-download").attr({
+		href: `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`,
+		download: `${KG.status.title}.${KG.exporters[exporter].extension}`,
+	})
 	$("#KG-linkdisplay-export").show();
 }
 

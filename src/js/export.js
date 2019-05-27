@@ -3,6 +3,8 @@ KG.exporters = {};
 
 KG.exporters.json = {
 	name: "json",
+	extension: "json",
+	requireSamePage: true,
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var json = {
@@ -13,7 +15,7 @@ KG.exporters.json = {
 		for (var i in data.episodes) {
 			json.episodes.push({
 				number: data.episodes[i].num,
-				name: listing[data.episodes[i].num-1].innerText,
+				name: listing[data.episodes[i].num - 1].innerText,
 				link: data.episodes[i].grabLink
 			});
 		}
@@ -23,6 +25,8 @@ KG.exporters.json = {
 
 KG.exporters.csv = {
 	name: "csv",
+	extension: "csv",
+	requireSamePage: true,
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var str = "episode, name, url\n";
@@ -35,6 +39,8 @@ KG.exporters.csv = {
 
 KG.exporters.list = {
 	name: "list",
+	extension: "txt",
+	requireSamePage: false,
 	export: (data) => {
 		var str = "";
 		for (var i in data.episodes) {

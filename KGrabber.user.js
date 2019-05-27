@@ -137,7 +137,7 @@ KG.loadStatus = () => {
 
 //clears data from session storage
 KG.clearStatus = () => {
- sessionStorage.clear("KG-data");
+	sessionStorage.clear("KG-data");
 }
 
 //injects element into page
@@ -163,9 +163,6 @@ KG.injectWidgets = () => {
 
 	//links in the middle
 	$("#leftside").prepend(linkListHTML);
-	for (var i in KG.exporters) {
-		$("#KG-input-export").append(`<option value="${i}">${KG.exporters[i].name}</option>`);
-	}
 
 	//numbers and buttons on each episode
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
@@ -235,12 +232,27 @@ KG.displayLinks = () => {
 		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
+	$("#KG-linkdisplay-title").text(`Extracted Links | ${KG.status.title}`);
+
+	var onSamePage = KG.status.url == location.href;
+	for (var i in KG.exporters) {
+		var disable = KG.exporters[i].requireSamePage && !onSamePage;
+		var disabled = disable ? "disabled" : "";
+		$("#KG-input-export").append(`<option value="${i}" ${disabled}>${KG.exporters[i].name}</option>`);
+	}
+
 	$("#KG-linkdisplay").show();
 }
 
 KG.exportData = (exporter) => {
+	$("#KG-input-export").val("");
+
 	var text = KG.exporters[exporter].export(KG.status);
 	$("#KG-linkdisplay-export-text").text(text);
+	$("#KG-input-export-download").attr({
+		href: `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`,
+		download: `${KG.status.title}.${KG.exporters[exporter].extension}`,
+	})
 	$("#KG-linkdisplay-export").show();
 }
 
@@ -289,6 +301,8 @@ KG.exporters = {};
 
 KG.exporters.json = {
 	name: "json",
+	extension: "json",
+	requireSamePage: true,
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var json = {
@@ -299,7 +313,7 @@ KG.exporters.json = {
 		for (var i in data.episodes) {
 			json.episodes.push({
 				number: data.episodes[i].num,
-				name: listing[data.episodes[i].num-1].innerText,
+				name: listing[data.episodes[i].num - 1].innerText,
 				link: data.episodes[i].grabLink
 			});
 		}
@@ -309,6 +323,8 @@ KG.exporters.json = {
 
 KG.exporters.csv = {
 	name: "csv",
+	extension: "csv",
+	requireSamePage: true,
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var str = "episode, name, url\n";
@@ -321,11 +337,27 @@ KG.exporters.csv = {
 
 KG.exporters.list = {
 	name: "list",
+	extension: "txt",
+	requireSamePage: false,
 	export: (data) => {
 		var str = "";
 		for (var i in data.episodes) {
 			str += data.episodes[i].grabLink + "\n";
 		}
+		return str;
+	}
+}
+
+KG.exporters.aria2c = {
+	name: "aria2c file",
+	extension: "txt",
+	requireSamePage: false,
+	export: (data) => {
+		var padLength = Math.max(2, data.episodes[data.episodes.length - 1].num.toString().length);
+		var str = "";
+		KG.for(data.episodes, (i, obj) => {
+			str += `${obj.grabLink}\n	-o E${obj.num.toString().padStart(padLength, "0")}.mp4\n`;
+		});
 		return str;
 	}
 }
@@ -378,6 +410,11 @@ var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="disp
 		</div>
 		<div id="KG-linkdisplay-export" style="display: none;">
 			<textarea id="KG-linkdisplay-export-text" spellcheck="false"></textarea>
+			<div class="KG-button-container">
+				<a id="KG-input-export-download">
+					<input type="button" value="Download" class="KG-button" style="float: right;">
+				</a>
+			</div>
 		</div>
 	</div>
 </div>`;

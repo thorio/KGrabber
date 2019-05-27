@@ -49,3 +49,17 @@ KG.exporters.list = {
 		return str;
 	}
 }
+
+KG.exporters.aria2c = {
+	name: "aria2c file",
+	extension: "txt",
+	requireSamePage: false,
+	export: (data) => {
+		var padLength = Math.max(2, data.episodes[data.episodes.length - 1].num.toString().length);
+		var str = "";
+		KG.for(data.episodes, (i, obj) => {
+			str += `${obj.grabLink}\n	-o E${obj.num.toString().padStart(padLength, "0")}.mp4\n`;
+		});
+		return str;
+	}
+}

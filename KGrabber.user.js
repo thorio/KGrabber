@@ -1,23 +1,20 @@
 // ==UserScript==
 // @name          KissGrabber
-// @namespace     thorou.tk
+// @namespace     thorou
 // @version       2.0~beta1
 // @description   extracts embed links from kiss sites
 // @author        Thorou
+// @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
+// @copyright     2019 Leon Timm
 // @homepageURL   https://github.com/thorio/KGrabber/
 // @updateURL     https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
 // @downloadURL   https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
 // @match         https://kissanime.ru/*
 // @match         https://kimcartoon.to/*
 // @match         https://kissasian.sh/*
+// @run-at        document-end
 // @noframes
 // ==/UserScript==
-//
-//Copyright 2018 Leon Timm
-//
-//Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-//The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 window.KG = {};
 
@@ -262,7 +259,7 @@ KG.startRange = (start, end) => {
 		episodes: [],
 		start: start,
 		current: 0,
-		func: "defaultGetLink",
+		func: "defaultBegin",
 	}
 	var epCount = $(".listing a").length;
 	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
@@ -273,7 +270,7 @@ KG.startRange = (start, end) => {
 		});
 	});
 	KG.saveStatus();
-	location.href = KG.status.episodes[KG.status.current].kissLink + `&s=${KG.status.server}`;
+	KG.steps[KG.status.func]();
 }
 
 KG.displayLinks = () => {
@@ -359,6 +356,12 @@ KG.for = (array, min, max, func) => {
 KG.steps = {};
 
 //default
+KG.steps.defaultBegin = () => {
+	KG.status.func = "defaultGetLink";
+	KG.saveStatus();
+	location.href = KG.status.episodes[KG.status.current].kissLink + `&s=${KG.status.server}`;
+}
+
 KG.steps.defaultGetLink = () => {
 	if (!KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath)) { //captcha
 		return;

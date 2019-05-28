@@ -2,6 +2,12 @@
 KG.steps = {};
 
 //default
+KG.steps.defaultBegin = () => {
+	KG.status.func = "defaultGetLink";
+	KG.saveStatus();
+	location.href = KG.status.episodes[KG.status.current].kissLink + `&s=${KG.status.server}`;
+}
+
 KG.steps.defaultGetLink = () => {
 	if (!KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath)) { //captcha
 		return;

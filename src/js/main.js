@@ -133,7 +133,7 @@ KG.startRange = (start, end) => {
 		episodes: [],
 		start: start,
 		current: 0,
-		func: "defaultGetLink",
+		func: "defaultBegin",
 	}
 	var epCount = $(".listing a").length;
 	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
@@ -144,7 +144,7 @@ KG.startRange = (start, end) => {
 		});
 	});
 	KG.saveStatus();
-	location.href = KG.status.episodes[KG.status.current].kissLink + `&s=${KG.status.server}`;
+	KG.steps[KG.status.func]();
 }
 
 KG.displayLinks = () => {

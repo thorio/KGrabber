@@ -26,4 +26,4 @@ If you'd like to add a site, please open a new issue on GitHub.
 6. Solve any captchas that come up
 7. Your links will be shown at the top of the page
 
-#### Please leave general feedback Greasy Fork and bugs and suggestions on GitHub.
+#### Please leave general feedback on Greasy Fork and bugs and suggestions on GitHub.

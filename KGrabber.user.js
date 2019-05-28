@@ -4,10 +4,9 @@
 // @version       2.0~beta1
 // @description   extracts embed links from kiss sites
 // @author        Thorou
-// @homepageURL   https://github.com/thorio/kaGrabber/
-// @updateURL     https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @downloadURL   https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @match         https://kissanime.ru/*
+// @homepageURL   https://github.com/thorio/KGrabber/
+// @updateURL     https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
+// @downloadURL   https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
 // @match         https://kissanime.ru/*
 // @match         https://kimcartoon.to/*
 // @match         https://kissasian.sh/*
@@ -100,7 +99,7 @@ KG.serverOverrides = {
 		},
 		"mp": {
 			regex: '"https://www.mp4upload.com/embed-.*?"',
-			name: "MP (mp4upload)",
+			name: "MP (mp4upload.com)",
 		},
 	},
 }
@@ -108,50 +107,24 @@ KG.serverOverrides = {
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
+		noCaptchaServer: "rapidvideo",
 		buttonColor: "#548602",
 		buttonTextColor: "#fff",
 	},
 	"kimcartoon.to": {
 		contentPath: "/Cartoon/*",
+		noCaptchaServer: "rapid",
 		buttonColor: "#ecc835",
 		buttonTextColor: "#000",
 		optsPosition: 1,
+		fixes: ["kimcartoon.to_UIFix"],
 	},
 	"kissasian.sh": {
 		contentPath: "/Drama/*",
+		noCaptchaServer: "rapid",
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
 	},
-}
-
-//applies regex to html page to find a link
-KG.findLink = (regexString) => {
-	var re = new RegExp(regexString);
-	var result = document.body.innerHTML.match(re);
-	if (result && result.length > 0) {
-		return result[0].split('"')[1];
-	}
-	return "";
-}
-
-//wildcard-enabled string comparison
-KG.if = (str, rule) => {
-	return new RegExp("^" + rule.split("*").join(".*") + "$").test(str);
-}
-
-//iterates over an array with supplied function
-//either (array, min, max, func)
-//or     (array, func)
-KG.for = (array, min, max, func) => {
-	if (typeof min == "function") {
-		func = min;
-		max = array.length - 1;
-	}
-	min = Math.max(0, min) || 0;
-	max = Math.min(array.length - 1, max);
-	for (var i = min; i <= max; i++) {
-		func(i, array[i]);
-	}
 }
 
 //entry function
@@ -230,7 +203,7 @@ KG.injectWidgets = () => {
 		$(`<option value="${i}">${KG.knownServers[i].name}</>`)
 			.appendTo("#KG-input-server");
 	}
-	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"));
+	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"), site.noCaptchaServer);
 	KG.loadPreferredServer();
 
 	//links in the middle
@@ -246,17 +219,26 @@ KG.injectWidgets = () => {
 	//colors
 	$(".KG-episodelist-button").add(".KG-button")
 		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
+
+	//fixes
+	for (var i in site.fixes) {
+		if (KG.fixes[site.fixes[i]]) {
+			KG.fixes[site.fixes[i]]();
+		} else {
+			console.error(`KG: nonexistant fix "${site.fixes[i]}"`);
+		}
+	}
 }
 
 //grays out servers that aren't available on the url
-KG.markAvailableServers = async (url) => {
+KG.markAvailableServers = async (url, server) => {
 	var servers = []
-	var html = await $.get(url + "&s=rapidvideo");
+	var html = await $.get(`${url}&s=${server}`);
 	$(html).find("#selectServer").children().each((i, obj) => {
 		servers.push(obj.value.match(/s=\w+/g)[0].slice(2, Infinity));
 	})
 	if (servers.length == 0) {
-		throw "KG: no servers found";
+		console.error("KG: no servers found");
 	}
 
 	$("#KG-input-server option").each((i, obj) => {
@@ -341,6 +323,36 @@ KG.updatePreferredServer = () => {
 
 KG.loadPreferredServer = () => {
 	$("#KG-input-server").val(localStorage["KG-preferredServer"]);
+}
+
+//applies regex to html page to find a link
+KG.findLink = (regexString) => {
+	var re = new RegExp(regexString);
+	var result = document.body.innerHTML.match(re);
+	if (result && result.length > 0) {
+		return result[0].split('"')[1];
+	}
+	return "";
+}
+
+//wildcard-enabled string comparison
+KG.if = (str, rule) => {
+	return new RegExp("^" + rule.split("*").join(".*") + "$").test(str);
+}
+
+//iterates over an array with supplied function
+//either (array, min, max, func)
+//or     (array, func)
+KG.for = (array, min, max, func) => {
+	if (typeof min == "function") {
+		func = min;
+		max = array.length - 1;
+	}
+	min = Math.max(0, min) || 0;
+	max = Math.min(array.length - 1, max);
+	for (var i = min; i <= max; i++) {
+		func(i, array[i]);
+	}
 }
 
 //allows multiple different approaches to collecting links, if sites differ greatly
@@ -434,13 +446,38 @@ KG.exporters.aria2c = {
 	}
 }
 
+//if something doesn't look right on a specific site, a fix can be written here
+KG.fixes = {}
+
+KG.fixes["kimcartoon.to_UIFix"] = () => {
+	//linkdisplay
+	var $ld = $("#KG-linkdisplay");
+	$ld.find(".barTitle").removeClass("barTitle")
+		.css({
+			"height": "20px",
+			"padding": "5px",
+		});
+	$("#KG-linkdisplay-title").css({
+		"font-size": "20px",
+		"color": $("a.bigChar").css("color"),
+	})
+	$ld.find(".arrow-general").remove();
+
+	//opts
+	var $opts = $("#KG-opts-widget");
+	var title = $opts.find(".barTitle").text();
+	$opts.find(".barTitle").remove();
+	$opts.find(".arrow-general").remove();
+	$opts.before(`<div class="title-list icon">${title}</div><div class="clear2"></div>`)
+}
+
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
 //if you have a solution for including extra files that are updated when the script is reinstalled please let me know: thorio.git@gmail.com
 
 //the grabber widget injected into the page
 var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 	<div class="barTitle">
-		Batch Grabber
+		KissGrabber
 	</div>
 	<div class="barContent">
 		<div class="arrow-general">

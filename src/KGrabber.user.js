@@ -4,10 +4,9 @@
 // @version       2.0~beta1
 // @description   extracts embed links from kiss sites
 // @author        Thorou
-// @homepageURL   https://github.com/thorio/kaGrabber/
-// @updateURL     https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @downloadURL   https://github.com/thorio/kaGrabber/raw/master/kaGrabber.user.js
-// @match         https://kissanime.ru/*
+// @homepageURL   https://github.com/thorio/KGrabber/
+// @updateURL     https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
+// @downloadURL   https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
 // @match         https://kissanime.ru/*
 // @match         https://kimcartoon.to/*
 // @match         https://kissasian.sh/*
@@ -24,13 +23,15 @@ window.KG = {};
 
 [[[[js/data.js]]]]
 
-[[[[js/util.js]]]]
-
 [[[[js/main.js]]]]
+
+[[[[js/util.js]]]]
 
 [[[[js/steps.js]]]]
 
-[[[[js/export.js]]]]
+[[[[js/exporters.js]]]]
+
+[[[[js/fixes.js]]]]
 
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
 //if you have a solution for including extra files that are updated when the script is reinstalled please let me know: thorio.git@gmail.com

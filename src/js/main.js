@@ -74,7 +74,7 @@ KG.injectWidgets = () => {
 		$(`<option value="${i}">${KG.knownServers[i].name}</>`)
 			.appendTo("#KG-input-server");
 	}
-	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"));
+	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"), site.noCaptchaServer);
 	KG.loadPreferredServer();
 
 	//links in the middle
@@ -90,17 +90,26 @@ KG.injectWidgets = () => {
 	//colors
 	$(".KG-episodelist-button").add(".KG-button")
 		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
+
+	//fixes
+	for (var i in site.fixes) {
+		if (KG.fixes[site.fixes[i]]) {
+			KG.fixes[site.fixes[i]]();
+		} else {
+			console.error(`KG: nonexistant fix "${site.fixes[i]}"`);
+		}
+	}
 }
 
 //grays out servers that aren't available on the url
-KG.markAvailableServers = async (url) => {
+KG.markAvailableServers = async (url, server) => {
 	var servers = []
-	var html = await $.get(url + "&s=rapidvideo");
+	var html = await $.get(`${url}&s=${server}`);
 	$(html).find("#selectServer").children().each((i, obj) => {
 		servers.push(obj.value.match(/s=\w+/g)[0].slice(2, Infinity));
 	})
 	if (servers.length == 0) {
-		throw "KG: no servers found";
+		console.error("KG: no servers found");
 	}
 
 	$("#KG-input-server option").each((i, obj) => {

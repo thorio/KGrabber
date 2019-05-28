@@ -76,7 +76,7 @@ KG.serverOverrides = {
 		},
 		"mp": {
 			regex: '"https://www.mp4upload.com/embed-.*?"',
-			name: "MP (mp4upload)",
+			name: "MP (mp4upload.com)",
 		},
 	},
 }
@@ -84,17 +84,21 @@ KG.serverOverrides = {
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
+		noCaptchaServer: "rapidvideo",
 		buttonColor: "#548602",
 		buttonTextColor: "#fff",
 	},
 	"kimcartoon.to": {
 		contentPath: "/Cartoon/*",
+		noCaptchaServer: "rapid",
 		buttonColor: "#ecc835",
 		buttonTextColor: "#000",
 		optsPosition: 1,
+		fixes: ["kimcartoon.to_UIFix"],
 	},
 	"kissasian.sh": {
 		contentPath: "/Drama/*",
+		noCaptchaServer: "rapid",
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
 	},

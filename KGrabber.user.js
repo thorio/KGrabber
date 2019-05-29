@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.0
+// @version       2.0.1
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -16,7 +16,7 @@
 // @noframes
 // ==/UserScript==
 
-window.KG = {};
+unsafeWindow.KG = {};
 
 KG.knownServers = {
 	"rapidvideo": {

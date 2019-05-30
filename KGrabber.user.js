@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.0.1
+// @version       2.1.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -14,6 +14,8 @@
 // @match         https://kissasian.sh/*
 // @run-at        document-end
 // @noframes
+// @grant         GM_xmlhttpRequest
+// @connect       rapidvideo.com
 // ==/UserScript==
 
 unsafeWindow.KG = {};
@@ -22,34 +24,42 @@ KG.knownServers = {
 	"rapidvideo": {
 		regex: '"https://www.rapidvideo.com/e/.*?"',
 		name: "RapidVideo (no captcha)",
+		linkType: "embed",
 	},
 	"nova": {
 		regex: '"https://www.novelplanet.me/v/.*?"',
 		name: "Nova Server",
+		linkType: "embed",
 	},
 	"beta2": {
 		regex: '"https://lh3.googleusercontent.com/.*?"',
 		name: "Beta2 Server",
+		linkType: "direct",
 	},
 	"p2p": {
 		regex: '"https://p2p2.replay.watch/public/dist/index.html\\\\?id=.*?"',
 		name: "P2P Server",
+		linkType: "embed",
 	},
 	"openload": {
 		regex: '"https://openload.co/embed/.*?"',
 		name: "Openload",
+		linkType: "embed",
 	},
 	"mp4upload": {
 		regex: '"https://www.mp4upload.com/embed-.*?"',
 		name: "Mp4Upload",
+		linkType: "embed",
 	},
 	"streamango": {
 		regex: '"https://streamango.com/embed/.*?"',
 		name: "Streamango",
+		linkType: "embed",
 	},
 	"beta": {
 		regex: '"https://lh3.googleusercontent.com/.*?"',
 		name: "Beta Server",
+		linkType: "direct",
 	},
 }
 
@@ -64,18 +74,22 @@ KG.serverOverrides = {
 		"rapid": {
 			regex: '"https://www.rapidvideo.com/e/.*?"',
 			name: "RapidVideo",
+			linkType: "embed",
 		},
 		"fs": {
 			regex: '"https://video.xx.fbcdn.net/v/.*?"',
 			name: "FS (fbcdn.net)",
+			linkType: "direct",
 		},
 		"gp": {
 			regex: '"https://lh3.googleusercontent.com/.*?"',
 			name: "GP (googleusercontent.com)",
+			linkType: "direct",
 		},
 		"fe": {
 			regex: '"https://www.luxubu.review/v/.*?"',
 			name: "FE (luxubu.review)",
+			linkType: "embed",
 		},
 	},
 	"kissasian.sh": {
@@ -89,14 +103,17 @@ KG.serverOverrides = {
 		"rapid": {
 			regex: '"https://www.rapidvideo.com/e/.*?"',
 			name: "RapidVideo",
+			linkType: "embed",
 		},
 		"fe": {
 			regex: '"https://www.gaobook.review/v/.*?"',
 			name: "FE (gaobook.review)",
+			linkType: "embed",
 		},
 		"mp": {
 			regex: '"https://www.mp4upload.com/embed-.*?"',
 			name: "MP (mp4upload.com)",
+			linkType: "embed",
 		},
 	},
 }
@@ -124,6 +141,10 @@ KG.supportedSites = {
 	},
 }
 
+KG.preferences = {
+	quality: "1080, 720, 480, 360",
+}
+
 //entry function
 KG.siteLoad = () => {
 	if (!KG.supportedSites[location.hostname]) {
@@ -132,7 +153,7 @@ KG.siteLoad = () => {
 	}
 
 	KG.applyServerOverrides();
-	
+
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
 		KG.injectWidgets();
 	}
@@ -195,7 +216,6 @@ KG.injectWidgets = () => {
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
 	$("#KG-input-from").attr("max", epCount);
-
 	for (var i in KG.knownServers) {
 		$(`<option value="${i}">${KG.knownServers[i].name}</>`)
 			.appendTo("#KG-input-server");
@@ -260,6 +280,7 @@ KG.startRange = (start, end) => {
 		start: start,
 		current: 0,
 		func: "defaultBegin",
+		linkType: KG.knownServers[$("#KG-input-server").val()].linkType,
 	}
 	var epCount = $(".listing a").length;
 	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
@@ -285,14 +306,36 @@ KG.displayLinks = () => {
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
 	$("#KG-linkdisplay-title").text(`Extracted Links | ${KG.status.title}`);
 
+	//exporters
 	var onSamePage = KG.status.url == location.href;
+	$("#KG-input-export").empty();
+	$("#KG-input-export").append(`<option value="" selected disabled hidden>Export as</option>`);
 	for (var i in KG.exporters) {
-		var disable = KG.exporters[i].requireSamePage && !onSamePage;
-		var disabled = disable ? "disabled" : "";
-		$("#KG-input-export").append(`<option value="${i}" ${disabled}>${KG.exporters[i].name}</option>`);
+		var $exporter = $(`<option value="${i}">${KG.exporters[i].name}</option>`).appendTo("#KG-input-export");
+		if ((KG.exporters[i].requireSamePage && !onSamePage) ||
+			(KG.exporters[i].requireDirectLinks && KG.status.linkType != "direct")
+		) {
+			$exporter.attr("disabled", true);
+		}
+	}
+
+	//actions
+	$("#KG-action-container .KG-button").remove();
+	for (var i in KG.actions) {
+		if (
+			(!KG.actions[i].requireLinkType || KG.status.linkType == KG.actions[i].requireLinkType) &&
+			KG.actions[i].servers.includes(KG.status.server)
+		) {
+			$("#KG-action-container")
+				.append(`<input type="button" class="KG-button" value="${KG.actions[i].name}" onclick="KG.actions['${i}'].execute(KG.status)">`);
+		}
 	}
 
 	$("#KG-linkdisplay").show();
+}
+
+KG.showSpinner = () => {
+	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
 }
 
 KG.exportData = (exporter) => {
@@ -318,6 +361,7 @@ KG.updatePreferredServer = () => {
 	localStorage["KG-preferredServer"] = $("#KG-input-server").val();
 }
 
+//loads preferred server
 KG.loadPreferredServer = () => {
 	$("#KG-input-server").val(localStorage["KG-preferredServer"]);
 }
@@ -350,6 +394,21 @@ KG.for = (array, min, max, func) => {
 	for (var i = min; i <= max; i++) {
 		func(i, array[i]);
 	}
+}
+
+KG.get = (url) => {
+	return new Promise((resolve, reject) => {
+		GM_xmlhttpRequest({
+			method: "GET",
+			url: url,
+			onload: (o) => {
+				resolve(o.response);
+			},
+			onerror: () => {
+				reject();
+			}
+		});
+	});
 }
 
 //allows multiple different approaches to collecting links, if sites differ greatly
@@ -386,15 +445,46 @@ KG.steps.defaultFinished = () => {
 //allows for multiple ways to export collected data
 KG.exporters = {};
 
+KG.exporters.list = {
+	name: "list",
+	extension: "txt",
+	requireSamePage: false,
+	requireDirectLinks: false,
+	export: (data) => {
+		var str = "";
+		for (var i in data.episodes) {
+			str += data.episodes[i].grabLink + "\n";
+		}
+		return str;
+	}
+}
+
+KG.exporters.m3u = {
+	name: "m3u8 playlist",
+	extension: "m3u8",
+	requireSamePage: true,
+	requireDirectLinks: true,
+	export: (data) => {
+		var listing = $(".listing a").get().reverse();
+		var str = "#EXTM3U\n";
+		KG.for(data.episodes, (i, obj) => {
+			str += `#EXTINF:0,${listing[obj.num-1].innerText}\n${obj.grabLink}\n`;
+		});
+		return str;
+	}
+}
+
 KG.exporters.json = {
 	name: "json",
 	extension: "json",
 	requireSamePage: true,
+	requireDirectLinks: false,
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var json = {
 			title: data.title,
 			server: data.server,
+			linkType: data.linkType,
 			episodes: []
 		};
 		for (var i in data.episodes) {
@@ -408,10 +498,27 @@ KG.exporters.json = {
 	},
 }
 
+KG.exporters.html = {
+	name: "html list",
+	extension: "html",
+	requireSamePage: true,
+	requireDirectLinks: true,
+	export: (data) => {
+		var listing = $(".listing a").get().reverse();
+		var str = "<html>\n	<body>\n";
+		KG.for(data.episodes, (i, obj) => {
+			str += `		<a href="${obj.grabLink}" download="${listing[obj.num-1].innerText}.mp4">${listing[obj.num-1].innerText}</a><br>\n`;
+		});
+		str += "	</body>\n</html>\n";
+		return str;
+	}
+}
+
 KG.exporters.csv = {
 	name: "csv",
 	extension: "csv",
 	requireSamePage: true,
+	requireDirectLinks: false,
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var str = "episode, name, url\n";
@@ -422,23 +529,11 @@ KG.exporters.csv = {
 	}
 }
 
-KG.exporters.list = {
-	name: "list",
-	extension: "txt",
-	requireSamePage: false,
-	export: (data) => {
-		var str = "";
-		for (var i in data.episodes) {
-			str += data.episodes[i].grabLink + "\n";
-		}
-		return str;
-	}
-}
-
 KG.exporters.aria2c = {
 	name: "aria2c file",
 	extension: "txt",
 	requireSamePage: false,
+	requireDirectLinks: true,
 	export: (data) => {
 		var padLength = Math.max(2, data.episodes[data.episodes.length - 1].num.toString().length);
 		var str = "";
@@ -447,6 +542,51 @@ KG.exporters.aria2c = {
 		});
 		return str;
 	}
+}
+
+//further options after grabbing, such as converting embed to direct links
+KG.actions = {
+	"rapidvideo_getDirect": {
+		name: "get direct links",
+		requireLinkType: "embed",
+		servers: ["rapidvideo", "rapid"],
+		execute: async (data) => {
+			KG.showSpinner();
+			var promises = [];
+			for (var i in data.episodes) {
+				promises.push(KG["rapidvideo_getDirect"](data.episodes[i]));
+			}
+			await Promise.all(promises);
+			data.linkType = "direct";
+			KG.saveStatus();
+			KG.displayLinks();
+		},
+	},
+}
+
+//additional function to reduce clutter
+//asynchronously gets the direct link
+KG["rapidvideo_getDirect"] = async (ep) => {
+	$html = $(await KG.get(ep.grabLink));
+	$sources = $html.find("source");
+	if ($sources.length == 0) {
+		ep.grabLink = "error: no sources found";
+		return;
+	}
+
+	var sources = {};
+	KG.for($sources, (i, obj) => {
+		sources[obj.dataset.res] = obj.src;
+	});
+
+	parsedQualityPrefs = KG.preferences.quality.replace(/\ /g, "").split(",");
+	for (var i of parsedQualityPrefs) {
+		if (sources[i]) {
+			ep.grabLink = sources[i];
+			return;
+		}
+	}
+	ep.grabLink = "error: preferred qualities not found";
 }
 
 //if something doesn't look right on a specific site, a fix can be written here
@@ -515,7 +655,7 @@ var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="disp
 		<div class="arrow-general">
 			&nbsp;</div>
 		<div id="KG-linkdisplay-text"></div>
-		<div class="KG-button-container">
+		<div class="KG-button-container" id="KG-action-container">
 			<select id="KG-input-export" onchange="KG.exportData(this.value)">
 				<option value="" selected disabled hidden>Export as</option>
 			</select>
@@ -623,6 +763,52 @@ var grabberCSS = `.KG-episodelist-header {
 #KG-linkdisplay-close {
 	float: right;
 	cursor: pointer;
-}`;
+}
+
+/*
+	https://projects.lukehaas.me/css-loaders/
+*/
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  margin: 0px auto;
+  font-size: 5px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-left: 1.1em solid #ffffff;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+`;
 
 KG.siteLoad();

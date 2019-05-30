@@ -27,3 +27,18 @@ KG.for = (array, min, max, func) => {
 		func(i, array[i]);
 	}
 }
+
+KG.get = (url) => {
+	return new Promise((resolve, reject) => {
+		GM_xmlhttpRequest({
+			method: "GET",
+			url: url,
+			onload: (o) => {
+				resolve(o.response);
+			},
+			onerror: () => {
+				reject();
+			}
+		});
+	});
+}

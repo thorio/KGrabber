@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.0.1
+// @version       2.1.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -14,6 +14,8 @@
 // @match         https://kissasian.sh/*
 // @run-at        document-end
 // @noframes
+// @grant         GM_xmlhttpRequest
+// @connect       rapidvideo.com
 // ==/UserScript==
 
 unsafeWindow.KG = {};
@@ -27,6 +29,8 @@ unsafeWindow.KG = {};
 [[[[js/steps.js]]]]
 
 [[[[js/exporters.js]]]]
+
+[[[[js/actions.js]]]]
 
 [[[[js/fixes.js]]]]
 

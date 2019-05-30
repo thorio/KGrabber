@@ -6,7 +6,7 @@ KG.siteLoad = () => {
 	}
 
 	KG.applyServerOverrides();
-	
+
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
 		KG.injectWidgets();
 	}
@@ -69,7 +69,6 @@ KG.injectWidgets = () => {
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
 	$("#KG-input-from").attr("max", epCount);
-
 	for (var i in KG.knownServers) {
 		$(`<option value="${i}">${KG.knownServers[i].name}</>`)
 			.appendTo("#KG-input-server");
@@ -134,6 +133,7 @@ KG.startRange = (start, end) => {
 		start: start,
 		current: 0,
 		func: "defaultBegin",
+		linkType: KG.knownServers[$("#KG-input-server").val()].linkType,
 	}
 	var epCount = $(".listing a").length;
 	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
@@ -159,14 +159,36 @@ KG.displayLinks = () => {
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
 	$("#KG-linkdisplay-title").text(`Extracted Links | ${KG.status.title}`);
 
+	//exporters
 	var onSamePage = KG.status.url == location.href;
+	$("#KG-input-export").empty();
+	$("#KG-input-export").append(`<option value="" selected disabled hidden>Export as</option>`);
 	for (var i in KG.exporters) {
-		var disable = KG.exporters[i].requireSamePage && !onSamePage;
-		var disabled = disable ? "disabled" : "";
-		$("#KG-input-export").append(`<option value="${i}" ${disabled}>${KG.exporters[i].name}</option>`);
+		var $exporter = $(`<option value="${i}">${KG.exporters[i].name}</option>`).appendTo("#KG-input-export");
+		if ((KG.exporters[i].requireSamePage && !onSamePage) ||
+			(KG.exporters[i].requireDirectLinks && KG.status.linkType != "direct")
+		) {
+			$exporter.attr("disabled", true);
+		}
+	}
+
+	//actions
+	$("#KG-action-container .KG-button").remove();
+	for (var i in KG.actions) {
+		if (
+			(!KG.actions[i].requireLinkType || KG.status.linkType == KG.actions[i].requireLinkType) &&
+			KG.actions[i].servers.includes(KG.status.server)
+		) {
+			$("#KG-action-container")
+				.append(`<input type="button" class="KG-button" value="${KG.actions[i].name}" onclick="KG.actions['${i}'].execute(KG.status)">`);
+		}
 	}
 
 	$("#KG-linkdisplay").show();
+}
+
+KG.showSpinner = () => {
+	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
 }
 
 KG.exportData = (exporter) => {
@@ -192,6 +214,7 @@ KG.updatePreferredServer = () => {
 	localStorage["KG-preferredServer"] = $("#KG-input-server").val();
 }
 
+//loads preferred server
 KG.loadPreferredServer = () => {
 	$("#KG-input-server").val(localStorage["KG-preferredServer"]);
 }

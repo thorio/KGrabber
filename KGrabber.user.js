@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.1.0
+// @version       2.2.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -15,8 +15,17 @@
 // @run-at        document-end
 // @noframes
 // @grant         GM_xmlhttpRequest
+// @grant         GM_getValue
+// @grant         GM_setValue
 // @connect       rapidvideo.com
+// @connect       googleusercontent.com
+// @connect       googlevideo.com
 // ==/UserScript==
+
+if (!unsafeWindow.jQuery) {
+	console.error("KG: jQuery not present");
+	return;
+}
 
 unsafeWindow.KG = {};
 
@@ -138,11 +147,13 @@ KG.supportedSites = {
 		noCaptchaServer: "rapid",
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
+		fixes: ["kissasian.sh_UIFix"],
 	},
 }
 
 KG.preferences = {
-	quality: "1080, 720, 480, 360",
+	quality_order: "1080, 720, 480, 360",
+	enable_automatic_actions: true,
 }
 
 //entry function
@@ -152,11 +163,12 @@ KG.siteLoad = () => {
 		return;
 	}
 
-	KG.applyServerOverrides();
+	KG.applySiteOverrides();
 
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
 		KG.injectWidgets();
 	}
+	KG.loadPreferences();
 
 	if (KG.loadStatus()) {
 		KG.steps[KG.status.func]();
@@ -187,8 +199,64 @@ KG.clearStatus = () => {
 	sessionStorage.clear("KG-data");
 }
 
+KG.loadPreferences = () => {
+	try {
+		var prefs = JSON.parse(GM_getValue("KG-preferences", ""));
+		for (var i in prefs) { //load values while not removing new defaults
+			if (KG.preferences[i] != undefined) {
+				KG.preferences[i] = prefs[i];
+			}
+		}
+	} catch (e) {
+		//no preferences saved, using defaults
+	}
+	if ($("#KG-preferences").length == 0) {
+		return;
+	}
+	for (var i in KG.preferences) {
+		var html = "";
+		switch (typeof KG.preferences[i]) {
+			case "string":
+				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="text" value="${KG.preferences[i]}" class="KG-input-text right" id="KG-preference-${i}"></div>`;
+				break;
+			case "boolean":
+				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="checkbox" ${KG.preferences[i] ? "checked" : ""} class="KG-input-checkbox right" id="KG-preference-${i}"></div>`;
+				break;
+			case "number":
+				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="number" value="${KG.preferences[i]}" class="KG-input-text right" id="KG-preference-${i}"></div>`;
+				break;
+			default:
+				console.error(`unknown type "${typeof KG.preferences[i]}" of KG.preferences.${i}`);
+		}
+		$("#KG-preferences-container").append(html);
+	}
+}
+
+KG.savePreferences = () => {
+	$("#KG-preferences-container input").each((i, obj) => {
+		var id = obj.id.slice(14);
+		var value;
+		switch (obj.type) {
+			case "checkbox":
+				value = obj.checked;
+				break;
+			default:
+				value = obj.value;
+				break;
+		}
+		KG.preferences[id] = value;
+	});
+
+	GM_setValue("KG-preferences", JSON.stringify(KG.preferences));
+}
+
+KG.resetPreferences = () => {
+	GM_setValue("KG-preferences", "");
+	location.reload();
+}
+
 //patches the knownServers object based on the current url
-KG.applyServerOverrides = () => {
+KG.applySiteOverrides = () => {
 	var over = KG.serverOverrides[location.hostname]
 	for (var i in over) {
 		if (KG.knownServers[i]) {
@@ -226,6 +294,9 @@ KG.injectWidgets = () => {
 	//links in the middle
 	$("#leftside").prepend(linkListHTML);
 
+	//preference panel
+	$("#leftside").prepend(prefsHTML);
+
 	//numbers and buttons on each episode
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
 	$(".listing tr:gt(1)").each((i, obj) => {
@@ -233,9 +304,7 @@ KG.injectWidgets = () => {
 			.children(":eq(1)").prepend(`<input type="button" value="grab" class="KG-episodelist-button" onclick="KG.startSingle(${epCount-i})">&nbsp;`);
 	});
 
-	//colors
-	$(".KG-episodelist-button").add(".KG-button")
-		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
+	KG.applyColors();
 
 	//fixes
 	for (var i in site.fixes) {
@@ -245,6 +314,12 @@ KG.injectWidgets = () => {
 			console.error(`KG: nonexistant fix "${site.fixes[i]}"`);
 		}
 	}
+}
+
+KG.applyColors = () => {
+	var site = KG.supportedSites[location.hostname];
+	$(".KG-episodelist-button").add(".KG-button")
+		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
 }
 
 //grays out servers that aren't available on the url
@@ -281,6 +356,7 @@ KG.startRange = (start, end) => {
 		current: 0,
 		func: "defaultBegin",
 		linkType: KG.knownServers[$("#KG-input-server").val()].linkType,
+		automaticDone: false,
 	}
 	var epCount = $(".listing a").length;
 	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
@@ -304,7 +380,7 @@ KG.displayLinks = () => {
 		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
-	$("#KG-linkdisplay-title").text(`Extracted Links | ${KG.status.title}`);
+	$("#KG-linkdisplay .KG-dialog-title").text(`Extracted Links | ${KG.status.title}`);
 
 	//exporters
 	var onSamePage = KG.status.url == location.href;
@@ -326,18 +402,25 @@ KG.displayLinks = () => {
 			(!KG.actions[i].requireLinkType || KG.status.linkType == KG.actions[i].requireLinkType) &&
 			KG.actions[i].servers.includes(KG.status.server)
 		) {
+			if (KG.actions[i].automatic && KG.preferences.enable_automatic_actions && !KG.status.automaticDone) {
+				KG.status.automaticDone = true;
+				KG.actions[i].execute(KG.status);
+			}
+			if (KG.status.automaticDone) {
+				continue;
+			}
 			$("#KG-action-container")
 				.append(`<input type="button" class="KG-button" value="${KG.actions[i].name}" onclick="KG.actions['${i}'].execute(KG.status)">`);
 		}
 	}
 
+	//colors again
+	KG.applyColors();
+
 	$("#KG-linkdisplay").show();
 }
 
-KG.showSpinner = () => {
-	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
-}
-
+//invokes a exporter
 KG.exportData = (exporter) => {
 	$("#KG-input-export").val("");
 
@@ -348,6 +431,10 @@ KG.exportData = (exporter) => {
 		download: `${KG.status.title}.${KG.exporters[exporter].extension}`,
 	})
 	$("#KG-linkdisplay-export").show();
+}
+
+KG.showSpinner = () => {
+	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
 }
 
 //hides the linkdisplay
@@ -364,6 +451,15 @@ KG.updatePreferredServer = () => {
 //loads preferred server
 KG.loadPreferredServer = () => {
 	$("#KG-input-server").val(localStorage["KG-preferredServer"]);
+}
+
+KG.showPreferences = () => {
+	$("#KG-preferences").slideDown();
+}
+
+KG.closePreferences = () => {
+	KG.savePreferences();
+	$("#KG-preferences").slideUp();
 }
 
 //applies regex to html page to find a link
@@ -403,6 +499,21 @@ KG.get = (url) => {
 			url: url,
 			onload: (o) => {
 				resolve(o.response);
+			},
+			onerror: () => {
+				reject();
+			}
+		});
+	});
+}
+
+KG.head = (url) => {
+	return new Promise((resolve, reject) => {
+		GM_xmlhttpRequest({
+			method: "HEAD",
+			url: url,
+			onload: (o) => {
+				resolve(o.status);
 			},
 			onerror: () => {
 				reject();
@@ -545,28 +656,30 @@ KG.exporters.aria2c = {
 }
 
 //further options after grabbing, such as converting embed to direct links
-KG.actions = {
-	"rapidvideo_getDirect": {
-		name: "get direct links",
-		requireLinkType: "embed",
-		servers: ["rapidvideo", "rapid"],
-		execute: async (data) => {
-			KG.showSpinner();
-			var promises = [];
-			for (var i in data.episodes) {
-				promises.push(KG["rapidvideo_getDirect"](data.episodes[i]));
-			}
-			await Promise.all(promises);
-			data.linkType = "direct";
-			KG.saveStatus();
-			KG.displayLinks();
-		},
+
+KG.actions = {};
+KG.actionAux = {};
+
+KG.actions.rapidvideo_getDirect = {
+	name: "get direct links",
+	requireLinkType: "embed",
+	servers: ["rapidvideo", "rapid"],
+	execute: async (data) => {
+		KG.showSpinner();
+		var promises = [];
+		for (var i in data.episodes) {
+			promises.push(KG.actionAux["rapidvideo_getDirect"](data.episodes[i]));
+		}
+		await Promise.all(promises);
+		data.linkType = "direct";
+		KG.saveStatus();
+		KG.displayLinks();
 	},
 }
 
 //additional function to reduce clutter
 //asynchronously gets the direct link
-KG["rapidvideo_getDirect"] = async (ep) => {
+KG.actionAux.rapidvideo_getDirect = async (ep) => {
 	$html = $(await KG.get(ep.grabLink));
 	$sources = $html.find("source");
 	if ($sources.length == 0) {
@@ -579,7 +692,7 @@ KG["rapidvideo_getDirect"] = async (ep) => {
 		sources[obj.dataset.res] = obj.src;
 	});
 
-	parsedQualityPrefs = KG.preferences.quality.replace(/\ /g, "").split(",");
+	var parsedQualityPrefs = KG.preferences.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (sources[i]) {
 			ep.grabLink = sources[i];
@@ -587,6 +700,38 @@ KG["rapidvideo_getDirect"] = async (ep) => {
 		}
 	}
 	ep.grabLink = "error: preferred qualities not found";
+}
+
+KG.actions.beta_setQuality = {
+	name: "set quality",
+	requireLinkType: "direct",
+	servers: ["beta", "beta2"],
+	automatic: true,
+	execute: async (data) => {
+		KG.showSpinner();
+		var promises = [];
+		for (var i in data.episodes) {
+			promises.push(KG.actionAux["beta_tryGetQuality"](data.episodes[i]));
+		}
+		await Promise.all(promises);
+		data.automaticDone = true;
+		KG.saveStatus();
+		KG.displayLinks();
+	},
+}
+
+KG.actionAux.beta_tryGetQuality = async (ep) => {
+	var rawLink = ep.grabLink.slice(0, -4);
+	var qualityStrings = {"1080": "=m37", "720": "=m22", "360": "=m18"};
+	var parsedQualityPrefs = KG.preferences.quality_order.replace(/\ /g, "").split(",");
+	for (var i of parsedQualityPrefs) {
+		if (qualityStrings[i]) {
+			if (await KG.head(rawLink + qualityStrings[i]) == 200) {
+				ep.grabLink = rawLink + qualityStrings[i];
+				return;
+			}
+		}
+	}
 }
 
 //if something doesn't look right on a specific site, a fix can be written here
@@ -606,12 +751,38 @@ KG.fixes["kimcartoon.to_UIFix"] = () => {
 	})
 	$ld.find(".arrow-general").remove();
 
+	//preference panel
+	var $pf = $("#KG-preferences");
+	$pf.find(".barTitle").removeClass("barTitle")
+		.css({
+			"height": "20px",
+			"padding": "5px",
+		});
+	$("#KG-linkdisplay-title").css({
+		"font-size": "20px",
+		"color": $("a.bigChar").css("color"),
+	});
+	$pf.find(".arrow-general").remove();
+
 	//opts
 	var $opts = $("#KG-opts-widget");
-	var title = $opts.find(".barTitle").text();
+	var title = $opts.find(".barTitle").html();
+	$opts.before(`<div class="title-list icon">${title}</div><div class="clear2"></div>`);
+	$(".icon:eq(1)").css({ "width": "100%", "box-sizing": "border-box" });
+	$(".KG-preferences-button").css("margin-top", "5px");
 	$opts.find(".barTitle").remove();
 	$opts.find(".arrow-general").remove();
-	$opts.before(`<div class="title-list icon">${title}</div><div class="clear2"></div>`)
+
+	//general
+	$(".KG-dialog-title").css("font-size", "18px");
+}
+
+KG.fixes["kissasian.sh_UIFix"] = () => {
+	$(".KG-preferences-button").css("filter", "invert(0.7)");
+	$(".KG-dialog-close").css("color", "#000");
+	$(".KG-dialog-close").hover((e) => {
+		$(e.target).css("color", e.type == "mouseenter" ? "#fff" : "#000");
+	});
 }
 
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
@@ -621,6 +792,7 @@ KG.fixes["kimcartoon.to_UIFix"] = () => {
 var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 	<div class="barTitle">
 		KissGrabber
+		<button class="KG-preferences-button" onclick="KG.showPreferences()"></button>
 	</div>
 	<div class="barContent">
 		<div class="arrow-general">
@@ -644,10 +816,10 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 //initially hidden HTML that is revealed and filled in by the grabber script
 var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="display: none;">
 	<div class="barTitle">
-		<div id="KG-linkdisplay-title">
+		<div class="KG-dialog-title">
 			Extracted Links
 		</div>
-		<a id="KG-linkdisplay-close" onclick="KG.closeLinkdisplay()">
+		<a class="KG-dialog-close" onclick="KG.closeLinkdisplay()">
 			close &nbsp;
 		</a>
 	</div>
@@ -668,6 +840,27 @@ var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="disp
 				</a>
 			</div>
 		</div>
+	</div>
+</div>`;
+
+//initially hidden HTML that is revealed and filled in by the grabber script
+var prefsHTML = `<div class="bigBarContainer" id="KG-preferences" style="display: none;">
+	<div class="barTitle">
+		<div class="KG-dialog-title">
+			Preferences
+		</div>
+		<a class="KG-dialog-close" onclick="KG.closePreferences()">
+			save &nbsp;
+		</a>
+	</div>
+	<div class="barContent">
+		<div class="arrow-general">
+			&nbsp;</div>
+		<div id="KG-preferences-container">
+		</div>
+		<div class="KG-button-container">
+					<input type="button" value="Reset to Defaults" class="KG-button" style="float: right;" onclick="KG.resetPreferences()">
+			</div>
 	</div>
 </div>`;
 
@@ -697,6 +890,19 @@ var grabberCSS = `.KG-episodelist-header {
 	color: #ffffff;
 }
 
+.KG-input-text {
+	width: 150px;
+	border: 1px solid #666666;
+	background: #393939;
+	padding: 3px;
+	margin-left: 5px;
+	color: #ffffff;
+}
+
+.KG-input-checkbox {
+	height: 22px;
+}
+
 #KG-input-server {
 	width: 100%;
 	font-size: 14.5px;
@@ -706,6 +912,7 @@ var grabberCSS = `.KG-episodelist-header {
 #KG-input-export {
  	margin: 6px;
  	float: left;
+ 	color: #fff;
 }
 
 .KG-button {
@@ -725,7 +932,7 @@ var grabberCSS = `.KG-episodelist-header {
 	height: 34px;
 }
 
-#KG-linkdisplay-title {
+.KG-dialog-title {
 	width: 80%;
 	float: left;
 }
@@ -760,9 +967,55 @@ var grabberCSS = `.KG-episodelist-header {
 	border: none;
 }
 
-#KG-linkdisplay-close {
+.KG-dialog-close {
 	float: right;
 	cursor: pointer;
+	font-size: 17px;
+}
+
+.KG-dialog-close:hover {
+	color: #eee;
+}
+
+#KG-preferences-container {
+	overflow: auto;
+}
+
+
+#KG-preferences-container div {
+	box-sizing: border-box;
+	height: 26px;
+	width: 50%;
+	padding: 0 5px;
+	margin: 2px 0;
+	float: left;
+	line-height: 26px;
+	font-size: 14px;
+}
+
+#KG-preferences-container div span {
+	padding-top: 5px;
+}
+
+.KG-preferences-button {
+	width: 18px;
+	height: 18px;
+	margin: 3px;
+	float: right;
+	border: none;
+	background-color: #0000;
+	opacity: 0.7;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAC4jAAAuIwF4pT92AAAFHGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDE5LTA1LTMxVDE0OjQ5OjI5KzAyOjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAxOS0wNS0zMVQxNToxMzozNCswMjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAxOS0wNS0zMVQxNToxMzozNCswMjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpkYTg5NGI2Mi1lOWEwLTg2NGYtYTg0Mi1lM2JkOTY3ZWI4ZTgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ZGE4OTRiNjItZTlhMC04NjRmLWE4NDItZTNiZDk2N2ViOGU4IiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6ZGE4OTRiNjItZTlhMC04NjRmLWE4NDItZTNiZDk2N2ViOGU4Ij4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpkYTg5NGI2Mi1lOWEwLTg2NGYtYTg0Mi1lM2JkOTY3ZWI4ZTgiIHN0RXZ0OndoZW49IjIwMTktMDUtMzFUMTQ6NDk6MjkrMDI6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE4IChXaW5kb3dzKSIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7gRsl1AAAB4klEQVRIia2WO2tUQRiGn91EIUJQCzGFREwX0MUbKBaBSBRNYSGCLFY2goXgpVH8KbYighArsRDWSrAJBizSJBgtRFQMJlrENXkszi7OTuacHSUvDJzzXd75LjPfOahkrAl1WV0J1uUc3zp5OA3sAoaDNZnjmNqgCcwAewLZjoTd7uB5CHgK3NtkFaXU9C++qcfUo+qCm/FZnVIb6odAfjvkDMmvJkj+Fze7vDW1m8wb4HBOXTNRBwx7cAH4sUXk54Ei8qgHp9R2Rerr6lqf8ty34piuALVERKvADWC0sy4B8yXRfwlfauo4MAE0gIvASIL8CLAYyQeA18DxRJAPgFlgjoyUr1l+Uw/18W3X1I2SsnRxAFiq0H8C9pboNupAu8IZYL2Pvsp/rQ5s70NwokK3H9hXoR+qqVPAGYpSnAV2RkbvgYOk78gzYDqS/QZawDvgVdy0k+qvRLMW1XPqYMeuob4oaeytkHMw2n2hE8G2SD4GPAc+dvSjFWX52vMW7Dagvu1z7HKwqo6bmKYPt4C8i7ZFwD2jolWR9r/iCSXD7koUyR2Lb+9SIsqf6nV1Uv0eyB+HnKnr31Tn1elAdjexQSvQj6hz6qOYL+ePAot5FGMmxzc+pmWYBZahx/5ljuMfM3Ph5QSIQroAAAAASUVORK5CYII=");
+	background-size: cover;
+	cursor: pointer;
+}
+
+.KG-preferences-button:hover {
+	opacity: 1;
+}
+
+.right {
+	float: right;
 }
 
 /*

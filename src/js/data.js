@@ -116,9 +116,11 @@ KG.supportedSites = {
 		noCaptchaServer: "rapid",
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
+		fixes: ["kissasian.sh_UIFix"],
 	},
 }
 
 KG.preferences = {
-	quality: "1080, 720, 480, 360",
+	quality_order: "1080, 720, 480, 360",
+	enable_automatic_actions: true,
 }

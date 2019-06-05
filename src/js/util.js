@@ -42,3 +42,18 @@ KG.get = (url) => {
 		});
 	});
 }
+
+KG.head = (url) => {
+	return new Promise((resolve, reject) => {
+		GM_xmlhttpRequest({
+			method: "HEAD",
+			url: url,
+			onload: (o) => {
+				resolve(o.status);
+			},
+			onerror: () => {
+				reject();
+			}
+		});
+	});
+}

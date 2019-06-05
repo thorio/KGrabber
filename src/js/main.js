@@ -5,11 +5,12 @@ KG.siteLoad = () => {
 		return;
 	}
 
-	KG.applyServerOverrides();
+	KG.applySiteOverrides();
 
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
 		KG.injectWidgets();
 	}
+	KG.loadPreferences();
 
 	if (KG.loadStatus()) {
 		KG.steps[KG.status.func]();
@@ -40,8 +41,64 @@ KG.clearStatus = () => {
 	sessionStorage.clear("KG-data");
 }
 
+KG.loadPreferences = () => {
+	try {
+		var prefs = JSON.parse(GM_getValue("KG-preferences", ""));
+		for (var i in prefs) { //load values while not removing new defaults
+			if (KG.preferences[i] != undefined) {
+				KG.preferences[i] = prefs[i];
+			}
+		}
+	} catch (e) {
+		//no preferences saved, using defaults
+	}
+	if ($("#KG-preferences").length == 0) {
+		return;
+	}
+	for (var i in KG.preferences) {
+		var html = "";
+		switch (typeof KG.preferences[i]) {
+			case "string":
+				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="text" value="${KG.preferences[i]}" class="KG-input-text right" id="KG-preference-${i}"></div>`;
+				break;
+			case "boolean":
+				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="checkbox" ${KG.preferences[i] ? "checked" : ""} class="KG-input-checkbox right" id="KG-preference-${i}"></div>`;
+				break;
+			case "number":
+				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="number" value="${KG.preferences[i]}" class="KG-input-text right" id="KG-preference-${i}"></div>`;
+				break;
+			default:
+				console.error(`unknown type "${typeof KG.preferences[i]}" of KG.preferences.${i}`);
+		}
+		$("#KG-preferences-container").append(html);
+	}
+}
+
+KG.savePreferences = () => {
+	$("#KG-preferences-container input").each((i, obj) => {
+		var id = obj.id.slice(14);
+		var value;
+		switch (obj.type) {
+			case "checkbox":
+				value = obj.checked;
+				break;
+			default:
+				value = obj.value;
+				break;
+		}
+		KG.preferences[id] = value;
+	});
+
+	GM_setValue("KG-preferences", JSON.stringify(KG.preferences));
+}
+
+KG.resetPreferences = () => {
+	GM_setValue("KG-preferences", "");
+	location.reload();
+}
+
 //patches the knownServers object based on the current url
-KG.applyServerOverrides = () => {
+KG.applySiteOverrides = () => {
 	var over = KG.serverOverrides[location.hostname]
 	for (var i in over) {
 		if (KG.knownServers[i]) {
@@ -79,6 +136,9 @@ KG.injectWidgets = () => {
 	//links in the middle
 	$("#leftside").prepend(linkListHTML);
 
+	//preference panel
+	$("#leftside").prepend(prefsHTML);
+
 	//numbers and buttons on each episode
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
 	$(".listing tr:gt(1)").each((i, obj) => {
@@ -86,9 +146,7 @@ KG.injectWidgets = () => {
 			.children(":eq(1)").prepend(`<input type="button" value="grab" class="KG-episodelist-button" onclick="KG.startSingle(${epCount-i})">&nbsp;`);
 	});
 
-	//colors
-	$(".KG-episodelist-button").add(".KG-button")
-		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
+	KG.applyColors();
 
 	//fixes
 	for (var i in site.fixes) {
@@ -98,6 +156,12 @@ KG.injectWidgets = () => {
 			console.error(`KG: nonexistant fix "${site.fixes[i]}"`);
 		}
 	}
+}
+
+KG.applyColors = () => {
+	var site = KG.supportedSites[location.hostname];
+	$(".KG-episodelist-button").add(".KG-button")
+		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
 }
 
 //grays out servers that aren't available on the url
@@ -134,6 +198,7 @@ KG.startRange = (start, end) => {
 		current: 0,
 		func: "defaultBegin",
 		linkType: KG.knownServers[$("#KG-input-server").val()].linkType,
+		automaticDone: false,
 	}
 	var epCount = $(".listing a").length;
 	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
@@ -157,7 +222,7 @@ KG.displayLinks = () => {
 		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
-	$("#KG-linkdisplay-title").text(`Extracted Links | ${KG.status.title}`);
+	$("#KG-linkdisplay .KG-dialog-title").text(`Extracted Links | ${KG.status.title}`);
 
 	//exporters
 	var onSamePage = KG.status.url == location.href;
@@ -179,18 +244,25 @@ KG.displayLinks = () => {
 			(!KG.actions[i].requireLinkType || KG.status.linkType == KG.actions[i].requireLinkType) &&
 			KG.actions[i].servers.includes(KG.status.server)
 		) {
+			if (KG.actions[i].automatic && KG.preferences.enable_automatic_actions && !KG.status.automaticDone) {
+				KG.status.automaticDone = true;
+				KG.actions[i].execute(KG.status);
+			}
+			if (KG.status.automaticDone) {
+				continue;
+			}
 			$("#KG-action-container")
 				.append(`<input type="button" class="KG-button" value="${KG.actions[i].name}" onclick="KG.actions['${i}'].execute(KG.status)">`);
 		}
 	}
 
+	//colors again
+	KG.applyColors();
+
 	$("#KG-linkdisplay").show();
 }
 
-KG.showSpinner = () => {
-	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
-}
-
+//invokes a exporter
 KG.exportData = (exporter) => {
 	$("#KG-input-export").val("");
 
@@ -201,6 +273,10 @@ KG.exportData = (exporter) => {
 		download: `${KG.status.title}.${KG.exporters[exporter].extension}`,
 	})
 	$("#KG-linkdisplay-export").show();
+}
+
+KG.showSpinner = () => {
+	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
 }
 
 //hides the linkdisplay
@@ -217,4 +293,13 @@ KG.updatePreferredServer = () => {
 //loads preferred server
 KG.loadPreferredServer = () => {
 	$("#KG-input-server").val(localStorage["KG-preferredServer"]);
+}
+
+KG.showPreferences = () => {
+	$("#KG-preferences").slideDown();
+}
+
+KG.closePreferences = () => {
+	KG.savePreferences();
+	$("#KG-preferences").slideUp();
 }

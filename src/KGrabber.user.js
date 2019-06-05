@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.1.0
+// @version       2.2.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -15,8 +15,17 @@
 // @run-at        document-end
 // @noframes
 // @grant         GM_xmlhttpRequest
+// @grant         GM_getValue
+// @grant         GM_setValue
 // @connect       rapidvideo.com
+// @connect       googleusercontent.com
+// @connect       googlevideo.com
 // ==/UserScript==
+
+if (!unsafeWindow.jQuery) {
+	console.error("KG: jQuery not present");
+	return;
+}
 
 unsafeWindow.KG = {};
 
@@ -42,6 +51,9 @@ var optsHTML = `[[[[html/opts.html]]]]`;
 
 //initially hidden HTML that is revealed and filled in by the grabber script
 var linkListHTML = `[[[[html/linkdisplay.html]]]]`;
+
+//initially hidden HTML that is revealed and filled in by the grabber script
+var prefsHTML = `[[[[html/preferences.html]]]]`;
 
 //css to make it all look good
 var grabberCSS = `[[[[css/grabber.css]]]]`;

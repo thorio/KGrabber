@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.2.0
+// @version       2.2.1
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -279,7 +279,7 @@ KG.injectWidgets = () => {
 	//css
 	$(document.head).append(`<style>${grabberCSS}</style>`);
 
-	//box on the right
+	//KissGrabber Box
 	$(`#rightside .clear2:eq(${site.optsPosition || 0})`).after(optsHTML);
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
@@ -290,8 +290,18 @@ KG.injectWidgets = () => {
 	}
 	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"), site.noCaptchaServer);
 	KG.loadPreferredServer();
+	$("#KG-input-from").on("keydown", (e) => {
+		if (e.keyCode == 13) {
+			$("#KG-input-start").click();
+		}
+	});
+	$("#KG-input-to").on("keydown", (e) => {
+		if (e.keyCode == 13) {
+			$("#KG-input-start").click();
+		}
+	});
 
-	//links in the middle
+	//link display
 	$("#leftside").prepend(linkListHTML);
 
 	//preference panel
@@ -806,7 +816,7 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 			<input type="number" id="KG-input-to" class="KG-input-episode" min=1>
 		</p>
 		<div class="KG-button-container">
-			<input type="button" class="KG-button" value="Extract Links" onclick="KG.startRange($('#KG-input-from').val(),$('#KG-input-to').val())">
+			<input type="button" class="KG-button" id="KG-input-start" value="Extract Links" onclick="KG.startRange($('#KG-input-from').val(),$('#KG-input-to').val())">
 		</div>
 	</div>
 </div>

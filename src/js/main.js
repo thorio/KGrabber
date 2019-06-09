@@ -121,7 +121,7 @@ KG.injectWidgets = () => {
 	//css
 	$(document.head).append(`<style>${grabberCSS}</style>`);
 
-	//box on the right
+	//KissGrabber Box
 	$(`#rightside .clear2:eq(${site.optsPosition || 0})`).after(optsHTML);
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
@@ -132,8 +132,18 @@ KG.injectWidgets = () => {
 	}
 	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"), site.noCaptchaServer);
 	KG.loadPreferredServer();
+	$("#KG-input-from").on("keydown", (e) => {
+		if (e.keyCode == 13) {
+			$("#KG-input-start").click();
+		}
+	});
+	$("#KG-input-to").on("keydown", (e) => {
+		if (e.keyCode == 13) {
+			$("#KG-input-start").click();
+		}
+	});
 
-	//links in the middle
+	//link display
 	$("#leftside").prepend(linkListHTML);
 
 	//preference panel

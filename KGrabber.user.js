@@ -154,6 +154,8 @@ KG.supportedSites = {
 KG.preferences = {
 	quality_order: "1080, 720, 480, 360",
 	enable_automatic_actions: true,
+	idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
+	idm_arguments: "",
 }
 
 //entry function
@@ -661,6 +663,29 @@ KG.exporters.aria2c = {
 		KG.for(data.episodes, (i, obj) => {
 			str += `${obj.grabLink}\n	-o E${obj.num.toString().padStart(padLength, "0")}.mp4\n`;
 		});
+		return str;
+	}
+}
+
+KG.exporters.idmbat = {
+	name: "IDM bat file",
+	extension: "bat",
+	requireSamePage: true,
+	requireDirectLinks: true,
+	export: (data) => {
+		var listing = $(".listing a").get().reverse();
+		var str = `::download and double click me!
+@echo off
+set title=${data.title}
+set idm=${KG.preferences.idm_path}
+set args=${KG.preferences.idm_arguments}
+set path=%~dp0
+if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && goto end
+mkdir "%title%" > nul\n\n`;
+		KG.for(data.episodes, (i, obj) => {
+			str += `"%idm%" /n /p "%path%\\%title%" /f "${listing[obj.num-1].innerText}.mp4" /d "${obj.grabLink}" %args%\n`;
+		});
+		str += "\n:end\necho done.\necho.\npause";
 		return str;
 	}
 }

@@ -99,3 +99,26 @@ KG.exporters.aria2c = {
 		return str;
 	}
 }
+
+KG.exporters.idmbat = {
+	name: "IDM bat file",
+	extension: "bat",
+	requireSamePage: true,
+	requireDirectLinks: true,
+	export: (data) => {
+		var listing = $(".listing a").get().reverse();
+		var str = `::download and double click me!
+@echo off
+set title=${data.title}
+set idm=${KG.preferences.internet_download_manager.idm_path}
+set args=${KG.preferences.internet_download_manager.arguments}
+set path=%~dp0
+if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && goto end
+mkdir "%title%" > nul\n\n`;
+		KG.for(data.episodes, (i, obj) => {
+			str += `"%idm%" /n /p "%path%\\%title%" /f "${listing[obj.num-1].innerText}.mp4" /d "${obj.grabLink}" %args%\n`;
+		});
+		str += "\n:end\necho done.\necho.\npause";
+		return str;
+	}
+}

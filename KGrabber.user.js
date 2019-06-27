@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.2.1
+// @version       2.3.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -152,8 +152,14 @@ KG.supportedSites = {
 }
 
 KG.preferences = {
-	quality_order: "1080, 720, 480, 360",
-	enable_automatic_actions: true,
+	general: {
+		quality_order: "1080, 720, 480, 360",
+		enable_automatic_actions: true,
+	},
+	internet_download_manager: {
+		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
+		arguments: "",
+	},
 }
 
 //entry function
@@ -204,7 +210,11 @@ KG.loadPreferences = () => {
 		var prefs = JSON.parse(GM_getValue("KG-preferences", ""));
 		for (var i in prefs) { //load values while not removing new defaults
 			if (KG.preferences[i] != undefined) {
-				KG.preferences[i] = prefs[i];
+				for (var j in prefs[i]) {
+					if (KG.preferences[i][j] != undefined) {
+						KG.preferences[i][j] = prefs[i][j];
+					}
+				}
 			}
 		}
 	} catch (e) {
@@ -214,27 +224,34 @@ KG.loadPreferences = () => {
 		return;
 	}
 	for (var i in KG.preferences) {
-		var html = "";
-		switch (typeof KG.preferences[i]) {
-			case "string":
-				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="text" value="${KG.preferences[i]}" class="KG-input-text right" id="KG-preference-${i}"></div>`;
-				break;
-			case "boolean":
-				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="checkbox" ${KG.preferences[i] ? "checked" : ""} class="KG-input-checkbox right" id="KG-preference-${i}"></div>`;
-				break;
-			case "number":
-				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="number" value="${KG.preferences[i]}" class="KG-input-text right" id="KG-preference-${i}"></div>`;
-				break;
-			default:
-				console.error(`unknown type "${typeof KG.preferences[i]}" of KG.preferences.${i}`);
+		var group = KG.preferences[i];
+		var $group = $(`<div id="KG-preferences-container"></div>`);
+		for (var j in KG.preferences[i]) {
+			var html = "";
+			switch (typeof group[j]) {
+				case "string":
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="text" value="${group[j]}" class="KG-input-text right" id="KG-preference-${i}-${j}"></div>`;
+					break;
+				case "boolean":
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="checkbox" ${group[j] ? "checked" : ""} class="KG-input-checkbox right" id="KG-preference-${i}-${j}"></div>`;
+					break;
+				case "number":
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="number" value="${group[j]}" class="KG-input-text right" id="KG-preference-${i}-${j}"></div>`;
+					break;
+				default:
+					console.error(`unknown type "${typeof group[j]}" of KG.preferences.${i}.${j}`);
+			}
+			$group.append(html);
 		}
-		$("#KG-preferences-container").append(html);
+		var headerTitle = i.replace(/_/g, " ").replace(/[a-z]+/g, (s) => {return s.charAt(0).toUpperCase() + s.slice(1)});
+		$("#KG-preferences-container-outer").append(`<div class="KG-preferences-header bigChar">${headerTitle}</div>`)
+			.append($group);
 	}
 }
 
 KG.savePreferences = () => {
 	$("#KG-preferences-container input").each((i, obj) => {
-		var id = obj.id.slice(14);
+		var ids = obj.id.slice(14).match(/[^-]+/g);
 		var value;
 		switch (obj.type) {
 			case "checkbox":
@@ -244,7 +261,7 @@ KG.savePreferences = () => {
 				value = obj.value;
 				break;
 		}
-		KG.preferences[id] = value;
+		KG.preferences[ids[0]][ids[1]] = value;
 	});
 
 	GM_setValue("KG-preferences", JSON.stringify(KG.preferences));
@@ -359,7 +376,7 @@ KG.startSingle = (num) => {
 KG.startRange = (start, end) => {
 	KG.status = {
 		url: location.href,
-		title: $(".bigBarContainer .bigChar").text(),
+		title: $(".bigBarContainer a.bigChar").text(),
 		server: $("#KG-input-server").val(),
 		episodes: [],
 		start: start,
@@ -412,7 +429,7 @@ KG.displayLinks = () => {
 			(!KG.actions[i].requireLinkType || KG.status.linkType == KG.actions[i].requireLinkType) &&
 			KG.actions[i].servers.includes(KG.status.server)
 		) {
-			if (KG.actions[i].automatic && KG.preferences.enable_automatic_actions && !KG.status.automaticDone) {
+			if (KG.actions[i].automatic && KG.preferences.general.enable_automatic_actions && !KG.status.automaticDone) {
 				KG.status.automaticDone = true;
 				KG.actions[i].execute(KG.status);
 			}
@@ -449,7 +466,7 @@ KG.showSpinner = () => {
 
 //hides the linkdisplay
 KG.closeLinkdisplay = () => {
-	$("#KG-linkdisplay").hide();
+	$("#KG-linkdisplay").slideUp();
 	KG.clearStatus();
 }
 
@@ -665,6 +682,29 @@ KG.exporters.aria2c = {
 	}
 }
 
+KG.exporters.idmbat = {
+	name: "IDM bat file",
+	extension: "bat",
+	requireSamePage: true,
+	requireDirectLinks: true,
+	export: (data) => {
+		var listing = $(".listing a").get().reverse();
+		var str = `::download and double click me!
+@echo off
+set title=${data.title}
+set idm=${KG.preferences.internet_download_manager.idm_path}
+set args=${KG.preferences.internet_download_manager.arguments}
+set path=%~dp0
+if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && goto end
+mkdir "%title%" > nul\n\n`;
+		KG.for(data.episodes, (i, obj) => {
+			str += `"%idm%" /n /p "%path%\\%title%" /f "${listing[obj.num-1].innerText}.mp4" /d "${obj.grabLink}" %args%\n`;
+		});
+		str += "\n:end\necho done.\necho.\npause";
+		return str;
+	}
+}
+
 //further options after grabbing, such as converting embed to direct links
 
 KG.actions = {};
@@ -702,7 +742,7 @@ KG.actionAux.rapidvideo_getDirect = async (ep) => {
 		sources[obj.dataset.res] = obj.src;
 	});
 
-	var parsedQualityPrefs = KG.preferences.quality_order.replace(/\ /g, "").split(",");
+	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (sources[i]) {
 			ep.grabLink = sources[i];
@@ -733,7 +773,7 @@ KG.actions.beta_setQuality = {
 KG.actionAux.beta_tryGetQuality = async (ep) => {
 	var rawLink = ep.grabLink.slice(0, -4);
 	var qualityStrings = {"1080": "=m37", "720": "=m22", "360": "=m18"};
-	var parsedQualityPrefs = KG.preferences.quality_order.replace(/\ /g, "").split(",");
+	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
 			if (await KG.head(rawLink + qualityStrings[i]) == 200) {
@@ -866,11 +906,11 @@ var prefsHTML = `<div class="bigBarContainer" id="KG-preferences" style="display
 	<div class="barContent">
 		<div class="arrow-general">
 			&nbsp;</div>
-		<div id="KG-preferences-container">
+		<div id="KG-preferences-container-outer">
 		</div>
 		<div class="KG-button-container">
-					<input type="button" value="Reset to Defaults" class="KG-button" style="float: right;" onclick="KG.resetPreferences()">
-			</div>
+			<input type="button" value="Reset to Defaults" class="KG-button" style="float: right;" onclick="KG.resetPreferences()">
+		</div>
 	</div>
 </div>`;
 
@@ -985,6 +1025,17 @@ var grabberCSS = `.KG-episodelist-header {
 
 .KG-dialog-close:hover {
 	color: #eee;
+}
+
+#KG-preferences-container-outer {
+	overflow: auto;
+}
+
+.KG-preferences-header {
+	font-size: 17px;
+	letter-spacing: 0px;
+	width: 100%;
+	margin: 10px 0 5px 0;
 }
 
 #KG-preferences-container {

@@ -110,6 +110,17 @@
 	color: #eee;
 }
 
+#KG-preferences-container-outer {
+	overflow: auto;
+}
+
+.KG-preferences-header {
+	font-size: 17px;
+	letter-spacing: 0px;
+	width: 100%;
+	margin: 10px 0 5px 0;
+}
+
 #KG-preferences-container {
 	overflow: auto;
 }

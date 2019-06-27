@@ -46,7 +46,11 @@ KG.loadPreferences = () => {
 		var prefs = JSON.parse(GM_getValue("KG-preferences", ""));
 		for (var i in prefs) { //load values while not removing new defaults
 			if (KG.preferences[i] != undefined) {
-				KG.preferences[i] = prefs[i];
+				for (var j in prefs[i]) {
+					if (KG.preferences[i][j] != undefined) {
+						KG.preferences[i][j] = prefs[i][j];
+					}
+				}
 			}
 		}
 	} catch (e) {
@@ -56,27 +60,34 @@ KG.loadPreferences = () => {
 		return;
 	}
 	for (var i in KG.preferences) {
-		var html = "";
-		switch (typeof KG.preferences[i]) {
-			case "string":
-				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="text" value="${KG.preferences[i]}" class="KG-input-text right" id="KG-preference-${i}"></div>`;
-				break;
-			case "boolean":
-				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="checkbox" ${KG.preferences[i] ? "checked" : ""} class="KG-input-checkbox right" id="KG-preference-${i}"></div>`;
-				break;
-			case "number":
-				html = `<div><span>${i.replace(/_/g, " ")}:</span><input type="number" value="${KG.preferences[i]}" class="KG-input-text right" id="KG-preference-${i}"></div>`;
-				break;
-			default:
-				console.error(`unknown type "${typeof KG.preferences[i]}" of KG.preferences.${i}`);
+		var group = KG.preferences[i];
+		var $group = $(`<div id="KG-preferences-container"></div>`);
+		for (var j in KG.preferences[i]) {
+			var html = "";
+			switch (typeof group[j]) {
+				case "string":
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="text" value="${group[j]}" class="KG-input-text right" id="KG-preference-${i}-${j}"></div>`;
+					break;
+				case "boolean":
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="checkbox" ${group[j] ? "checked" : ""} class="KG-input-checkbox right" id="KG-preference-${i}-${j}"></div>`;
+					break;
+				case "number":
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="number" value="${group[j]}" class="KG-input-text right" id="KG-preference-${i}-${j}"></div>`;
+					break;
+				default:
+					console.error(`unknown type "${typeof group[j]}" of KG.preferences.${i}.${j}`);
+			}
+			$group.append(html);
 		}
-		$("#KG-preferences-container").append(html);
+		var headerTitle = i.replace(/_/g, " ").replace(/[a-z]+/g, (s) => {return s.charAt(0).toUpperCase() + s.slice(1)});
+		$("#KG-preferences-container-outer").append(`<div class="KG-preferences-header bigChar">${headerTitle}</div>`)
+			.append($group);
 	}
 }
 
 KG.savePreferences = () => {
 	$("#KG-preferences-container input").each((i, obj) => {
-		var id = obj.id.slice(14);
+		var ids = obj.id.slice(14).match(/[^-]+/g);
 		var value;
 		switch (obj.type) {
 			case "checkbox":
@@ -86,7 +97,7 @@ KG.savePreferences = () => {
 				value = obj.value;
 				break;
 		}
-		KG.preferences[id] = value;
+		KG.preferences[ids[0]][ids[1]] = value;
 	});
 
 	GM_setValue("KG-preferences", JSON.stringify(KG.preferences));
@@ -201,7 +212,7 @@ KG.startSingle = (num) => {
 KG.startRange = (start, end) => {
 	KG.status = {
 		url: location.href,
-		title: $(".bigBarContainer .bigChar").text(),
+		title: $(".bigBarContainer a.bigChar").text(),
 		server: $("#KG-input-server").val(),
 		episodes: [],
 		start: start,
@@ -254,7 +265,7 @@ KG.displayLinks = () => {
 			(!KG.actions[i].requireLinkType || KG.status.linkType == KG.actions[i].requireLinkType) &&
 			KG.actions[i].servers.includes(KG.status.server)
 		) {
-			if (KG.actions[i].automatic && KG.preferences.enable_automatic_actions && !KG.status.automaticDone) {
+			if (KG.actions[i].automatic && KG.preferences.general.enable_automatic_actions && !KG.status.automaticDone) {
 				KG.status.automaticDone = true;
 				KG.actions[i].execute(KG.status);
 			}
@@ -291,7 +302,7 @@ KG.showSpinner = () => {
 
 //hides the linkdisplay
 KG.closeLinkdisplay = () => {
-	$("#KG-linkdisplay").hide();
+	$("#KG-linkdisplay").slideUp();
 	KG.clearStatus();
 }
 

@@ -121,6 +121,12 @@ KG.supportedSites = {
 }
 
 KG.preferences = {
-	quality_order: "1080, 720, 480, 360",
-	enable_automatic_actions: true,
+	general: {
+		quality_order: "1080, 720, 480, 360",
+		enable_automatic_actions: true,
+	},
+	internet_download_manager: {
+		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
+		arguments: "",
+	},
 }

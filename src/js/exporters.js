@@ -110,8 +110,8 @@ KG.exporters.idmbat = {
 		var str = `::download and double click me!
 @echo off
 set title=${data.title}
-set idm=${KG.preferences.idm_path}
-set args=${KG.preferences.idm_arguments}
+set idm=${KG.preferences.internet_download_manager.idm_path}
+set args=${KG.preferences.internet_download_manager.arguments}
 set path=%~dp0
 if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && goto end
 mkdir "%title%" > nul\n\n`;

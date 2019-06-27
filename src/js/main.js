@@ -291,7 +291,7 @@ KG.showSpinner = () => {
 
 //hides the linkdisplay
 KG.closeLinkdisplay = () => {
-	$("#KG-linkdisplay").hide();
+	$("#KG-linkdisplay").slideUp();
 	KG.clearStatus();
 }
 

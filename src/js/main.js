@@ -229,8 +229,14 @@ KG.startRange = (start, end) => {
 			num: i + 1,
 		});
 	});
+	var customStep = KG.knownServers[KG.status.server].customStep;
+	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
+		KG.status.func = customStep; //use custom grabber
+	}
+
 	KG.saveStatus();
 	KG.steps[KG.status.func]();
+	$("html, body").animate({ scrollTop: 0 }, "slow");
 }
 
 KG.displayLinks = () => {

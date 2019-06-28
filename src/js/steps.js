@@ -28,3 +28,21 @@ KG.steps.defaultGetLink = () => {
 KG.steps.defaultFinished = () => {
 	KG.displayLinks();
 }
+
+KG.steps.turboBegin = async () => {
+	$("#KG-linkdisplay").slideDown();
+	KG.showSpinner();
+	var func = async (ep) => {
+		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
+		var link = KG.findLink(html, KG.knownServers[KG.status.server].regex);
+		ep.grabLink = link;
+	};
+	var promises = [];
+	KG.for(KG.status.episodes, (i, obj) => {
+		promises.push(func(obj));
+	});
+	await Promise.all(promises);
+	KG.status.func = "defaultFinished";
+	KG.saveStatus();
+	KG.displayLinks();
+}

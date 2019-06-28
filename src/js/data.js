@@ -3,6 +3,7 @@ KG.knownServers = {
 		regex: '"https://www.rapidvideo.com/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
+		customStep: "turboBegin",
 	},
 	"nova": {
 		regex: '"https://www.novelplanet.me/v/.*?"',
@@ -128,5 +129,8 @@ KG.preferences = {
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
 		arguments: "",
+	},
+	compatibility: {
+		force_default_grabber: false,
 	},
 }

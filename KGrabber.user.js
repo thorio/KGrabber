@@ -34,6 +34,7 @@ KG.knownServers = {
 		regex: '"https://www.rapidvideo.com/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
+		customStep: "turboBegin",
 	},
 	"nova": {
 		regex: '"https://www.novelplanet.me/v/.*?"',
@@ -159,6 +160,9 @@ KG.preferences = {
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
 		arguments: "",
+	},
+	compatibility: {
+		force_default_grabber: false,
 	},
 }
 
@@ -393,8 +397,14 @@ KG.startRange = (start, end) => {
 			num: i + 1,
 		});
 	});
+	var customStep = KG.knownServers[KG.status.server].customStep;
+	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
+		KG.status.func = customStep; //use custom grabber
+	}
+
 	KG.saveStatus();
 	KG.steps[KG.status.func]();
+	$("html, body").animate({ scrollTop: 0 }, "slow");
 }
 
 KG.displayLinks = () => {
@@ -490,9 +500,9 @@ KG.closePreferences = () => {
 }
 
 //applies regex to html page to find a link
-KG.findLink = (regexString) => {
+KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
-	var result = document.body.innerHTML.match(re);
+	var result = html.match(re);
 	if (result && result.length > 0) {
 		return result[0].split('"')[1];
 	}
@@ -563,7 +573,7 @@ KG.steps.defaultGetLink = () => {
 	if (!KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath)) { //captcha
 		return;
 	}
-	link = KG.findLink(KG.knownServers[KG.status.server].regex);
+	link = KG.findLink(document.body.innerHTML, KG.knownServers[KG.status.server].regex);
 	KG.status.episodes[KG.status.current].grabLink = link || "error (selected server may not be available)";
 
 	KG.status.current++;
@@ -577,6 +587,24 @@ KG.steps.defaultGetLink = () => {
 }
 
 KG.steps.defaultFinished = () => {
+	KG.displayLinks();
+}
+
+KG.steps.turboBegin = async () => {
+	$("#KG-linkdisplay").slideDown();
+	KG.showSpinner();
+	var func = async (ep) => {
+		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
+		var link = KG.findLink(html, KG.knownServers[KG.status.server].regex);
+		ep.grabLink = link;
+	};
+	var promises = [];
+	KG.for(KG.status.episodes, (i, obj) => {
+		promises.push(func(obj));
+	});
+	await Promise.all(promises);
+	KG.status.func = "defaultFinished";
+	KG.saveStatus();
 	KG.displayLinks();
 }
 

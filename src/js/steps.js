@@ -12,7 +12,7 @@ KG.steps.defaultGetLink = () => {
 	if (!KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath)) { //captcha
 		return;
 	}
-	link = KG.findLink(KG.knownServers[KG.status.server].regex);
+	link = KG.findLink(document.body.innerHTML, KG.knownServers[KG.status.server].regex);
 	KG.status.episodes[KG.status.current].grabLink = link || "error (selected server may not be available)";
 
 	KG.status.current++;

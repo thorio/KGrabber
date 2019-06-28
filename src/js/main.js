@@ -229,8 +229,18 @@ KG.startRange = (start, end) => {
 			num: i + 1,
 		});
 	});
+	var customStep = KG.knownServers[KG.status.server].customStep;
+	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
+		KG.status.func = customStep; //use custom grabber
+	}
+	var experimentalCustomStep = KG.knownServers[KG.status.server].experimentalCustomStep;
+	if (experimentalCustomStep && KG.steps[experimentalCustomStep] && KG.preferences.compatibility.enable_experimental_grabbers) {
+		KG.status.func = experimentalCustomStep; //use experimental grabber
+	}
+
 	KG.saveStatus();
 	KG.steps[KG.status.func]();
+	$("html, body").animate({ scrollTop: 0 }, "slow");
 }
 
 KG.displayLinks = () => {
@@ -297,7 +307,11 @@ KG.exportData = (exporter) => {
 }
 
 KG.showSpinner = () => {
-	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
+	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div><div id="KG-spinner-text"><div>`);
+}
+
+KG.spinnerText = (str) => {
+	$("#KG-spinner-text").text(str);
 }
 
 //hides the linkdisplay

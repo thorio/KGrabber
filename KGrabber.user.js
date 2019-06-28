@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.3.0
+// @version       2.4.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -34,6 +34,7 @@ KG.knownServers = {
 		regex: '"https://www.rapidvideo.com/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
+		customStep: "turboBegin",
 	},
 	"nova": {
 		regex: '"https://www.novelplanet.me/v/.*?"',
@@ -84,21 +85,25 @@ KG.serverOverrides = {
 			regex: '"https://www.rapidvideo.com/e/.*?"',
 			name: "RapidVideo",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 		"fs": {
 			regex: '"https://video.xx.fbcdn.net/v/.*?"',
 			name: "FS (fbcdn.net)",
 			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
 		},
 		"gp": {
 			regex: '"https://lh3.googleusercontent.com/.*?"',
 			name: "GP (googleusercontent.com)",
 			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
 		},
 		"fe": {
 			regex: '"https://www.luxubu.review/v/.*?"',
 			name: "FE (luxubu.review)",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 	},
 	"kissasian.sh": {
@@ -113,16 +118,19 @@ KG.serverOverrides = {
 			regex: '"https://www.rapidvideo.com/e/.*?"',
 			name: "RapidVideo",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 		"fe": {
 			regex: '"https://www.gaobook.review/v/.*?"',
 			name: "FE (gaobook.review)",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 		"mp": {
 			regex: '"https://www.mp4upload.com/embed-.*?"',
 			name: "MP (mp4upload.com)",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 	},
 }
@@ -159,6 +167,10 @@ KG.preferences = {
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
 		arguments: "",
+	},
+	compatibility: {
+		force_default_grabber: false,
+		enable_experimental_grabbers: false,
 	},
 }
 
@@ -393,8 +405,18 @@ KG.startRange = (start, end) => {
 			num: i + 1,
 		});
 	});
+	var customStep = KG.knownServers[KG.status.server].customStep;
+	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
+		KG.status.func = customStep; //use custom grabber
+	}
+	var experimentalCustomStep = KG.knownServers[KG.status.server].experimentalCustomStep;
+	if (experimentalCustomStep && KG.steps[experimentalCustomStep] && KG.preferences.compatibility.enable_experimental_grabbers) {
+		KG.status.func = experimentalCustomStep; //use experimental grabber
+	}
+
 	KG.saveStatus();
 	KG.steps[KG.status.func]();
+	$("html, body").animate({ scrollTop: 0 }, "slow");
 }
 
 KG.displayLinks = () => {
@@ -461,7 +483,11 @@ KG.exportData = (exporter) => {
 }
 
 KG.showSpinner = () => {
-	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
+	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div><div id="KG-spinner-text"><div>`);
+}
+
+KG.spinnerText = (str) => {
+	$("#KG-spinner-text").text(str);
 }
 
 //hides the linkdisplay
@@ -490,9 +516,9 @@ KG.closePreferences = () => {
 }
 
 //applies regex to html page to find a link
-KG.findLink = (regexString) => {
+KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
-	var result = document.body.innerHTML.match(re);
+	var result = html.match(re);
 	if (result && result.length > 0) {
 		return result[0].split('"')[1];
 	}
@@ -563,7 +589,7 @@ KG.steps.defaultGetLink = () => {
 	if (!KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath)) { //captcha
 		return;
 	}
-	link = KG.findLink(KG.knownServers[KG.status.server].regex);
+	link = KG.findLink(document.body.innerHTML, KG.knownServers[KG.status.server].regex);
 	KG.status.episodes[KG.status.current].grabLink = link || "error (selected server may not be available)";
 
 	KG.status.current++;
@@ -577,6 +603,28 @@ KG.steps.defaultGetLink = () => {
 }
 
 KG.steps.defaultFinished = () => {
+	KG.displayLinks();
+}
+
+KG.steps.turboBegin = async () => {
+	$("#KG-linkdisplay").slideDown();
+	KG.showSpinner();
+	var progress = 0;
+	var func = async (ep) => {
+		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
+		var link = KG.findLink(html, KG.knownServers[KG.status.server].regex);
+		ep.grabLink = link || "error: server not available or captcha";
+		progress++;
+		KG.spinnerText(`${progress}/${promises.length}`)
+	};
+	var promises = [];
+	KG.for(KG.status.episodes, (i, obj) => {
+		promises.push(func(obj));
+	});
+	KG.spinnerText(`0/${promises.length}`)
+	await Promise.all(promises);
+	KG.status.func = "defaultFinished";
+	KG.saveStatus();
 	KG.displayLinks();
 }
 
@@ -717,9 +765,11 @@ KG.actions.rapidvideo_getDirect = {
 	execute: async (data) => {
 		KG.showSpinner();
 		var promises = [];
+		var progress = [0];
 		for (var i in data.episodes) {
-			promises.push(KG.actionAux["rapidvideo_getDirect"](data.episodes[i]));
+			promises.push(KG.actionAux["rapidvideo_getDirect"](data.episodes[i], progress, promises));
 		}
+		KG.spinnerText(`0/${promises.length}`);
 		await Promise.all(promises);
 		data.linkType = "direct";
 		KG.saveStatus();
@@ -729,7 +779,7 @@ KG.actions.rapidvideo_getDirect = {
 
 //additional function to reduce clutter
 //asynchronously gets the direct link
-KG.actionAux.rapidvideo_getDirect = async (ep) => {
+KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 	$html = $(await KG.get(ep.grabLink));
 	$sources = $html.find("source");
 	if ($sources.length == 0) {
@@ -741,6 +791,9 @@ KG.actionAux.rapidvideo_getDirect = async (ep) => {
 	KG.for($sources, (i, obj) => {
 		sources[obj.dataset.res] = obj.src;
 	});
+
+	progress[0]++;
+	KG.spinnerText(`${progress[0]}/${promises.length}`);
 
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
@@ -760,9 +813,11 @@ KG.actions.beta_setQuality = {
 	execute: async (data) => {
 		KG.showSpinner();
 		var promises = [];
+		var progress = [0];
 		for (var i in data.episodes) {
-			promises.push(KG.actionAux["beta_tryGetQuality"](data.episodes[i]));
+			promises.push(KG.actionAux["beta_tryGetQuality"](data.episodes[i], progress, promises));
 		}
+		KG.spinnerText(`0/${promises.length}`);
 		await Promise.all(promises);
 		data.automaticDone = true;
 		KG.saveStatus();
@@ -770,7 +825,7 @@ KG.actions.beta_setQuality = {
 	},
 }
 
-KG.actionAux.beta_tryGetQuality = async (ep) => {
+KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 	var rawLink = ep.grabLink.slice(0, -4);
 	var qualityStrings = {"1080": "=m37", "720": "=m22", "360": "=m18"};
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
@@ -778,6 +833,8 @@ KG.actionAux.beta_tryGetQuality = async (ep) => {
 		if (qualityStrings[i]) {
 			if (await KG.head(rawLink + qualityStrings[i]) == 200) {
 				ep.grabLink = rawLink + qualityStrings[i];
+				progress[0]++;
+				KG.spinnerText(`${progress[0]}/${promises.length}`);
 				return;
 			}
 		}
@@ -960,9 +1017,9 @@ var grabberCSS = `.KG-episodelist-header {
 }
 
 #KG-input-export {
- 	margin: 6px;
- 	float: left;
- 	color: #fff;
+	margin: 6px;
+	float: left;
+	color: #fff;
 }
 
 .KG-button {
@@ -1079,50 +1136,62 @@ var grabberCSS = `.KG-episodelist-header {
 	float: right;
 }
 
+#KG-spinner-text {
+	width: 100%;
+	text-align: center;
+	margin-top: -40px;
+	margin-bottom: 40px;
+	min-height: 20px;
+}
+
 /*
 	https://projects.lukehaas.me/css-loaders/
 */
 .loader,
 .loader:after {
-  border-radius: 50%;
-  width: 10em;
-  height: 10em;
+	border-radius: 50%;
+	width: 10em;
+	height: 10em;
 }
+
 .loader {
-  margin: 0px auto;
-  font-size: 5px;
-  position: relative;
-  text-indent: -9999em;
-  border-top: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-right: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
-  border-left: 1.1em solid #ffffff;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-animation: load8 1.1s infinite linear;
-  animation: load8 1.1s infinite linear;
+	margin: 0px auto;
+	font-size: 5px;
+	position: relative;
+	text-indent: -9999em;
+	border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+	border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+	border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+	border-left: 1.1em solid #ffffff;
+	-webkit-transform: translateZ(0);
+	-ms-transform: translateZ(0);
+	transform: translateZ(0);
+	-webkit-animation: load8 1.1s infinite linear;
+	animation: load8 1.1s infinite linear;
 }
+
 @-webkit-keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
+
 @keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-`;
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}`;
 
 KG.siteLoad();

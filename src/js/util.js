@@ -1,7 +1,7 @@
 //applies regex to html page to find a link
-KG.findLink = (regexString) => {
+KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
-	var result = document.body.innerHTML.match(re);
+	var result = html.match(re);
 	if (result && result.length > 0) {
 		return result[0].split('"')[1];
 	}

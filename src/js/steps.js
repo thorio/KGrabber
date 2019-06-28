@@ -32,15 +32,19 @@ KG.steps.defaultFinished = () => {
 KG.steps.turboBegin = async () => {
 	$("#KG-linkdisplay").slideDown();
 	KG.showSpinner();
+	var progress = 0;
 	var func = async (ep) => {
 		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
 		var link = KG.findLink(html, KG.knownServers[KG.status.server].regex);
 		ep.grabLink = link;
+		progress++;
+		KG.spinnerText(`${progress}/${promises.length}`)
 	};
 	var promises = [];
 	KG.for(KG.status.episodes, (i, obj) => {
 		promises.push(func(obj));
 	});
+	KG.spinnerText(`0/${promises.length}`)
 	await Promise.all(promises);
 	KG.status.func = "defaultFinished";
 	KG.saveStatus();

@@ -10,9 +10,11 @@ KG.actions.rapidvideo_getDirect = {
 	execute: async (data) => {
 		KG.showSpinner();
 		var promises = [];
+		var progress = [0];
 		for (var i in data.episodes) {
-			promises.push(KG.actionAux["rapidvideo_getDirect"](data.episodes[i]));
+			promises.push(KG.actionAux["rapidvideo_getDirect"](data.episodes[i], progress, promises));
 		}
+		KG.spinnerText(`0/${promises.length}`);
 		await Promise.all(promises);
 		data.linkType = "direct";
 		KG.saveStatus();
@@ -22,7 +24,7 @@ KG.actions.rapidvideo_getDirect = {
 
 //additional function to reduce clutter
 //asynchronously gets the direct link
-KG.actionAux.rapidvideo_getDirect = async (ep) => {
+KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 	$html = $(await KG.get(ep.grabLink));
 	$sources = $html.find("source");
 	if ($sources.length == 0) {
@@ -34,6 +36,9 @@ KG.actionAux.rapidvideo_getDirect = async (ep) => {
 	KG.for($sources, (i, obj) => {
 		sources[obj.dataset.res] = obj.src;
 	});
+
+	progress[0]++;
+	KG.spinnerText(`${progress[0]}/${promises.length}`);
 
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
@@ -53,9 +58,11 @@ KG.actions.beta_setQuality = {
 	execute: async (data) => {
 		KG.showSpinner();
 		var promises = [];
+		var progress = [0];
 		for (var i in data.episodes) {
-			promises.push(KG.actionAux["beta_tryGetQuality"](data.episodes[i]));
+			promises.push(KG.actionAux["beta_tryGetQuality"](data.episodes[i], progress, promises));
 		}
+		KG.spinnerText(`0/${promises.length}`);
 		await Promise.all(promises);
 		data.automaticDone = true;
 		KG.saveStatus();
@@ -63,7 +70,7 @@ KG.actions.beta_setQuality = {
 	},
 }
 
-KG.actionAux.beta_tryGetQuality = async (ep) => {
+KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 	var rawLink = ep.grabLink.slice(0, -4);
 	var qualityStrings = {"1080": "=m37", "720": "=m22", "360": "=m18"};
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
@@ -71,6 +78,8 @@ KG.actionAux.beta_tryGetQuality = async (ep) => {
 		if (qualityStrings[i]) {
 			if (await KG.head(rawLink + qualityStrings[i]) == 200) {
 				ep.grabLink = rawLink + qualityStrings[i];
+				progress[0]++;
+				KG.spinnerText(`${progress[0]}/${promises.length}`);
 				return;
 			}
 		}

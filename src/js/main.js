@@ -303,7 +303,11 @@ KG.exportData = (exporter) => {
 }
 
 KG.showSpinner = () => {
-	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div>`);
+	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div><div id="KG-spinner-text"><div>`);
+}
+
+KG.spinnerText = (str) => {
+	$("#KG-spinner-text").text(str);
 }
 
 //hides the linkdisplay

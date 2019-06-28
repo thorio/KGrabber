@@ -36,7 +36,7 @@ KG.steps.turboBegin = async () => {
 	var func = async (ep) => {
 		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
 		var link = KG.findLink(html, KG.knownServers[KG.status.server].regex);
-		ep.grabLink = link;
+		ep.grabLink = link || "error: server not available or captcha";
 		progress++;
 		KG.spinnerText(`${progress}/${promises.length}`)
 	};

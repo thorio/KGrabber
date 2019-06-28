@@ -85,21 +85,25 @@ KG.serverOverrides = {
 			regex: '"https://www.rapidvideo.com/e/.*?"',
 			name: "RapidVideo",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 		"fs": {
 			regex: '"https://video.xx.fbcdn.net/v/.*?"',
 			name: "FS (fbcdn.net)",
 			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
 		},
 		"gp": {
 			regex: '"https://lh3.googleusercontent.com/.*?"',
 			name: "GP (googleusercontent.com)",
 			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
 		},
 		"fe": {
 			regex: '"https://www.luxubu.review/v/.*?"',
 			name: "FE (luxubu.review)",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 	},
 	"kissasian.sh": {
@@ -114,16 +118,19 @@ KG.serverOverrides = {
 			regex: '"https://www.rapidvideo.com/e/.*?"',
 			name: "RapidVideo",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 		"fe": {
 			regex: '"https://www.gaobook.review/v/.*?"',
 			name: "FE (gaobook.review)",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 		"mp": {
 			regex: '"https://www.mp4upload.com/embed-.*?"',
 			name: "MP (mp4upload.com)",
 			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
 		},
 	},
 }
@@ -163,6 +170,7 @@ KG.preferences = {
 	},
 	compatibility: {
 		force_default_grabber: false,
+		enable_experimental_grabbers: false,
 	},
 }
 
@@ -401,6 +409,10 @@ KG.startRange = (start, end) => {
 	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
 		KG.status.func = customStep; //use custom grabber
 	}
+	var experimentalCustomStep = KG.knownServers[KG.status.server].experimentalCustomStep;
+	if (experimentalCustomStep && KG.steps[experimentalCustomStep] && KG.preferences.compatibility.enable_experimental_grabbers) {
+		KG.status.func = experimentalCustomStep; //use experimental grabber
+	}
 
 	KG.saveStatus();
 	KG.steps[KG.status.func]();
@@ -601,7 +613,7 @@ KG.steps.turboBegin = async () => {
 	var func = async (ep) => {
 		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
 		var link = KG.findLink(html, KG.knownServers[KG.status.server].regex);
-		ep.grabLink = link;
+		ep.grabLink = link || "error: server not available or captcha";
 		progress++;
 		KG.spinnerText(`${progress}/${promises.length}`)
 	};

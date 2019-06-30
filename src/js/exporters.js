@@ -91,10 +91,10 @@ KG.exporters.aria2c = {
 	requireSamePage: false,
 	requireDirectLinks: true,
 	export: (data) => {
-		var padLength = Math.max(2, data.episodes[data.episodes.length - 1].num.toString().length);
+		var listing = $(".listing a").get().reverse();
 		var str = "";
 		KG.for(data.episodes, (i, obj) => {
-			str += `${obj.grabLink}\n	-o E${obj.num.toString().padStart(padLength, "0")}.mp4\n`;
+			str += `${obj.grabLink}\n out=${listing[obj.num-1].innerText}.mp4\n`;
 		});
 		return str;
 	}

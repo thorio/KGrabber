@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.0
+// @version       2.4.1
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -721,10 +721,10 @@ KG.exporters.aria2c = {
 	requireSamePage: false,
 	requireDirectLinks: true,
 	export: (data) => {
-		var padLength = Math.max(2, data.episodes[data.episodes.length - 1].num.toString().length);
+		var listing = $(".listing a").get().reverse();
 		var str = "";
 		KG.for(data.episodes, (i, obj) => {
-			str += `${obj.grabLink}\n	-o E${obj.num.toString().padStart(padLength, "0")}.mp4\n`;
+			str += `${obj.grabLink}\n out=${listing[obj.num-1].innerText}.mp4\n`;
 		});
 		return str;
 	}
@@ -752,6 +752,7 @@ mkdir "%title%" > nul\n\n`;
 		return str;
 	}
 }
+
 
 //further options after grabbing, such as converting embed to direct links
 

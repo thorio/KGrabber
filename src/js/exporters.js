@@ -107,9 +107,10 @@ KG.exporters.idmbat = {
 	requireDirectLinks: true,
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
+		var title = KG.makeBatSafe(data.title);
 		var str = `::download and double click me!
 @echo off
-set title=${data.title}
+set title=${title}
 set idm=${KG.preferences.internet_download_manager.idm_path}
 set args=${KG.preferences.internet_download_manager.arguments}
 set path=%~dp0
@@ -117,7 +118,8 @@ if not exist "%idm%" echo IDM not found && echo check your IDM path in preferenc
 mkdir "%title%" > nul
 start "" "%idm%"\n\n`;
 		KG.for(data.episodes, (i, obj) => {
-			str += `"%idm%" /n /p "%path%\\%title%" /f "${listing[obj.num-1].innerText}.mp4" /d "${obj.grabLink}" %args%\n`;
+			var epTitle = KG.makeBatSafe(listing[obj.num-1].innerText);
+			str += `"%idm%" /n /p "%path%\\%title%" /f "${epTitle}.mp4" /d "${obj.grabLink}" %args%\n`;
 		});
 		str += "\n:end\necho done.\necho.\npause";
 		return str;

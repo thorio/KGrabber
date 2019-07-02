@@ -1,14 +1,12 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.2
+// @version       2.4.3
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
 // @copyright     2019 Leon Timm
 // @homepageURL   https://github.com/thorio/KGrabber/
-// @updateURL     https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
-// @downloadURL   https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
 // @match         https://kissanime.ru/*
 // @match         https://kimcartoon.to/*
 // @match         https://kissasian.sh/*
@@ -968,6 +966,7 @@ var prefsHTML = `<div class="bigBarContainer" id="KG-preferences" style="display
 	<div class="barTitle">
 		<div class="KG-dialog-title">
 			Preferences
+			<a class="KG-preferences-help-button" href="https://github.com/thorio/KGrabber/wiki/Preferences" target="blank">?</a>
 		</div>
 		<a class="KG-dialog-close" onclick="KG.closePreferences()">
 			save &nbsp;
@@ -1143,6 +1142,16 @@ var grabberCSS = `.KG-episodelist-header {
 
 .KG-preferences-button:hover {
 	opacity: 1;
+}
+
+.KG-preferences-help-button {
+	position: absolute;
+	font-size: 20px;
+	margin-left: 10px;
+}
+
+.KG-preferences-help-button:hover {
+	color: #fff;
 }
 
 .right {

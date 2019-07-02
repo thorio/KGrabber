@@ -114,7 +114,8 @@ set idm=${KG.preferences.internet_download_manager.idm_path}
 set args=${KG.preferences.internet_download_manager.arguments}
 set path=%~dp0
 if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && goto end
-mkdir "%title%" > nul\n\n`;
+mkdir "%title%" > nul
+start "" "%idm%"\n\n`;
 		KG.for(data.episodes, (i, obj) => {
 			str += `"%idm%" /n /p "%path%\\%title%" /f "${listing[obj.num-1].innerText}.mp4" /d "${obj.grabLink}" %args%\n`;
 		});

@@ -28,6 +28,11 @@ KG.for = (array, min, max, func) => {
 	}
 }
 
+//removes characters that have special meaning in a batch file or are forbidden in directory names
+KG.makeBatSafe = (str) => {
+	return str.replace(/[%^&<>|:\\/?*"]/g, "_");
+}
+
 KG.get = (url) => {
 	return new Promise((resolve, reject) => {
 		GM_xmlhttpRequest({

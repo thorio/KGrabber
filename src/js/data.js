@@ -136,6 +136,7 @@ KG.preferences = {
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
 		arguments: "",
+		keep_title_in_episode_name: false,
 	},
 	compatibility: {
 		force_default_grabber: false,

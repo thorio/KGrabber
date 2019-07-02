@@ -118,10 +118,14 @@ if not exist "%idm%" echo IDM not found && echo check your IDM path in preferenc
 mkdir "%title%" > nul
 start "" "%idm%"\n\n`;
 		KG.for(data.episodes, (i, obj) => {
-			var epTitle = KG.makeBatSafe(listing[obj.num-1].innerText);
+			var epTitle = KG.makeBatSafe(listing[obj.num - 1].innerText);
+			if (!KG.preferences.internet_download_manager.keep_title_in_episode_name &&
+				epTitle.slice(0, title.length) === title) {
+				epTitle = epTitle.slice(title.length + 1);
+			}
 			str += `"%idm%" /n /p "%path%\\%title%" /f "${epTitle}.mp4" /d "${obj.grabLink}" %args%\n`;
 		});
-		str += "\n:end\necho done.\necho.\npause";
+		str += "\necho done.\necho.\n:end\npause";
 		return str;
 	}
 }

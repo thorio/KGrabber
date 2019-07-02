@@ -7,8 +7,6 @@
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
 // @copyright     2019 Leon Timm
 // @homepageURL   https://github.com/thorio/KGrabber/
-// @updateURL     https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
-// @downloadURL   https://github.com/thorio/KGrabber/raw/master/KGrabber.user.js
 // @match         https://kissanime.ru/*
 // @match         https://kimcartoon.to/*
 // @match         https://kissasian.sh/*

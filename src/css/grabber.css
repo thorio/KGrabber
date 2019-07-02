@@ -158,6 +158,16 @@
 	opacity: 1;
 }
 
+.KG-preferences-help-button {
+	position: absolute;
+	font-size: 20px;
+	margin-left: 10px;
+}
+
+.KG-preferences-help-button:hover {
+	color: #fff;
+}
+
 .right {
 	float: right;
 }

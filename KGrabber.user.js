@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.3
+// @version       2.4.4
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -514,7 +514,7 @@ KG.closePreferences = () => {
 	$("#KG-preferences").slideUp();
 }
 
-//applies regex to html page to find a link
+//applies regex to html to find a link
 KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
 	var result = html.match(re);
@@ -747,19 +747,19 @@ KG.exporters.idmbat = {
 set title=${title}
 set idm=${KG.preferences.internet_download_manager.idm_path}
 set args=${KG.preferences.internet_download_manager.arguments}
-set path=%~dp0
-if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && goto end
+set dir=%~dp0
+if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && pause && goto eof
 mkdir "%title%" > nul
-start "" "%idm%"\n\n`;
+start "" "%idm%"
+ping localhost -n 2 > nul\n\n`;
 		KG.for(data.episodes, (i, obj) => {
 			var epTitle = KG.makeBatSafe(listing[obj.num - 1].innerText);
 			if (!KG.preferences.internet_download_manager.keep_title_in_episode_name &&
 				epTitle.slice(0, title.length) === title) {
 				epTitle = epTitle.slice(title.length + 1);
 			}
-			str += `"%idm%" /n /p "%path%\\%title%" /f "${epTitle}.mp4" /d "${obj.grabLink}" %args%\n`;
+			str += `"%idm%" /n /p "%dir%\\%title%" /f "${epTitle}.mp4" /d "${obj.grabLink}" %args%\n`;
 		});
-		str += "\necho done.\necho.\n:end\npause";
 		return str;
 	}
 }

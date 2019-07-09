@@ -1,4 +1,4 @@
-//applies regex to html page to find a link
+//applies regex to html to find a link
 KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
 	var result = html.match(re);

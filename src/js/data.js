@@ -1,6 +1,6 @@
 KG.knownServers = {
 	"rapidvideo": {
-		regex: '"https://www.rapidvideo.com/e/.*?"',
+		regex: '"https://www.rapidvid.to/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",

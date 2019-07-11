@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.4
+// @version       2.4.5
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -29,7 +29,7 @@ unsafeWindow.KG = {};
 
 KG.knownServers = {
 	"rapidvideo": {
-		regex: '"https://www.rapidvideo.com/e/.*?"',
+		regex: '"https://www.rapidvid.to/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",
@@ -454,7 +454,7 @@ KG.displayLinks = () => {
 				KG.status.automaticDone = true;
 				KG.actions[i].execute(KG.status);
 			}
-			if (KG.status.automaticDone) {
+			if (KG.actions[i].automatic && KG.status.automaticDone) {
 				continue;
 			}
 			$("#KG-action-container")
@@ -547,6 +547,14 @@ KG.for = (array, min, max, func) => {
 //removes characters that have special meaning in a batch file or are forbidden in directory names
 KG.makeBatSafe = (str) => {
 	return str.replace(/[%^&<>|:\\/?*"]/g, "_");
+}
+
+KG.timeout = (time) => {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			resolve();
+		}, time)
+	});
 }
 
 KG.get = (url) => {
@@ -768,6 +776,22 @@ ping localhost -n 2 > nul\n\n`;
 
 KG.actions = {};
 KG.actionAux = {};
+
+KG.actions.rapidvideo_revertDomain = {
+	name: "revert domain",
+	requireLinkType: "embed",
+	servers: ["rapidvideo", "rapid"],
+	automatic: true,
+	execute: async (data) => {
+		await KG.timeout(5); //wait for currently running KG.displayLinks to finish
+		for (var i in data.episodes) {
+			data.episodes[i].grabLink = data.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com")
+		}
+		data.automaticDone = true;
+		KG.saveStatus();
+		KG.displayLinks();
+	},
+}
 
 KG.actions.rapidvideo_getDirect = {
 	name: "get direct links",

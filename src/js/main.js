@@ -279,7 +279,7 @@ KG.displayLinks = () => {
 				KG.status.automaticDone = true;
 				KG.actions[i].execute(KG.status);
 			}
-			if (KG.status.automaticDone) {
+			if (KG.actions[i].automatic && KG.status.automaticDone) {
 				continue;
 			}
 			$("#KG-action-container")

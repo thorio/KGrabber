@@ -33,6 +33,14 @@ KG.makeBatSafe = (str) => {
 	return str.replace(/[%^&<>|:\\/?*"]/g, "_");
 }
 
+KG.timeout = (time) => {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			resolve();
+		}, time)
+	});
+}
+
 KG.get = (url) => {
 	return new Promise((resolve, reject) => {
 		GM_xmlhttpRequest({

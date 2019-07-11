@@ -160,7 +160,6 @@ KG.supportedSites = {
 KG.preferences = {
 	general: {
 		quality_order: "1080, 720, 480, 360",
-		enable_automatic_actions: true,
 	},
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
@@ -170,6 +169,7 @@ KG.preferences = {
 	compatibility: {
 		force_default_grabber: false,
 		enable_experimental_grabbers: false,
+		disable_automatic_actions: false,
 	},
 }
 
@@ -450,7 +450,7 @@ KG.displayLinks = () => {
 			(!KG.actions[i].requireLinkType || KG.status.linkType == KG.actions[i].requireLinkType) &&
 			KG.actions[i].servers.includes(KG.status.server)
 		) {
-			if (KG.actions[i].automatic && KG.preferences.general.enable_automatic_actions && !KG.status.automaticDone) {
+			if (KG.actions[i].automatic && !KG.preferences.compatibility.disable_automatic_actions && !KG.status.automaticDone) {
 				KG.status.automaticDone = true;
 				KG.actions[i].execute(KG.status);
 			}

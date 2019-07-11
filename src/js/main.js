@@ -275,7 +275,7 @@ KG.displayLinks = () => {
 			(!KG.actions[i].requireLinkType || KG.status.linkType == KG.actions[i].requireLinkType) &&
 			KG.actions[i].servers.includes(KG.status.server)
 		) {
-			if (KG.actions[i].automatic && KG.preferences.general.enable_automatic_actions && !KG.status.automaticDone) {
+			if (KG.actions[i].automatic && !KG.preferences.compatibility.disable_automatic_actions && !KG.status.automaticDone) {
 				KG.status.automaticDone = true;
 				KG.actions[i].execute(KG.status);
 			}

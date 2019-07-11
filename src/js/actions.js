@@ -3,6 +3,22 @@
 KG.actions = {};
 KG.actionAux = {};
 
+KG.actions.rapidvideo_revertDomain = {
+	name: "revert domain",
+	requireLinkType: "embed",
+	servers: ["rapidvideo", "rapid"],
+	automatic: true,
+	execute: async (data) => {
+		await KG.timeout(5); //wait for currently running KG.displayLinks to finish
+		for (var i in data.episodes) {
+			data.episodes[i].grabLink = data.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com")
+		}
+		data.automaticDone = true;
+		KG.saveStatus();
+		KG.displayLinks();
+	},
+}
+
 KG.actions.rapidvideo_getDirect = {
 	name: "get direct links",
 	requireLinkType: "embed",

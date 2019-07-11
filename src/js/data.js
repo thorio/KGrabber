@@ -1,6 +1,6 @@
 KG.knownServers = {
 	"rapidvideo": {
-		regex: '"https://www.rapidvideo.com/e/.*?"',
+		regex: '"https://www.rapidvid.to/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",
@@ -131,7 +131,6 @@ KG.supportedSites = {
 KG.preferences = {
 	general: {
 		quality_order: "1080, 720, 480, 360",
-		enable_automatic_actions: true,
 	},
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
@@ -141,5 +140,6 @@ KG.preferences = {
 	compatibility: {
 		force_default_grabber: false,
 		enable_experimental_grabbers: false,
+		disable_automatic_actions: false,
 	},
 }

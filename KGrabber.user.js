@@ -928,7 +928,6 @@ KG.fixes["kissasian.sh_UIFix"] = () => {
 }
 
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
-//if you have a solution for including extra files that are updated when the script is reinstalled please let me know: thorio.git@gmail.com
 
 //the grabber widget injected into the page
 var optsHTML = `<div class="rightBox" id="KG-opts-widget">

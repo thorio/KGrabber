@@ -27,33 +27,32 @@ if (!unsafeWindow.jQuery) {
 
 unsafeWindow.KG = {};
 
-[[[[js/data.js]]]]
+/*include::js/data.js*/
 
-[[[[js/main.js]]]]
+/*include::js/main.js*/
 
-[[[[js/util.js]]]]
+/*include::js/util.js*/
 
-[[[[js/steps.js]]]]
+/*include::js/steps.js*/
 
-[[[[js/exporters.js]]]]
+/*include::js/exporters.js*/
 
-[[[[js/actions.js]]]]
+/*include::js/actions.js*/
 
-[[[[js/fixes.js]]]]
+/*include::js/fixes.js*/
 
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
-//if you have a solution for including extra files that are updated when the script is reinstalled please let me know: thorio.git@gmail.com
 
 //the grabber widget injected into the page
-var optsHTML = `[[[[html/opts.html]]]]`;
+var optsHTML = `/*include::html/opts.html*/`;
 
 //initially hidden HTML that is revealed and filled in by the grabber script
-var linkListHTML = `[[[[html/linkdisplay.html]]]]`;
+var linkListHTML = `/*include::html/linkdisplay.html*/`;
 
 //initially hidden HTML that is revealed and filled in by the grabber script
-var prefsHTML = `[[[[html/preferences.html]]]]`;
+var prefsHTML = `/*include::html/preferences.html*/`;
 
 //css to make it all look good
-var grabberCSS = `[[[[css/grabber.css]]]]`;
+var grabberCSS = `/*include::css/grabber.css*/`;
 
 KG.siteLoad();

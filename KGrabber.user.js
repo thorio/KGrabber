@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.5
+// @version       2.4.6
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -29,7 +29,7 @@ unsafeWindow.KG = {};
 
 KG.knownServers = {
 	"rapidvideo": {
-		regex: '"https://www.rapidvid.to/e/.*?"',
+		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",
@@ -80,7 +80,7 @@ KG.serverOverrides = {
 		"nova": null,
 		"mp4upload": null,
 		"rapid": {
-			regex: '"https://www.rapidvideo.com/e/.*?"',
+			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 			name: "RapidVideo",
 			linkType: "embed",
 			experimentalCustomStep: "turboBegin",
@@ -113,7 +113,7 @@ KG.serverOverrides = {
 		"streamango": null,
 		"beta": null, //should work, but script can't load data because of https/http session storage separation
 		"rapid": {
-			regex: '"https://www.rapidvideo.com/e/.*?"',
+			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 			name: "RapidVideo",
 			linkType: "embed",
 			experimentalCustomStep: "turboBegin",

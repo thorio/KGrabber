@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.6
+// @version       2.4.7
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -815,6 +815,11 @@ KG.actions.rapidvideo_getDirect = {
 //additional function to reduce clutter
 //asynchronously gets the direct link
 KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
+	if (ep.grabLink.slice(0, 5) == "error") {
+		progress[0]++;
+		KG.spinnerText(`${progress[0]}/${promises.length}`);
+		return;
+	}
 	$html = $(await KG.get(ep.grabLink));
 	$sources = $html.find("source");
 	if ($sources.length == 0) {
@@ -928,7 +933,6 @@ KG.fixes["kissasian.sh_UIFix"] = () => {
 }
 
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
-//if you have a solution for including extra files that are updated when the script is reinstalled please let me know: thorio.git@gmail.com
 
 //the grabber widget injected into the page
 var optsHTML = `<div class="rightBox" id="KG-opts-widget">

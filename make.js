@@ -7,7 +7,7 @@ var destfile = "KGrabber.user.js"; // <- in directory of this file!
 var data = fs.readFileSync(__dirname + dir + srcfile, 'utf8');
 
 while (true) {
-	var match = data.match(/\[\[\[\[(.+)\]\]\]\]/); //scan for next tag in format '[[[[filename]]]]'
+	var match = data.match(/\/\*include::(.+)\*\//); //scan for next tag in format '[[[[filename]]]]'
 	if (!match) { //all tags taken care of
 		break;
 	}

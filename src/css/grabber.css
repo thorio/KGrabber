@@ -70,6 +70,13 @@
 	float: left;
 }
 
+.KG-bigChar {
+	margin: 0px;
+	padding: 0px;
+	font: normal 27px "Tahoma" , Arial, Helvetica, sans-serif;
+	letter-spacing: -2px;
+}
+
 #KG-linkdisplay-text {
 	word-break: break-all;
 }

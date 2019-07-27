@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.7
+// @version       2.4.8
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -254,10 +254,11 @@ KG.loadPreferences = () => {
 			}
 			$group.append(html);
 		}
-		var headerTitle = i.replace(/_/g, " ").replace(/[a-z]+/g, (s) => {return s.charAt(0).toUpperCase() + s.slice(1)});
-		$("#KG-preferences-container-outer").append(`<div class="KG-preferences-header bigChar">${headerTitle}</div>`)
+		var headerTitle = i.replace(/_/g, " ").replace(/[a-z]+/g, (s) => s.charAt(0).toUpperCase() + s.slice(1));
+		$("#KG-preferences-container-outer").append(`<div class="KG-preferences-header KG-bigChar">${headerTitle}</div>`)
 			.append($group);
 	}
+	KG.applyColors();
 }
 
 KG.savePreferences = () => {
@@ -356,8 +357,10 @@ KG.injectWidgets = () => {
 
 KG.applyColors = () => {
 	var site = KG.supportedSites[location.hostname];
-	$(".KG-episodelist-button").add(".KG-button")
-		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
+	$(".KG-episodelist-button, .KG-button")
+		.css({ "color": site.buttonTextColor, "background-color": site.buttonColor });
+	$(".KG-bigChar")
+		.css("color", $(".bigChar").css("color"));
 }
 
 //grays out servers that aren't available on the url
@@ -1082,6 +1085,13 @@ var grabberCSS = `.KG-episodelist-header {
 .KG-dialog-title {
 	width: 80%;
 	float: left;
+}
+
+.KG-bigChar {
+	margin: 0px;
+	padding: 0px;
+	font: normal 27px "Tahoma" , Arial, Helvetica, sans-serif;
+	letter-spacing: -2px;
 }
 
 #KG-linkdisplay-text {

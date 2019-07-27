@@ -79,10 +79,11 @@ KG.loadPreferences = () => {
 			}
 			$group.append(html);
 		}
-		var headerTitle = i.replace(/_/g, " ").replace(/[a-z]+/g, (s) => {return s.charAt(0).toUpperCase() + s.slice(1)});
-		$("#KG-preferences-container-outer").append(`<div class="KG-preferences-header bigChar">${headerTitle}</div>`)
+		var headerTitle = i.replace(/_/g, " ").replace(/[a-z]+/g, (s) => s.charAt(0).toUpperCase() + s.slice(1));
+		$("#KG-preferences-container-outer").append(`<div class="KG-preferences-header KG-bigChar">${headerTitle}</div>`)
 			.append($group);
 	}
+	KG.applyColors();
 }
 
 KG.savePreferences = () => {
@@ -181,8 +182,10 @@ KG.injectWidgets = () => {
 
 KG.applyColors = () => {
 	var site = KG.supportedSites[location.hostname];
-	$(".KG-episodelist-button").add(".KG-button")
-		.css({ color: site.buttonTextColor, "background-color": site.buttonColor });
+	$(".KG-episodelist-button, .KG-button")
+		.css({ "color": site.buttonTextColor, "background-color": site.buttonColor });
+	$(".KG-bigChar")
+		.css("color", $(".bigChar").css("color"));
 }
 
 //grays out servers that aren't available on the url

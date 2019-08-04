@@ -10,6 +10,7 @@
 // @match         https://kissanime.ru/*
 // @match         https://kimcartoon.to/*
 // @match         https://kissasian.sh/*
+// @match         http*://kisstvshow.to/*
 // @run-at        document-end
 // @noframes
 // @grant         GM_xmlhttpRequest

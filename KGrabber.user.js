@@ -10,7 +10,7 @@
 // @match         https://kissanime.ru/*
 // @match         https://kimcartoon.to/*
 // @match         https://kissasian.sh/*
-// @match         https://kisstvshow.to/*
+// @match         http*://kisstvshow.to/*
 // @run-at        document-end
 // @noframes
 // @grant         GM_xmlhttpRequest
@@ -131,7 +131,7 @@ KG.serverOverrides = {
 			linkType: "embed",
 			experimentalCustomStep: "turboBegin",
 		},
-        	},
+	},
 	"kisstvshow.to": {
 		"rapidvideo": null,
 		"p2p": null,
@@ -183,7 +183,7 @@ KG.supportedSites = {
 		buttonTextColor: "#000",
 		fixes: ["kissasian.sh_UIFix"],
 	},
-    	"kisstvshow.to": {
+	"kisstvshow.to": {
 		contentPath: "/Show/*",
 		noCaptchaServer: "rapid",
 		buttonColor: "#F5B54B",
@@ -207,6 +207,7 @@ KG.preferences = {
 		disable_automatic_actions: false,
 	},
 }
+
 
 //entry function
 KG.siteLoad = () => {

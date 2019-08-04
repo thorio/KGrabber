@@ -138,23 +138,27 @@ KG.serverOverrides = {
 		"beta2": null,
 		"nova": null,
 		"mp4upload": null,
-		"streamango": null,
-		"beta": null, //should work, but script can't load data because of https/http session storage separation
 		"rapid": {
 			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 			name: "RapidVideo",
 			linkType: "embed",
 			experimentalCustomStep: "turboBegin",
 		},
-		"fe": {
-			regex: '"https://www.gaobook.review/v/.*?"',
-			name: "FE (gaobook.review)",
-			linkType: "embed",
+		"fs": {
+			regex: '"https://video.xx.fbcdn.net/v/.*?"',
+			name: "FS (fbcdn.net)",
+			linkType: "direct",
 			experimentalCustomStep: "turboBegin",
 		},
-		"mp": {
-			regex: '"https://www.mp4upload.com/embed-.*?"',
-			name: "MP (mp4upload.com)",
+		"gp": {
+			regex: '"https://lh3.googleusercontent.com/.*?"',
+			name: "GP (googleusercontent.com)",
+			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
+		},
+		"fe": {
+			regex: '"https://www.luxubu.review/v/.*?"',
+			name: "FE (luxubu.review)",
 			linkType: "embed",
 			experimentalCustomStep: "turboBegin",
 		},
@@ -188,7 +192,6 @@ KG.supportedSites = {
 		noCaptchaServer: "rapid",
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
-		fixes: ["kisstvshow.to_UIFix"],
 	},
 }
 
@@ -207,7 +210,6 @@ KG.preferences = {
 		disable_automatic_actions: false,
 	},
 }
-
 
 //entry function
 KG.siteLoad = () => {

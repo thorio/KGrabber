@@ -1,15 +1,16 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.8
+// @version       2.5.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
 // @copyright     2019 Leon Timm
 // @homepageURL   https://github.com/thorio/KGrabber/
-// @match         https://kissanime.ru/*
-// @match         https://kimcartoon.to/*
-// @match         https://kissasian.sh/*
+// @match         http*://kissanime.ru/*
+// @match         http*://kimcartoon.to/*
+// @match         http*://kissasian.sh/*
+// @match         http*://kisstvshow.to/*
 // @run-at        document-end
 // @noframes
 // @grant         GM_xmlhttpRequest
@@ -131,6 +132,37 @@ KG.serverOverrides = {
 			experimentalCustomStep: "turboBegin",
 		},
 	},
+	"kisstvshow.to": {
+		"rapidvideo": null,
+		"p2p": null,
+		"beta2": null,
+		"nova": null,
+		"mp4upload": null,
+		"rapid": {
+			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
+			name: "RapidVideo",
+			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
+		},
+		"fb": {
+			regex: '"https://video.xx.fbcdn.net/v/.*?"',
+			name: "FB (fbcdn.net)",
+			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
+		},
+		"gp": {
+			regex: '"https://lh3.googleusercontent.com/.*?"',
+			name: "GP (googleusercontent.com)",
+			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
+		},
+		"fe": {
+			regex: '"https://www.rubicstreaming.com/v/.*?"',
+			name: "FE (rubicstreaming.com)",
+			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
+		},
+	},
 }
 
 KG.supportedSites = {
@@ -154,6 +186,12 @@ KG.supportedSites = {
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
 		fixes: ["kissasian.sh_UIFix"],
+	},
+	"kisstvshow.to": {
+		contentPath: "/Show/*",
+		noCaptchaServer: "rapid",
+		buttonColor: "#F5B54B",
+		buttonTextColor: "#000",
 	},
 }
 

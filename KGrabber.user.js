@@ -144,9 +144,9 @@ KG.serverOverrides = {
 			linkType: "embed",
 			experimentalCustomStep: "turboBegin",
 		},
-		"fs": {
+		"fb": {
 			regex: '"https://video.xx.fbcdn.net/v/.*?"',
-			name: "FS (fbcdn.net)",
+			name: "FB (fbcdn.net)",
 			linkType: "direct",
 			experimentalCustomStep: "turboBegin",
 		},
@@ -157,8 +157,8 @@ KG.serverOverrides = {
 			experimentalCustomStep: "turboBegin",
 		},
 		"fe": {
-			regex: '"https://www.luxubu.review/v/.*?"',
-			name: "FE (luxubu.review)",
+			regex: '"https://www.rubicstreaming.com/v/.*?"',
+			name: "FE (rubicstreaming.com)",
 			linkType: "embed",
 			experimentalCustomStep: "turboBegin",
 		},

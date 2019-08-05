@@ -102,6 +102,37 @@ KG.serverOverrides = {
 			experimentalCustomStep: "turboBegin",
 		},
 	},
+	"kisstvshow.to": {
+		"rapidvideo": null,
+		"p2p": null,
+		"beta2": null,
+		"nova": null,
+		"mp4upload": null,
+		"rapid": {
+			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
+			name: "RapidVideo",
+			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
+		},
+		"fb": {
+			regex: '"https://video.xx.fbcdn.net/v/.*?"',
+			name: "FB (fbcdn.net)",
+			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
+		},
+		"gp": {
+			regex: '"https://lh3.googleusercontent.com/.*?"',
+			name: "GP (googleusercontent.com)",
+			linkType: "direct",
+			experimentalCustomStep: "turboBegin",
+		},
+		"fe": {
+			regex: '"https://www.rubicstreaming.com/v/.*?"',
+			name: "FE (rubicstreaming.com)",
+			linkType: "embed",
+			experimentalCustomStep: "turboBegin",
+		},
+	},
 }
 
 KG.supportedSites = {
@@ -125,6 +156,12 @@ KG.supportedSites = {
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
 		fixes: ["kissasian.sh_UIFix"],
+	},
+	"kisstvshow.to": {
+		contentPath: "/Show/*",
+		noCaptchaServer: "rapid",
+		buttonColor: "#F5B54B",
+		buttonTextColor: "#000",
 	},
 }
 

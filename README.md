@@ -13,6 +13,7 @@ The script is currently compatible with:
 - kissanime.ru
 - kimcartoon.to
 - kissasian.sh
+- kisstvshow.to
 
 If you'd like to add a site, please open a new issue on GitHub.
 

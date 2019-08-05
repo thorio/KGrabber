@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.4.8
+// @version       2.5.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
 // @copyright     2019 Leon Timm
 // @homepageURL   https://github.com/thorio/KGrabber/
-// @match         https://kissanime.ru/*
-// @match         https://kimcartoon.to/*
-// @match         https://kissasian.sh/*
+// @match         http*://kissanime.ru/*
+// @match         http*://kimcartoon.to/*
+// @match         http*://kissasian.sh/*
 // @match         http*://kisstvshow.to/*
 // @run-at        document-end
 // @noframes

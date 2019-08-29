@@ -92,6 +92,7 @@ KG.actions.beta_setQuality = {
 }
 
 KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
+	if (!ep.grabLink.match(/.*=m\d\d/)) return; //invalid link
 	var rawLink = ep.grabLink.slice(0, -4);
 	var qualityStrings = {"1080": "=m37", "720": "=m22", "360": "=m18"};
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");

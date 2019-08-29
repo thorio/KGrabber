@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.5.0
+// @version       2.5.1
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -45,11 +45,6 @@ KG.knownServers = {
 		name: "Beta2 Server",
 		linkType: "direct",
 	},
-	"p2p": {
-		regex: '"https://p2p2.replay.watch/public/dist/index.html\\\\?id=.*?"',
-		name: "P2P Server",
-		linkType: "embed",
-	},
 	"openload": {
 		regex: '"https://openload.co/embed/.*?"',
 		name: "Openload",
@@ -76,7 +71,6 @@ KG.serverOverrides = {
 	"kissanime.ru": {},
 	"kimcartoon.to": {
 		"rapidvideo": null,
-		"p2p": null,
 		"beta2": null,
 		"nova": null,
 		"mp4upload": null,
@@ -107,7 +101,6 @@ KG.serverOverrides = {
 	},
 	"kissasian.sh": {
 		"rapidvideo": null,
-		"p2p": null,
 		"beta2": null,
 		"nova": null,
 		"mp4upload": null,
@@ -134,7 +127,6 @@ KG.serverOverrides = {
 	},
 	"kisstvshow.to": {
 		"rapidvideo": null,
-		"p2p": null,
 		"beta2": null,
 		"nova": null,
 		"mp4upload": null,
@@ -889,7 +881,7 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 KG.actions.beta_setQuality = {
 	name: "set quality",
 	requireLinkType: "direct",
-	servers: ["beta", "beta2"],
+	servers: ["beta", "beta2", "gp"],
 	automatic: true,
 	execute: async (data) => {
 		KG.showSpinner();
@@ -907,6 +899,7 @@ KG.actions.beta_setQuality = {
 }
 
 KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
+	if (!ep.grabLink.match(/.*=m\d\d/)) return; //invalid link
 	var rawLink = ep.grabLink.slice(0, -4);
 	var qualityStrings = {"1080": "=m37", "720": "=m22", "360": "=m18"};
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");

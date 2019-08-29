@@ -74,7 +74,7 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 KG.actions.beta_setQuality = {
 	name: "set quality",
 	requireLinkType: "direct",
-	servers: ["beta", "beta2"],
+	servers: ["beta", "beta2", "gp"],
 	automatic: true,
 	execute: async (data) => {
 		KG.showSpinner();

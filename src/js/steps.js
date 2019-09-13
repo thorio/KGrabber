@@ -12,7 +12,7 @@ KG.steps.defaultGetLink = () => {
 	if (!KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath)) { //captcha
 		return;
 	}
-	link = KG.findLink(document.body.innerHTML, KG.knownServers[KG.status.server].regex);
+	link = KG.findLink(document.body.innerHTML, KG.knownServers[location.hostname][KG.status.server].regex);
 	KG.status.episodes[KG.status.current].grabLink = link || "error (selected server may not be available)";
 
 	KG.status.current++;
@@ -35,7 +35,7 @@ KG.steps.turboBegin = async () => {
 	var progress = 0;
 	var func = async (ep) => {
 		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
-		var link = KG.findLink(html, KG.knownServers[KG.status.server].regex);
+		var link = KG.findLink(html, KG.knownServers[location.hostname][KG.status.server].regex);
 		ep.grabLink = link || "error: server not available or captcha";
 		progress++;
 		KG.spinnerText(`${progress}/${promises.length}`)

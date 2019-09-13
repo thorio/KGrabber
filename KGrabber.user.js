@@ -520,6 +520,7 @@ KG.closePreferences = () => {
 	$("#KG-preferences").slideUp();
 }
 
+
 //applies regex to html to find a link
 KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
@@ -593,6 +594,7 @@ KG.head = (url) => {
 	});
 }
 
+
 //allows multiple different approaches to collecting links, if sites differ greatly
 KG.steps = {};
 
@@ -645,6 +647,7 @@ KG.steps.turboBegin = async () => {
 	KG.saveStatus();
 	KG.displayLinks();
 }
+
 
 //allows for multiple ways to export collected data
 KG.exporters = {};
@@ -778,6 +781,7 @@ ping localhost -n 2 > nul\n\n`;
 	}
 }
 
+
 //further options after grabbing, such as converting embed to direct links
 
 KG.actions = {};
@@ -874,7 +878,7 @@ KG.actions.beta_setQuality = {
 KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 	if (!ep.grabLink.match(/.*=m\d\d/)) return; //invalid link
 	var rawLink = ep.grabLink.slice(0, -4);
-	var qualityStrings = {"1080": "=m37", "720": "=m22", "360": "=m18"};
+	var qualityStrings = { "1080": "=m37", "720": "=m22", "360": "=m18" };
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
@@ -887,6 +891,7 @@ KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 		}
 	}
 }
+
 
 //if something doesn't look right on a specific site, a fix can be written here
 KG.fixes = {}
@@ -939,6 +944,7 @@ KG.fixes["kissasian.sh_UIFix"] = () => {
 	});
 }
 
+
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
 
 //the grabber widget injected into the page
@@ -964,7 +970,8 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 	</div>
 </div>
 <div class="clear2">
-</div>`;
+</div>
+`;
 
 //initially hidden HTML that is revealed and filled in by the grabber script
 var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="display: none;">
@@ -994,7 +1001,8 @@ var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="disp
 			</div>
 		</div>
 	</div>
-</div>`;
+</div>
+`;
 
 //initially hidden HTML that is revealed and filled in by the grabber script
 var prefsHTML = `<div class="bigBarContainer" id="KG-preferences" style="display: none;">
@@ -1016,7 +1024,8 @@ var prefsHTML = `<div class="bigBarContainer" id="KG-preferences" style="display
 			<input type="button" value="Reset to Defaults" class="KG-button" style="float: right;" onclick="KG.resetPreferences()">
 		</div>
 	</div>
-</div>`;
+</div>
+`;
 
 //css to make it all look good
 var grabberCSS = `.KG-episodelist-header {
@@ -1094,7 +1103,7 @@ var grabberCSS = `.KG-episodelist-header {
 .KG-bigChar {
 	margin: 0px;
 	padding: 0px;
-	font: normal 27px "Tahoma" , Arial, Helvetica, sans-serif;
+	font: normal 27px "Tahoma", Arial, Helvetica, sans-serif;
 	letter-spacing: -2px;
 }
 
@@ -1256,6 +1265,7 @@ var grabberCSS = `.KG-episodelist-header {
 		-webkit-transform: rotate(360deg);
 		transform: rotate(360deg);
 	}
-}`;
+}
+`;
 
 KG.siteLoad();

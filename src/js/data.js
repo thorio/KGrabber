@@ -5,6 +5,12 @@ KG.knownServers = {
 		linkType: "embed",
 		customStep: "turboBegin",
 	},
+	"hydrax": {
+		regex: '"https://replay.watch/hydrax.html#slug=.*?"',
+		name: "HydraX (no captcha)",
+		linkType: "embed",
+		customStep: "turboBegin",
+	},
 	"nova": {
 		regex: '"https://www.novelplanet.me/v/.*?"',
 		name: "Nova Server",

@@ -1,18 +1,25 @@
-KG.knownServers = {
+KG.knownServers = {};
+KG.knownServers["kissanime.ru"] = {
 	"rapidvideo": {
 		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",
 	},
+	"hydrax": {
+		regex: '"https://replay.watch/hydrax.html#slug=.*?"',
+		name: "HydraX (no captcha)",
+		linkType: "embed",
+		customStep: "turboBegin",
+	},
 	"nova": {
 		regex: '"https://www.novelplanet.me/v/.*?"',
-		name: "Nova Server",
+		name: "Nova",
 		linkType: "embed",
 	},
 	"beta2": {
 		regex: '"https://lh3.googleusercontent.com/.*?"',
-		name: "Beta2 Server",
+		name: "Beta2",
 		linkType: "direct",
 	},
 	"openload": {
@@ -32,105 +39,89 @@ KG.knownServers = {
 	},
 	"beta": {
 		regex: '"https://lh3.googleusercontent.com/.*?"',
-		name: "Beta Server",
+		name: "Beta",
 		linkType: "direct",
 	},
 }
 
-KG.serverOverrides = {
-	"kissanime.ru": {},
-	"kimcartoon.to": {
-		"rapidvideo": null,
-		"beta2": null,
-		"nova": null,
-		"mp4upload": null,
-		"rapid": {
-			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-			name: "RapidVideo",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fs": {
-			regex: '"https://video.xx.fbcdn.net/v/.*?"',
-			name: "FS (fbcdn.net)",
-			linkType: "direct",
-			experimentalCustomStep: "turboBegin",
-		},
-		"gp": {
-			regex: '"https://lh3.googleusercontent.com/.*?"',
-			name: "GP (googleusercontent.com)",
-			linkType: "direct",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fe": {
-			regex: '"https://www.luxubu.review/v/.*?"',
-			name: "FE (luxubu.review)",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
+KG.knownServers["kimcartoon.to"] = {
+	"openload": KG.knownServers["kissanime.ru"].openload,
+	"streamango": KG.knownServers["kissanime.ru"].streamango,
+	"beta": KG.knownServers["kissanime.ru"].beta,
+	"rapid": {
+		regex: KG.knownServers["kissanime.ru"].rapidvideo.regex,
+		name: "RapidVideo",
+		linkType: "embed",
 	},
-	"kissasian.sh": {
-		"rapidvideo": null,
-		"beta2": null,
-		"nova": null,
-		"mp4upload": null,
-		"streamango": null,
-		"beta": null, //should work, but script can't load data because of https/http session storage separation
-		"rapid": {
-			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-			name: "RapidVideo",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fe": {
-			regex: '"https://www.gaobook.review/v/.*?"',
-			name: "FE (gaobook.review)",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
-		"mp": {
-			regex: '"https://www.mp4upload.com/embed-.*?"',
-			name: "MP (mp4upload.com)",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
+	"fs": {
+		regex: '"https://video.xx.fbcdn.net/v/.*?"',
+		name: "FS (fbcdn.net)",
+		linkType: "direct",
 	},
-	"kisstvshow.to": {
-		"rapidvideo": null,
-		"beta2": null,
-		"nova": null,
-		"mp4upload": null,
-		"rapid": {
-			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-			name: "RapidVideo",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fb": {
-			regex: '"https://video.xx.fbcdn.net/v/.*?"',
-			name: "FB (fbcdn.net)",
-			linkType: "direct",
-			experimentalCustomStep: "turboBegin",
-		},
-		"gp": {
-			regex: '"https://lh3.googleusercontent.com/.*?"',
-			name: "GP (googleusercontent.com)",
-			linkType: "direct",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fe": {
-			regex: '"https://www.rubicstreaming.com/v/.*?"',
-			name: "FE (rubicstreaming.com)",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
+	"gp": {
+		regex: KG.knownServers["kissanime.ru"].beta.regex,
+		name: "GP (googleusercontent.com)",
+		linkType: "direct",
+	},
+	"fe": {
+		regex: '"https://www.luxubu.review/v/.*?"',
+		name: "FE (luxubu.review)",
+		linkType: "embed",
+	},
+}
+
+KG.knownServers["kissasian.sh"] = {
+	"openload": KG.knownServers["kissanime.ru"].openload,
+	"beta": KG.knownServers["kissanime.ru"].beta,
+	"rapid": KG.knownServers["kimcartoon.to"].rapid,
+	"fe": {
+		regex: '"https://www.gaobook.review/v/.*?"',
+		name: "FE (gaobook.review)",
+		linkType: "embed",
+	},
+	"mp": {
+		regex: KG.knownServers["kissanime.ru"].mp4upload.regex,
+		name: "MP (mp4upload.com)",
+		linkType: "embed",
+	},
+	"fb": {
+		regex: KG.knownServers["kimcartoon.to"].fs.regex,
+		name: "FB (fbcdn.net)",
+		linkType: "direct",
+	},
+	"alpha": {
+		regex: '"https://redirector.googlevideo.com/videoplayback\\?.*?"',
+		name: "Alpha",
+		linkType: "direct",
+	},
+}
+
+KG.knownServers["kisstvshow.to"] = {
+	"openload": KG.knownServers["kissanime.ru"].openload,
+	"streamango": KG.knownServers["kissanime.ru"].streamango,
+	"beta": KG.knownServers["kissanime.ru"].beta,
+	"rapid": KG.knownServers["kimcartoon.to"].rapid,
+	"fb": {
+		regex: KG.knownServers["kimcartoon.to"].fs.regex,
+		name: "FB (fbcdn.net)",
+		linkType: "direct",
+	},
+	"gp": {
+		regex: KG.knownServers["kissasian.sh"].alpha.regex,
+		name: "GP (googleusercontent.com)",
+		linkType: "direct",
+	},
+	"fe": {
+		regex: '"https://www.rubicstreaming.com/v/.*?"',
+		name: "FE (rubicstreaming.com)",
+		linkType: "embed",
 	},
 }
 
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
-		noCaptchaServer: "rapidvideo",
+		noCaptchaServer: "hydrax",
 		buttonColor: "#548602",
 		buttonTextColor: "#fff",
 	},
@@ -163,7 +154,8 @@ KG.preferences = {
 	},
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
-		arguments: "",
+		download_path: "%~dp0",
+		arguments: "/a",
 		keep_title_in_episode_name: false,
 	},
 	compatibility: {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.5.1
+// @version       2.5.2
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -28,21 +28,28 @@ if (!unsafeWindow.jQuery) {
 
 unsafeWindow.KG = {};
 
-KG.knownServers = {
+KG.knownServers = {};
+KG.knownServers["kissanime.ru"] = {
 	"rapidvideo": {
 		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 		name: "RapidVideo (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",
 	},
+	"hydrax": {
+		regex: '"https://replay.watch/hydrax.html#slug=.*?"',
+		name: "HydraX (no captcha)",
+		linkType: "embed",
+		customStep: "turboBegin",
+	},
 	"nova": {
 		regex: '"https://www.novelplanet.me/v/.*?"',
-		name: "Nova Server",
+		name: "Nova",
 		linkType: "embed",
 	},
 	"beta2": {
 		regex: '"https://lh3.googleusercontent.com/.*?"',
-		name: "Beta2 Server",
+		name: "Beta2",
 		linkType: "direct",
 	},
 	"openload": {
@@ -62,105 +69,89 @@ KG.knownServers = {
 	},
 	"beta": {
 		regex: '"https://lh3.googleusercontent.com/.*?"',
-		name: "Beta Server",
+		name: "Beta",
 		linkType: "direct",
 	},
 }
 
-KG.serverOverrides = {
-	"kissanime.ru": {},
-	"kimcartoon.to": {
-		"rapidvideo": null,
-		"beta2": null,
-		"nova": null,
-		"mp4upload": null,
-		"rapid": {
-			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-			name: "RapidVideo",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fs": {
-			regex: '"https://video.xx.fbcdn.net/v/.*?"',
-			name: "FS (fbcdn.net)",
-			linkType: "direct",
-			experimentalCustomStep: "turboBegin",
-		},
-		"gp": {
-			regex: '"https://lh3.googleusercontent.com/.*?"',
-			name: "GP (googleusercontent.com)",
-			linkType: "direct",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fe": {
-			regex: '"https://www.luxubu.review/v/.*?"',
-			name: "FE (luxubu.review)",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
+KG.knownServers["kimcartoon.to"] = {
+	"openload": KG.knownServers["kissanime.ru"].openload,
+	"streamango": KG.knownServers["kissanime.ru"].streamango,
+	"beta": KG.knownServers["kissanime.ru"].beta,
+	"rapid": {
+		regex: KG.knownServers["kissanime.ru"].rapidvideo.regex,
+		name: "RapidVideo",
+		linkType: "embed",
 	},
-	"kissasian.sh": {
-		"rapidvideo": null,
-		"beta2": null,
-		"nova": null,
-		"mp4upload": null,
-		"streamango": null,
-		"beta": null, //should work, but script can't load data because of https/http session storage separation
-		"rapid": {
-			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-			name: "RapidVideo",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fe": {
-			regex: '"https://www.gaobook.review/v/.*?"',
-			name: "FE (gaobook.review)",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
-		"mp": {
-			regex: '"https://www.mp4upload.com/embed-.*?"',
-			name: "MP (mp4upload.com)",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
+	"fs": {
+		regex: '"https://video.xx.fbcdn.net/v/.*?"',
+		name: "FS (fbcdn.net)",
+		linkType: "direct",
 	},
-	"kisstvshow.to": {
-		"rapidvideo": null,
-		"beta2": null,
-		"nova": null,
-		"mp4upload": null,
-		"rapid": {
-			regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-			name: "RapidVideo",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fb": {
-			regex: '"https://video.xx.fbcdn.net/v/.*?"',
-			name: "FB (fbcdn.net)",
-			linkType: "direct",
-			experimentalCustomStep: "turboBegin",
-		},
-		"gp": {
-			regex: '"https://lh3.googleusercontent.com/.*?"',
-			name: "GP (googleusercontent.com)",
-			linkType: "direct",
-			experimentalCustomStep: "turboBegin",
-		},
-		"fe": {
-			regex: '"https://www.rubicstreaming.com/v/.*?"',
-			name: "FE (rubicstreaming.com)",
-			linkType: "embed",
-			experimentalCustomStep: "turboBegin",
-		},
+	"gp": {
+		regex: KG.knownServers["kissanime.ru"].beta.regex,
+		name: "GP (googleusercontent.com)",
+		linkType: "direct",
+	},
+	"fe": {
+		regex: '"https://www.luxubu.review/v/.*?"',
+		name: "FE (luxubu.review)",
+		linkType: "embed",
+	},
+}
+
+KG.knownServers["kissasian.sh"] = {
+	"openload": KG.knownServers["kissanime.ru"].openload,
+	"beta": KG.knownServers["kissanime.ru"].beta,
+	"rapid": KG.knownServers["kimcartoon.to"].rapid,
+	"fe": {
+		regex: '"https://www.gaobook.review/v/.*?"',
+		name: "FE (gaobook.review)",
+		linkType: "embed",
+	},
+	"mp": {
+		regex: KG.knownServers["kissanime.ru"].mp4upload.regex,
+		name: "MP (mp4upload.com)",
+		linkType: "embed",
+	},
+	"fb": {
+		regex: KG.knownServers["kimcartoon.to"].fs.regex,
+		name: "FB (fbcdn.net)",
+		linkType: "direct",
+	},
+	"alpha": {
+		regex: '"https://redirector.googlevideo.com/videoplayback\\?.*?"',
+		name: "Alpha",
+		linkType: "direct",
+	},
+}
+
+KG.knownServers["kisstvshow.to"] = {
+	"openload": KG.knownServers["kissanime.ru"].openload,
+	"streamango": KG.knownServers["kissanime.ru"].streamango,
+	"beta": KG.knownServers["kissanime.ru"].beta,
+	"rapid": KG.knownServers["kimcartoon.to"].rapid,
+	"fb": {
+		regex: KG.knownServers["kimcartoon.to"].fs.regex,
+		name: "FB (fbcdn.net)",
+		linkType: "direct",
+	},
+	"gp": {
+		regex: KG.knownServers["kissasian.sh"].alpha.regex,
+		name: "GP (googleusercontent.com)",
+		linkType: "direct",
+	},
+	"fe": {
+		regex: '"https://www.rubicstreaming.com/v/.*?"',
+		name: "FE (rubicstreaming.com)",
+		linkType: "embed",
 	},
 }
 
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
-		noCaptchaServer: "rapidvideo",
+		noCaptchaServer: "hydrax",
 		buttonColor: "#548602",
 		buttonTextColor: "#fff",
 	},
@@ -193,7 +184,8 @@ KG.preferences = {
 	},
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
-		arguments: "",
+		download_path: "%~dp0",
+		arguments: "/a",
 		keep_title_in_episode_name: false,
 	},
 	compatibility: {
@@ -203,14 +195,13 @@ KG.preferences = {
 	},
 }
 
+
 //entry function
 KG.siteLoad = () => {
 	if (!KG.supportedSites[location.hostname]) {
 		console.warn("KG: site not supported");
 		return;
 	}
-
-	KG.applySiteOverrides();
 
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
 		KG.injectWidgets();
@@ -314,22 +305,6 @@ KG.resetPreferences = () => {
 	location.reload();
 }
 
-//patches the knownServers object based on the current url
-KG.applySiteOverrides = () => {
-	var over = KG.serverOverrides[location.hostname]
-	for (var i in over) {
-		if (KG.knownServers[i]) {
-			if (over[i] === null) { //server should be removed
-				delete KG.knownServers[i];
-			} else { //server should be patched
-				console.err("KG: patching server entries not implemented");
-			}
-		} else { //server should be added
-			KG.knownServers[i] = over[i];
-		}
-	}
-}
-
 //injects element into page
 KG.injectWidgets = () => {
 	var site = KG.supportedSites[location.hostname];
@@ -343,8 +318,8 @@ KG.injectWidgets = () => {
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
 	$("#KG-input-from").attr("max", epCount);
-	for (var i in KG.knownServers) {
-		$(`<option value="${i}">${KG.knownServers[i].name}</>`)
+	for (var i in KG.knownServers[location.hostname]) {
+		$(`<option value="${i}">${KG.knownServers[location.hostname][i].name}</>`)
 			.appendTo("#KG-input-server");
 	}
 	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"), site.noCaptchaServer);
@@ -426,7 +401,7 @@ KG.startRange = (start, end) => {
 		start: start,
 		current: 0,
 		func: "defaultBegin",
-		linkType: KG.knownServers[$("#KG-input-server").val()].linkType,
+		linkType: KG.knownServers[location.hostname][$("#KG-input-server").val()].linkType,
 		automaticDone: false,
 	}
 	var epCount = $(".listing a").length;
@@ -437,11 +412,11 @@ KG.startRange = (start, end) => {
 			num: i + 1,
 		});
 	});
-	var customStep = KG.knownServers[KG.status.server].customStep;
+	var customStep = KG.knownServers[location.hostname][KG.status.server].customStep;
 	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
 		KG.status.func = customStep; //use custom grabber
 	}
-	var experimentalCustomStep = KG.knownServers[KG.status.server].experimentalCustomStep;
+	var experimentalCustomStep = KG.knownServers[location.hostname][KG.status.server].experimentalCustomStep;
 	if (experimentalCustomStep && KG.steps[experimentalCustomStep] && KG.preferences.compatibility.enable_experimental_grabbers) {
 		KG.status.func = experimentalCustomStep; //use experimental grabber
 	}
@@ -547,6 +522,7 @@ KG.closePreferences = () => {
 	$("#KG-preferences").slideUp();
 }
 
+
 //applies regex to html to find a link
 KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
@@ -620,6 +596,7 @@ KG.head = (url) => {
 	});
 }
 
+
 //allows multiple different approaches to collecting links, if sites differ greatly
 KG.steps = {};
 
@@ -634,7 +611,7 @@ KG.steps.defaultGetLink = () => {
 	if (!KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath)) { //captcha
 		return;
 	}
-	link = KG.findLink(document.body.innerHTML, KG.knownServers[KG.status.server].regex);
+	link = KG.findLink(document.body.innerHTML, KG.knownServers[location.hostname][KG.status.server].regex);
 	KG.status.episodes[KG.status.current].grabLink = link || "error (selected server may not be available)";
 
 	KG.status.current++;
@@ -657,7 +634,7 @@ KG.steps.turboBegin = async () => {
 	var progress = 0;
 	var func = async (ep) => {
 		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
-		var link = KG.findLink(html, KG.knownServers[KG.status.server].regex);
+		var link = KG.findLink(html, KG.knownServers[location.hostname][KG.status.server].regex);
 		ep.grabLink = link || "error: server not available or captcha";
 		progress++;
 		KG.spinnerText(`${progress}/${promises.length}`)
@@ -672,6 +649,7 @@ KG.steps.turboBegin = async () => {
 	KG.saveStatus();
 	KG.displayLinks();
 }
+
 
 //allows for multiple ways to export collected data
 KG.exporters = {};
@@ -788,7 +766,7 @@ KG.exporters.idmbat = {
 set title=${title}
 set idm=${KG.preferences.internet_download_manager.idm_path}
 set args=${KG.preferences.internet_download_manager.arguments}
-set dir=%~dp0
+set dir=${KG.preferences.internet_download_manager.download_path}
 if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && pause && goto eof
 mkdir "%title%" > nul
 start "" "%idm%"
@@ -804,6 +782,7 @@ ping localhost -n 2 > nul\n\n`;
 		return str;
 	}
 }
+
 
 //further options after grabbing, such as converting embed to direct links
 
@@ -901,7 +880,7 @@ KG.actions.beta_setQuality = {
 KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 	if (!ep.grabLink.match(/.*=m\d\d/)) return; //invalid link
 	var rawLink = ep.grabLink.slice(0, -4);
-	var qualityStrings = {"1080": "=m37", "720": "=m22", "360": "=m18"};
+	var qualityStrings = { "1080": "=m37", "720": "=m22", "360": "=m18" };
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
@@ -914,6 +893,7 @@ KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 		}
 	}
 }
+
 
 //if something doesn't look right on a specific site, a fix can be written here
 KG.fixes = {}
@@ -966,6 +946,7 @@ KG.fixes["kissasian.sh_UIFix"] = () => {
 	});
 }
 
+
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated
 
 //the grabber widget injected into the page
@@ -991,7 +972,8 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 	</div>
 </div>
 <div class="clear2">
-</div>`;
+</div>
+`;
 
 //initially hidden HTML that is revealed and filled in by the grabber script
 var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="display: none;">
@@ -1021,7 +1003,8 @@ var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="disp
 			</div>
 		</div>
 	</div>
-</div>`;
+</div>
+`;
 
 //initially hidden HTML that is revealed and filled in by the grabber script
 var prefsHTML = `<div class="bigBarContainer" id="KG-preferences" style="display: none;">
@@ -1043,7 +1026,8 @@ var prefsHTML = `<div class="bigBarContainer" id="KG-preferences" style="display
 			<input type="button" value="Reset to Defaults" class="KG-button" style="float: right;" onclick="KG.resetPreferences()">
 		</div>
 	</div>
-</div>`;
+</div>
+`;
 
 //css to make it all look good
 var grabberCSS = `.KG-episodelist-header {
@@ -1121,7 +1105,7 @@ var grabberCSS = `.KG-episodelist-header {
 .KG-bigChar {
 	margin: 0px;
 	padding: 0px;
-	font: normal 27px "Tahoma" , Arial, Helvetica, sans-serif;
+	font: normal 27px "Tahoma", Arial, Helvetica, sans-serif;
 	letter-spacing: -2px;
 }
 
@@ -1283,6 +1267,7 @@ var grabberCSS = `.KG-episodelist-header {
 		-webkit-transform: rotate(360deg);
 		transform: rotate(360deg);
 	}
-}`;
+}
+`;
 
 KG.siteLoad();

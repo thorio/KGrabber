@@ -5,8 +5,6 @@ KG.siteLoad = () => {
 		return;
 	}
 
-	KG.applySiteOverrides();
-
 	if (KG.if(location.pathname, KG.supportedSites[location.hostname].contentPath) && $(".bigBarContainer .bigChar").length != 0) {
 		KG.injectWidgets();
 	}
@@ -109,22 +107,6 @@ KG.resetPreferences = () => {
 	location.reload();
 }
 
-//patches the knownServers object based on the current url
-KG.applySiteOverrides = () => {
-	var over = KG.serverOverrides[location.hostname]
-	for (var i in over) {
-		if (KG.knownServers[i]) {
-			if (over[i] === null) { //server should be removed
-				delete KG.knownServers[i];
-			} else { //server should be patched
-				console.err("KG: patching server entries not implemented");
-			}
-		} else { //server should be added
-			KG.knownServers[i] = over[i];
-		}
-	}
-}
-
 //injects element into page
 KG.injectWidgets = () => {
 	var site = KG.supportedSites[location.hostname];
@@ -138,8 +120,8 @@ KG.injectWidgets = () => {
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
 	$("#KG-input-from").attr("max", epCount);
-	for (var i in KG.knownServers) {
-		$(`<option value="${i}">${KG.knownServers[i].name}</>`)
+	for (var i in KG.knownServers[location.hostname]) {
+		$(`<option value="${i}">${KG.knownServers[location.hostname][i].name}</>`)
 			.appendTo("#KG-input-server");
 	}
 	KG.markAvailableServers($(".listing tr:eq(2) a").attr("href"), site.noCaptchaServer);
@@ -221,7 +203,7 @@ KG.startRange = (start, end) => {
 		start: start,
 		current: 0,
 		func: "defaultBegin",
-		linkType: KG.knownServers[$("#KG-input-server").val()].linkType,
+		linkType: KG.knownServers[location.hostname][$("#KG-input-server").val()].linkType,
 		automaticDone: false,
 	}
 	var epCount = $(".listing a").length;
@@ -232,11 +214,11 @@ KG.startRange = (start, end) => {
 			num: i + 1,
 		});
 	});
-	var customStep = KG.knownServers[KG.status.server].customStep;
+	var customStep = KG.knownServers[location.hostname][KG.status.server].customStep;
 	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
 		KG.status.func = customStep; //use custom grabber
 	}
-	var experimentalCustomStep = KG.knownServers[KG.status.server].experimentalCustomStep;
+	var experimentalCustomStep = KG.knownServers[location.hostname][KG.status.server].experimentalCustomStep;
 	if (experimentalCustomStep && KG.steps[experimentalCustomStep] && KG.preferences.compatibility.enable_experimental_grabbers) {
 		KG.status.func = experimentalCustomStep; //use experimental grabber
 	}

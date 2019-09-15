@@ -113,7 +113,7 @@ KG.exporters.idmbat = {
 set title=${title}
 set idm=${KG.preferences.internet_download_manager.idm_path}
 set args=${KG.preferences.internet_download_manager.arguments}
-set dir=%~dp0
+set dir=${KG.preferences.internet_download_manager.download_path}
 if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && pause && goto eof
 mkdir "%title%" > nul
 start "" "%idm%"

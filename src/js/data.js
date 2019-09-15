@@ -121,7 +121,7 @@ KG.knownServers["kisstvshow.to"] = {
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
-		noCaptchaServer: "rapidvideo",
+		noCaptchaServer: "hydrax",
 		buttonColor: "#548602",
 		buttonTextColor: "#fff",
 	},

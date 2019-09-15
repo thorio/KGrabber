@@ -19,6 +19,7 @@
 // @connect       rapidvideo.com
 // @connect       googleusercontent.com
 // @connect       googlevideo.com
+// @connect       novelplanet.me
 // ==/UserScript==
 
 if (!unsafeWindow.jQuery) {

@@ -95,6 +95,47 @@ KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 	}
 }
 
+KG.actions.nova_getDirect = {
+	name: "get direct links",
+	requireLinkType: "embed",
+	servers: ["nova"],
+	execute: async (data) => {
+		KG.actionAux.generic_eachEpisode(data, KG.actionAux["nova_getDirect"], () => {
+			data.linkType = "direct";
+		});
+	},
+}
+
+//additional function to reduce clutter
+//asynchronously gets the direct link
+KG.actionAux.nova_getDirect = async (ep, progress, promises) => {
+	if (ep.grabLink.slice(0, 5) == "error") {
+		progress[0]++;
+		KG.spinnerText(`${progress[0]}/${promises.length}`);
+		return;
+	}
+	var json = JSON.parse(await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`));
+	if (!json.data || json.data.length < 1) {
+		ep.grabLink = "error: no sources found";
+		return;
+	}
+	var sources = json.data;
+
+	progress[0]++;
+	KG.spinnerText(`${progress[0]}/${promises.length}`);
+
+	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
+	for (var i of parsedQualityPrefs) {
+		for (var j of sources) {
+			if (j.label == i + "p") {
+				ep.grabLink = j.file;
+				return;
+			}
+		}
+	}
+	ep.grabLink = "error: preferred qualities not found";
+}
+
 KG.actionAux.generic_eachEpisode = async (data, func, fin) => {
 	KG.showSpinner();
 	var promises = [];

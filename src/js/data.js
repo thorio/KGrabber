@@ -38,7 +38,7 @@ KG.knownServers["kissanime.ru"] = {
 		linkType: "embed",
 	},
 	"beta": {
-		regex: '"https://lh3.googleusercontent.com/.*?"',
+		regex: '"https://redirector.googlevideo.com/videoplayback\\?.*?"',
 		name: "Beta",
 		linkType: "direct",
 	},
@@ -90,7 +90,7 @@ KG.knownServers["kissasian.sh"] = {
 		linkType: "direct",
 	},
 	"alpha": {
-		regex: '"https://redirector.googlevideo.com/videoplayback\\?.*?"',
+		regex: KG.knownServers["kissanime.ru"].beta,
 		name: "Alpha",
 		linkType: "direct",
 	},

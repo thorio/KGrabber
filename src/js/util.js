@@ -49,9 +49,7 @@ KG.get = (url) => {
 			onload: (o) => {
 				resolve(o.response);
 			},
-			onerror: () => {
-				reject();
-			}
+			onerror: reject,
 		});
 	});
 }
@@ -64,9 +62,21 @@ KG.head = (url) => {
 			onload: (o) => {
 				resolve(o.status);
 			},
-			onerror: () => {
-				reject();
-			}
+			onerror: reject,
+		});
+	});
+}
+
+KG.post = (url, body) => {
+	return new Promise((resolve, reject) => {
+		GM_xmlhttpRequest({
+			method: "POST",
+			url: url,
+			body: body,
+			onload: (o) => {
+				resolve(o.response);
+			},
+			onerror: reject,
 		});
 	});
 }

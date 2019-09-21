@@ -19,6 +19,7 @@
 // @connect       rapidvideo.com
 // @connect       googleusercontent.com
 // @connect       googlevideo.com
+// @connect       novelplanet.me
 // ==/UserScript==
 
 if (!unsafeWindow.jQuery) {
@@ -68,7 +69,7 @@ KG.knownServers["kissanime.ru"] = {
 		linkType: "embed",
 	},
 	"beta": {
-		regex: '"https://lh3.googleusercontent.com/.*?"',
+		regex: '"https://redirector.googlevideo.com/videoplayback\\?.*?"',
 		name: "Beta",
 		linkType: "direct",
 	},
@@ -120,7 +121,7 @@ KG.knownServers["kissasian.sh"] = {
 		linkType: "direct",
 	},
 	"alpha": {
-		regex: '"https://redirector.googlevideo.com/videoplayback\\?.*?"',
+		regex: KG.knownServers["kissanime.ru"].beta,
 		name: "Alpha",
 		linkType: "direct",
 	},
@@ -574,9 +575,7 @@ KG.get = (url) => {
 			onload: (o) => {
 				resolve(o.response);
 			},
-			onerror: () => {
-				reject();
-			}
+			onerror: reject,
 		});
 	});
 }
@@ -589,9 +588,21 @@ KG.head = (url) => {
 			onload: (o) => {
 				resolve(o.status);
 			},
-			onerror: () => {
-				reject();
-			}
+			onerror: reject,
+		});
+	});
+}
+
+KG.post = (url, body) => {
+	return new Promise((resolve, reject) => {
+		GM_xmlhttpRequest({
+			method: "POST",
+			url: url,
+			body: body,
+			onload: (o) => {
+				resolve(o.response);
+			},
+			onerror: reject,
 		});
 	});
 }
@@ -810,17 +821,9 @@ KG.actions.rapidvideo_getDirect = {
 	requireLinkType: "embed",
 	servers: ["rapidvideo", "rapid"],
 	execute: async (data) => {
-		KG.showSpinner();
-		var promises = [];
-		var progress = [0];
-		for (var i in data.episodes) {
-			promises.push(KG.actionAux["rapidvideo_getDirect"](data.episodes[i], progress, promises));
-		}
-		KG.spinnerText(`0/${promises.length}`);
-		await Promise.all(promises);
-		data.linkType = "direct";
-		KG.saveStatus();
-		KG.displayLinks();
+		KG.actionAux.generic_eachEpisode(data, KG.actionAux["rapidvideo_getDirect"], () => {
+			data.linkType = "direct";
+		});
 	},
 }
 
@@ -832,8 +835,8 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
-	$html = $(await KG.get(ep.grabLink));
-	$sources = $html.find("source");
+	var $html = $(await KG.get(ep.grabLink));
+	var $sources = $html.find("source");
 	if ($sources.length == 0) {
 		ep.grabLink = "error: no sources found";
 		return;
@@ -860,25 +863,20 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 KG.actions.beta_setQuality = {
 	name: "set quality",
 	requireLinkType: "direct",
-	servers: ["beta", "beta2", "gp"],
+	servers: ["beta2"],
 	automatic: true,
 	execute: async (data) => {
-		KG.showSpinner();
-		var promises = [];
-		var progress = [0];
-		for (var i in data.episodes) {
-			promises.push(KG.actionAux["beta_tryGetQuality"](data.episodes[i], progress, promises));
-		}
-		KG.spinnerText(`0/${promises.length}`);
-		await Promise.all(promises);
-		data.automaticDone = true;
-		KG.saveStatus();
-		KG.displayLinks();
+		KG.actionAux.generic_eachEpisode(data, KG.actionAux["beta_tryGetQuality"], () => {
+			data.automaticDone = true;
+		});
 	},
 }
 
 KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
-	if (!ep.grabLink.match(/.*=m\d\d/)) return; //invalid link
+	if (!ep.grabLink.match(/.*=m\d\d/)) { //invalid link
+		console.log(`KG: invalid beta link "${ep.grabLink}"`)
+		return;
+	}
 	var rawLink = ep.grabLink.slice(0, -4);
 	var qualityStrings = { "1080": "=m37", "720": "=m22", "360": "=m18" };
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
@@ -892,6 +890,61 @@ KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 			}
 		}
 	}
+}
+
+KG.actions.nova_getDirect = {
+	name: "get direct links",
+	requireLinkType: "embed",
+	servers: ["nova"],
+	execute: async (data) => {
+		KG.actionAux.generic_eachEpisode(data, KG.actionAux["nova_getDirect"], () => {
+			data.linkType = "direct";
+		});
+	},
+}
+
+//additional function to reduce clutter
+//asynchronously gets the direct link
+KG.actionAux.nova_getDirect = async (ep, progress, promises) => {
+	if (ep.grabLink.slice(0, 5) == "error") {
+		progress[0]++;
+		KG.spinnerText(`${progress[0]}/${promises.length}`);
+		return;
+	}
+	var json = JSON.parse(await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`));
+	if (!json.data || json.data.length < 1) {
+		ep.grabLink = "error: no sources found";
+		return;
+	}
+	var sources = json.data;
+
+	progress[0]++;
+	KG.spinnerText(`${progress[0]}/${promises.length}`);
+
+	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
+	for (var i of parsedQualityPrefs) {
+		for (var j of sources) {
+			if (j.label == i + "p") {
+				ep.grabLink = j.file;
+				return;
+			}
+		}
+	}
+	ep.grabLink = "error: preferred qualities not found";
+}
+
+KG.actionAux.generic_eachEpisode = async (data, func, fin) => {
+	KG.showSpinner();
+	var promises = [];
+	var progress = [0];
+	for (var i in data.episodes) {
+		promises.push(func(data.episodes[i], progress, promises));
+	}
+	KG.spinnerText(`0/${promises.length}`);
+	await Promise.all(promises);
+	fin();
+	KG.saveStatus();
+	KG.displayLinks();
 }
 
 

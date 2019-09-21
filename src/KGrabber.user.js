@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.5.2
+// @version       2.6.0
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -19,6 +19,7 @@
 // @connect       rapidvideo.com
 // @connect       googleusercontent.com
 // @connect       googlevideo.com
+// @connect       novelplanet.me
 // ==/UserScript==
 
 if (!unsafeWindow.jQuery) {

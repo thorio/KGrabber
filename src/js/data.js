@@ -7,7 +7,7 @@ KG.knownServers["kissanime.ru"] = {
 		customStep: "turboBegin",
 	},
 	"hydrax": {
-		regex: '"https://replay.watch/hydrax.html#slug=.*?"',
+		regex: '"https://replay.watch/hydrax.html\\??.*?#slug=.*?"',
 		name: "HydraX (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",

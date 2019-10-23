@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.6.1
+// @version       2.6.2
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -827,7 +827,12 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
-	var $html = $((await KG.get(ep.grabLink)).response);
+	var response = await KG.get(ep.grabLink);
+	if (response.status != 200) {
+		ep.grabLink = `error: http status ${response.status}`;
+		return;
+	}
+	var $html = $(response.response);
 	var $sources = $html.find("source");
 	if ($sources.length == 0) {
 		ep.grabLink = "error: no sources found";

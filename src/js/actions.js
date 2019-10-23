@@ -38,7 +38,12 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
-	var $html = $((await KG.get(ep.grabLink)).response);
+	var response = await KG.get(ep.grabLink);
+	if (response.status != 200) {
+		ep.grabLink = `error: http status ${response.status}`;
+		return;
+	}
+	var $html = $(response.response);
 	var $sources = $html.find("source");
 	if ($sources.length == 0) {
 		ep.grabLink = "error: no sources found";

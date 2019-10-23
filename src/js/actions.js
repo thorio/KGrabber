@@ -38,7 +38,7 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
-	var $html = $(await KG.get(ep.grabLink));
+	var $html = $((await KG.get(ep.grabLink)).response);
 	var $sources = $html.find("source");
 	if ($sources.length == 0) {
 		ep.grabLink = "error: no sources found";
@@ -85,7 +85,7 @@ KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
-			if (await KG.head(rawLink + qualityStrings[i]) == 200) {
+			if (await KG.head(rawLink + qualityStrings[i]).status == 200) {
 				ep.grabLink = rawLink + qualityStrings[i];
 				progress[0]++;
 				KG.spinnerText(`${progress[0]}/${promises.length}`);
@@ -114,7 +114,7 @@ KG.actionAux.nova_getDirect = async (ep, progress, promises) => {
 		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
-	var json = JSON.parse(await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`));
+	var json = JSON.parse(await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`).response);
 	if (!json.data || json.data.length < 1) {
 		ep.grabLink = "error: no sources found";
 		return;

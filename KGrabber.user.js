@@ -561,9 +561,7 @@ KG.makeBatSafe = (str) => {
 
 KG.timeout = (time) => {
 	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve();
-		}, time)
+		setTimeout(resolve, time)
 	});
 }
 
@@ -572,9 +570,7 @@ KG.get = (url) => {
 		GM_xmlhttpRequest({
 			method: "GET",
 			url: url,
-			onload: (o) => {
-				resolve(o.response);
-			},
+			onload: resolve,
 			onerror: reject,
 		});
 	});
@@ -585,9 +581,7 @@ KG.head = (url) => {
 		GM_xmlhttpRequest({
 			method: "HEAD",
 			url: url,
-			onload: (o) => {
-				resolve(o.status);
-			},
+			onload: resolve,
 			onerror: reject,
 		});
 	});
@@ -599,9 +593,7 @@ KG.post = (url, body) => {
 			method: "POST",
 			url: url,
 			body: body,
-			onload: (o) => {
-				resolve(o.response);
-			},
+			onload: resolve,
 			onerror: reject,
 		});
 	});
@@ -644,7 +636,7 @@ KG.steps.turboBegin = async () => {
 	KG.showSpinner();
 	var progress = 0;
 	var func = async (ep) => {
-		var html = await KG.get(ep.kissLink + `&s=${KG.status.server}`);
+		var html = (await KG.get(ep.kissLink + `&s=${KG.status.server}`)).response;
 		var link = KG.findLink(html, KG.knownServers[location.hostname][KG.status.server].regex);
 		ep.grabLink = link || "error: server not available or captcha";
 		progress++;
@@ -835,7 +827,7 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
-	var $html = $(await KG.get(ep.grabLink));
+	var $html = $((await KG.get(ep.grabLink)).response);
 	var $sources = $html.find("source");
 	if ($sources.length == 0) {
 		ep.grabLink = "error: no sources found";
@@ -882,7 +874,7 @@ KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
-			if (await KG.head(rawLink + qualityStrings[i]) == 200) {
+			if (await KG.head(rawLink + qualityStrings[i]).status == 200) {
 				ep.grabLink = rawLink + qualityStrings[i];
 				progress[0]++;
 				KG.spinnerText(`${progress[0]}/${promises.length}`);
@@ -911,7 +903,7 @@ KG.actionAux.nova_getDirect = async (ep, progress, promises) => {
 		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
-	var json = JSON.parse(await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`));
+	var json = JSON.parse(await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`).response);
 	if (!json.data || json.data.length < 1) {
 		ep.grabLink = "error: no sources found";
 		return;
@@ -1028,7 +1020,7 @@ var optsHTML = `<div class="rightBox" id="KG-opts-widget">
 </div>
 `;
 
-//initially hidden HTML that is revealed and filled in by the grabber script
+//the link display
 var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="display: none;">
 	<div class="barTitle">
 		<div class="KG-dialog-title">
@@ -1059,7 +1051,7 @@ var linkListHTML = `<div class="bigBarContainer" id="KG-linkdisplay" style="disp
 </div>
 `;
 
-//initially hidden HTML that is revealed and filled in by the grabber script
+//the settings page
 var prefsHTML = `<div class="bigBarContainer" id="KG-preferences" style="display: none;">
 	<div class="barTitle">
 		<div class="KG-dialog-title">

@@ -35,9 +35,7 @@ KG.makeBatSafe = (str) => {
 
 KG.timeout = (time) => {
 	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve();
-		}, time)
+		setTimeout(resolve, time)
 	});
 }
 
@@ -46,9 +44,7 @@ KG.get = (url) => {
 		GM_xmlhttpRequest({
 			method: "GET",
 			url: url,
-			onload: (o) => {
-				resolve(o.response);
-			},
+			onload: resolve,
 			onerror: reject,
 		});
 	});
@@ -59,9 +55,7 @@ KG.head = (url) => {
 		GM_xmlhttpRequest({
 			method: "HEAD",
 			url: url,
-			onload: (o) => {
-				resolve(o.status);
-			},
+			onload: resolve,
 			onerror: reject,
 		});
 	});
@@ -73,9 +67,7 @@ KG.post = (url, body) => {
 			method: "POST",
 			url: url,
 			body: body,
-			onload: (o) => {
-				resolve(o.response);
-			},
+			onload: resolve,
 			onerror: reject,
 		});
 	});

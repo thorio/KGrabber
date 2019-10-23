@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.6.1
+// @version       2.6.2
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -48,10 +48,10 @@ unsafeWindow.KG = {};
 //the grabber widget injected into the page
 var optsHTML = `/*include::html/opts.html*/`;
 
-//initially hidden HTML that is revealed and filled in by the grabber script
+//the link display
 var linkListHTML = `/*include::html/linkdisplay.html*/`;
 
-//initially hidden HTML that is revealed and filled in by the grabber script
+//the settings page
 var prefsHTML = `/*include::html/preferences.html*/`;
 
 //css to make it all look good

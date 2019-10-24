@@ -23,7 +23,7 @@
 // ==/UserScript==
 
 if (!unsafeWindow.jQuery) {
-	console.error("KG: jQuery not present");
+	console.error("KissGrabber: jQuery not present");
 	return;
 }
 
@@ -200,7 +200,7 @@ KG.preferences = {
 //entry function
 KG.siteLoad = () => {
 	if (!KG.supportedSites[location.hostname]) {
-		console.warn("KG: site not supported");
+		KG.logwarn("site not supported");
 		return;
 	}
 
@@ -227,7 +227,7 @@ KG.loadStatus = () => {
 	try {
 		KG.status = JSON.parse(sessionStorage["KG-status"]);
 	} catch (e) {
-		console.error("KG: unable to parse JSON");
+		KG.logerr("unable to parse JSON");
 		return false;
 	}
 	return true;
@@ -272,7 +272,7 @@ KG.loadPreferences = () => {
 					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="number" value="${group[j]}" class="KG-input-text right" id="KG-preference-${i}-${j}"></div>`;
 					break;
 				default:
-					console.error(`unknown type "${typeof group[j]}" of KG.preferences.${i}.${j}`);
+					KG.logerr(`unknown type "${typeof group[j]}" of KG.preferences.${i}.${j}`);
 			}
 			$group.append(html);
 		}
@@ -356,7 +356,7 @@ KG.injectWidgets = () => {
 		if (KG.fixes[site.fixes[i]]) {
 			KG.fixes[site.fixes[i]]();
 		} else {
-			console.error(`KG: nonexistant fix "${site.fixes[i]}"`);
+			KG.logerr(`nonexistant fix "${site.fixes[i]}"`);
 		}
 	}
 }
@@ -377,7 +377,7 @@ KG.markAvailableServers = async (url, server) => {
 		servers.push(obj.value.match(/s=\w+/g)[0].slice(2, Infinity));
 	})
 	if (servers.length == 0) {
-		console.error("KG: no servers found");
+		KG.logwarn("no servers found");
 	}
 
 	$("#KG-input-server option").each((i, obj) => {
@@ -563,6 +563,24 @@ KG.timeout = (time) => {
 	return new Promise((resolve) => {
 		setTimeout(resolve, time)
 	});
+}
+
+var logCss = "background-color: #456304; padding: 0 5px; border-radius: 3px; color: #fff;";
+
+KG.loginfo = (...str) => {
+	console.info("%cKissGrabber%c " + str.join(" "), logCss, "");
+}
+
+KG.log = (...str) => {
+	console.log("%cKissGrabber%c " + str.join(" "), logCss, "");
+}
+
+KG.logwarn = (...str) => {
+	console.warn("%cKissGrabber%c " + str.join(" "), logCss, "");
+}
+
+KG.logerr = (...str) => {
+	console.error("%cKissGrabber%c " + str.join(" "), logCss, "");
 }
 
 KG.get = (url) => {
@@ -866,7 +884,7 @@ KG.actions.beta_setQuality = {
 
 KG.actionAux.beta_tryGetQuality = async (ep) => {
 	if (!ep.grabLink.match(/.*=m\d\d/)) { //invalid link
-		console.log(`KG: invalid beta link "${ep.grabLink}"`)
+		KG.logwarn(`invalid beta link "${ep.grabLink}"`);
 		return;
 	}
 	var rawLink = ep.grabLink.slice(0, -4);

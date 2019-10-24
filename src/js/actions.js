@@ -77,7 +77,7 @@ KG.actions.beta_setQuality = {
 
 KG.actionAux.beta_tryGetQuality = async (ep) => {
 	if (!ep.grabLink.match(/.*=m\d\d/)) { //invalid link
-		console.log(`KG: invalid beta link "${ep.grabLink}"`)
+		KG.logwarn(`invalid beta link "${ep.grabLink}"`);
 		return;
 	}
 	var rawLink = ep.grabLink.slice(0, -4);

@@ -39,6 +39,24 @@ KG.timeout = (time) => {
 	});
 }
 
+var logCss = "background-color: #456304; padding: 0 5px; border-radius: 3px; color: #fff;";
+
+KG.loginfo = (...str) => {
+	console.info("%cKissGrabber%c " + str.join(" "), logCss, "");
+}
+
+KG.log = (...str) => {
+	console.log("%cKissGrabber%c " + str.join(" "), logCss, "");
+}
+
+KG.logwarn = (...str) => {
+	console.warn("%cKissGrabber%c " + str.join(" "), logCss, "");
+}
+
+KG.logerr = (...str) => {
+	console.error("%cKissGrabber%c " + str.join(" "), logCss, "");
+}
+
 KG.get = (url) => {
 	return new Promise((resolve, reject) => {
 		GM_xmlhttpRequest({

@@ -23,7 +23,7 @@
 // ==/UserScript==
 
 if (!unsafeWindow.jQuery) {
-	console.error("KG: jQuery not present");
+	console.error("KissGrabber: jQuery not present");
 	return;
 }
 

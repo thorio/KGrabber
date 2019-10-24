@@ -24,7 +24,7 @@ KG.actions.rapidvideo_getDirect = {
 	requireLinkType: "embed",
 	servers: ["rapidvideo", "rapid"],
 	execute: async (data) => {
-		KG.actionAux.generic_eachEpisode(data, KG.actionAux["rapidvideo_getDirect"], () => {
+		KG.actionAux.generic_eachEpisode(data, KG.actionAux.rapidvideo_getDirect, () => {
 			data.linkType = "direct";
 		});
 	},
@@ -32,10 +32,8 @@ KG.actions.rapidvideo_getDirect = {
 
 //additional function to reduce clutter
 //asynchronously gets the direct link
-KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
+KG.actionAux.rapidvideo_getDirect = async (ep) => {
 	if (ep.grabLink.slice(0, 5) == "error") {
-		progress[0]++;
-		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
 	var response = await KG.get(ep.grabLink);
@@ -55,9 +53,6 @@ KG.actionAux.rapidvideo_getDirect = async (ep, progress, promises) => {
 		sources[obj.dataset.res] = obj.src;
 	});
 
-	progress[0]++;
-	KG.spinnerText(`${progress[0]}/${promises.length}`);
-
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (sources[i]) {
@@ -74,13 +69,13 @@ KG.actions.beta_setQuality = {
 	servers: ["beta2"],
 	automatic: true,
 	execute: async (data) => {
-		KG.actionAux.generic_eachEpisode(data, KG.actionAux["beta_tryGetQuality"], () => {
+		KG.actionAux.generic_eachEpisode(data, KG.actionAux.beta_tryGetQuality, () => {
 			data.automaticDone = true;
 		});
 	},
 }
 
-KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
+KG.actionAux.beta_tryGetQuality = async (ep) => {
 	if (!ep.grabLink.match(/.*=m\d\d/)) { //invalid link
 		console.log(`KG: invalid beta link "${ep.grabLink}"`)
 		return;
@@ -92,8 +87,6 @@ KG.actionAux.beta_tryGetQuality = async (ep, progress, promises) => {
 		if (qualityStrings[i]) {
 			if (await KG.head(rawLink + qualityStrings[i]).status == 200) {
 				ep.grabLink = rawLink + qualityStrings[i];
-				progress[0]++;
-				KG.spinnerText(`${progress[0]}/${promises.length}`);
 				return;
 			}
 		}
@@ -105,7 +98,7 @@ KG.actions.nova_getDirect = {
 	requireLinkType: "embed",
 	servers: ["nova"],
 	execute: async (data) => {
-		KG.actionAux.generic_eachEpisode(data, KG.actionAux["nova_getDirect"], () => {
+		KG.actionAux.generic_eachEpisode(data, KG.actionAux.nova_getDirect, () => {
 			data.linkType = "direct";
 		});
 	},
@@ -113,21 +106,17 @@ KG.actions.nova_getDirect = {
 
 //additional function to reduce clutter
 //asynchronously gets the direct link
-KG.actionAux.nova_getDirect = async (ep, progress, promises) => {
+KG.actionAux.nova_getDirect = async (ep) => {
 	if (ep.grabLink.slice(0, 5) == "error") {
-		progress[0]++;
-		KG.spinnerText(`${progress[0]}/${promises.length}`);
 		return;
 	}
-	var json = JSON.parse(await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`).response);
+	var response = await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`);
+	var json = JSON.parse(response.response);
 	if (!json.data || json.data.length < 1) {
 		ep.grabLink = "error: no sources found";
 		return;
 	}
 	var sources = json.data;
-
-	progress[0]++;
-	KG.spinnerText(`${progress[0]}/${promises.length}`);
 
 	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
@@ -144,9 +133,12 @@ KG.actionAux.nova_getDirect = async (ep, progress, promises) => {
 KG.actionAux.generic_eachEpisode = async (data, func, fin) => {
 	KG.showSpinner();
 	var promises = [];
-	var progress = [0];
+	var progress = 0;
 	for (var i in data.episodes) {
-		promises.push(func(data.episodes[i], progress, promises));
+		promises.push(func(data.episodes[i]).then(() => {
+			progress++;
+			KG.spinnerText(`${progress}/${promises.length}`);
+		}));
 	}
 	KG.spinnerText(`0/${promises.length}`);
 	await Promise.all(promises);

@@ -1,7 +1,7 @@
 //allows multiple different approaches to collecting links, if sites differ greatly
 KG.steps = {};
 
-//default
+//#region Default
 KG.steps.defaultBegin = () => {
 	KG.status.func = "defaultGetLink";
 	KG.saveStatus();
@@ -28,7 +28,9 @@ KG.steps.defaultGetLink = () => {
 KG.steps.defaultFinished = () => {
 	KG.displayLinks();
 }
+//#endregion
 
+//#region Turbo
 KG.steps.turboBegin = async () => {
 	$("#KG-linkdisplay").slideDown();
 	KG.showSpinner();
@@ -50,3 +52,4 @@ KG.steps.turboBegin = async () => {
 	KG.saveStatus();
 	KG.displayLinks();
 }
+//#endregion

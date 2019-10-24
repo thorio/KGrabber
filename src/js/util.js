@@ -1,3 +1,4 @@
+//#region Misc
 //applies regex to html to find a link
 KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
@@ -39,6 +40,9 @@ KG.timeout = (time) => {
 	});
 }
 
+//#endregion
+
+//#region Logging
 var logCss = "background-color: #456304; padding: 0 5px; border-radius: 3px; color: #fff;";
 
 KG.loginfo = (...str) => {
@@ -56,7 +60,9 @@ KG.logwarn = (...str) => {
 KG.logerr = (...str) => {
 	console.error("%cKissGrabber%c " + str.join(" "), logCss, "");
 }
+//#endregion
 
+//#region Ajax Helpers
 KG.get = (url) => {
 	return new Promise((resolve, reject) => {
 		GM_xmlhttpRequest({
@@ -90,3 +96,4 @@ KG.post = (url, body) => {
 		});
 	});
 }
+//#endregion

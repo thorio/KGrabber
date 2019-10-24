@@ -3,6 +3,7 @@
 KG.actions = {};
 KG.actionAux = {};
 
+//#region RapidVideo
 KG.actions.rapidvideo_revertDomain = {
 	name: "revert domain",
 	requireLinkType: "embed",
@@ -62,7 +63,9 @@ KG.actionAux.rapidvideo_getDirect = async (ep) => {
 	}
 	ep.grabLink = "error: preferred qualities not found";
 }
+//#endregion
 
+//#region Beta
 KG.actions.beta_setQuality = {
 	name: "set quality",
 	requireLinkType: "direct",
@@ -92,7 +95,9 @@ KG.actionAux.beta_tryGetQuality = async (ep) => {
 		}
 	}
 }
+//#endregion
 
+//#region Nova
 KG.actions.nova_getDirect = {
 	name: "get direct links",
 	requireLinkType: "embed",
@@ -129,7 +134,9 @@ KG.actionAux.nova_getDirect = async (ep) => {
 	}
 	ep.grabLink = "error: preferred qualities not found";
 }
+//#endregion
 
+//#region Generic
 KG.actionAux.generic_eachEpisode = async (data, func, fin) => {
 	KG.showSpinner();
 	var promises = [];
@@ -146,3 +153,4 @@ KG.actionAux.generic_eachEpisode = async (data, func, fin) => {
 	KG.saveStatus();
 	KG.displayLinks();
 }
+//#endregion

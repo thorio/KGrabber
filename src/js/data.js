@@ -1,3 +1,4 @@
+//#region Servers
 KG.knownServers = {};
 KG.knownServers["kissanime.ru"] = {
 	"rapidvideo": {
@@ -117,7 +118,9 @@ KG.knownServers["kisstvshow.to"] = {
 		linkType: "embed",
 	},
 }
+//#endregion
 
+//#region Sites
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
@@ -147,7 +150,9 @@ KG.supportedSites = {
 		buttonTextColor: "#000",
 	},
 }
+//#endregion
 
+//#region Preferences
 KG.preferences = {
 	general: {
 		quality_order: "1080, 720, 480, 360",
@@ -164,3 +169,4 @@ KG.preferences = {
 		disable_automatic_actions: false,
 	},
 }
+//#endregion

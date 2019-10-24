@@ -29,6 +29,7 @@ if (!unsafeWindow.jQuery) {
 
 unsafeWindow.KG = {};
 
+//#region Servers
 KG.knownServers = {};
 KG.knownServers["kissanime.ru"] = {
 	"rapidvideo": {
@@ -148,7 +149,9 @@ KG.knownServers["kisstvshow.to"] = {
 		linkType: "embed",
 	},
 }
+//#endregion
 
+//#region Sites
 KG.supportedSites = {
 	"kissanime.ru": {
 		contentPath: "/Anime/*",
@@ -178,7 +181,9 @@ KG.supportedSites = {
 		buttonTextColor: "#000",
 	},
 }
+//#endregion
 
+//#region Preferences
 KG.preferences = {
 	general: {
 		quality_order: "1080, 720, 480, 360",
@@ -195,6 +200,7 @@ KG.preferences = {
 		disable_automatic_actions: false,
 	},
 }
+//#endregion
 
 
 //entry function
@@ -214,6 +220,7 @@ KG.siteLoad = () => {
 	}
 }
 
+//#region Status
 //saves data to session storage
 KG.saveStatus = () => {
 	sessionStorage["KG-status"] = JSON.stringify(KG.status);
@@ -237,7 +244,9 @@ KG.loadStatus = () => {
 KG.clearStatus = () => {
 	sessionStorage.clear("KG-data");
 }
+//#endregion
 
+//#region Preferences
 KG.loadPreferences = () => {
 	try {
 		var prefs = JSON.parse(GM_getValue("KG-preferences", ""));
@@ -305,7 +314,9 @@ KG.resetPreferences = () => {
 	GM_setValue("KG-preferences", "");
 	location.reload();
 }
+//#endregion
 
+//#region UI
 //injects element into page
 KG.injectWidgets = () => {
 	var site = KG.supportedSites[location.hostname];
@@ -387,46 +398,6 @@ KG.markAvailableServers = async (url, server) => {
 	});
 }
 
-//gets link for single episode
-KG.startSingle = (num) => {
-	KG.startRange(num, num);
-}
-
-//gets links for a range of episodes
-KG.startRange = (start, end) => {
-	KG.status = {
-		url: location.href,
-		title: $(".bigBarContainer a.bigChar").text(),
-		server: $("#KG-input-server").val(),
-		episodes: [],
-		start: start,
-		current: 0,
-		func: "defaultBegin",
-		linkType: KG.knownServers[location.hostname][$("#KG-input-server").val()].linkType,
-		automaticDone: false,
-	}
-	var epCount = $(".listing a").length;
-	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
-		KG.status.episodes.push({
-			kissLink: obj.href,
-			grabLink: "",
-			num: i + 1,
-		});
-	});
-	var customStep = KG.knownServers[location.hostname][KG.status.server].customStep;
-	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
-		KG.status.func = customStep; //use custom grabber
-	}
-	var experimentalCustomStep = KG.knownServers[location.hostname][KG.status.server].experimentalCustomStep;
-	if (experimentalCustomStep && KG.steps[experimentalCustomStep] && KG.preferences.compatibility.enable_experimental_grabbers) {
-		KG.status.func = experimentalCustomStep; //use experimental grabber
-	}
-
-	KG.saveStatus();
-	KG.steps[KG.status.func]();
-	$("html, body").animate({ scrollTop: 0 }, "slow");
-}
-
 KG.displayLinks = () => {
 	var html = "";
 	var padLength = Math.max(2, $(".listing a").length.toString().length);
@@ -476,8 +447,52 @@ KG.displayLinks = () => {
 
 	$("#KG-linkdisplay").show();
 }
+//#endregion
 
-//invokes a exporter
+//#region Start
+//gets link for single episode
+KG.startSingle = (num) => {
+	KG.startRange(num, num);
+}
+
+//gets links for a range of episodes
+KG.startRange = (start, end) => {
+	KG.status = {
+		url: location.href,
+		title: $(".bigBarContainer a.bigChar").text(),
+		server: $("#KG-input-server").val(),
+		episodes: [],
+		start: start,
+		current: 0,
+		func: "defaultBegin",
+		linkType: KG.knownServers[location.hostname][$("#KG-input-server").val()].linkType,
+		automaticDone: false,
+	}
+	var epCount = $(".listing a").length;
+	KG.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
+		KG.status.episodes.push({
+			kissLink: obj.href,
+			grabLink: "",
+			num: i + 1,
+		});
+	});
+	var customStep = KG.knownServers[location.hostname][KG.status.server].customStep;
+	if (customStep && KG.steps[customStep] && !KG.preferences.compatibility.force_default_grabber) {
+		KG.status.func = customStep; //use custom grabber
+	}
+	var experimentalCustomStep = KG.knownServers[location.hostname][KG.status.server].experimentalCustomStep;
+	if (experimentalCustomStep && KG.steps[experimentalCustomStep] && KG.preferences.compatibility.enable_experimental_grabbers) {
+		KG.status.func = experimentalCustomStep; //use experimental grabber
+	}
+
+	KG.saveStatus();
+	KG.steps[KG.status.func]();
+	$("html, body").animate({ scrollTop: 0 }, "slow");
+}
+//#endregion
+
+//#region Misc
+//invokes an exporter
 KG.exportData = (exporter) => {
 	$("#KG-input-export").val("");
 
@@ -522,8 +537,10 @@ KG.closePreferences = () => {
 	KG.savePreferences();
 	$("#KG-preferences").slideUp();
 }
+//#endregion
 
 
+//#region Misc
 //applies regex to html to find a link
 KG.findLink = (html, regexString) => {
 	var re = new RegExp(regexString);
@@ -565,6 +582,9 @@ KG.timeout = (time) => {
 	});
 }
 
+//#endregion
+
+//#region Logging
 var logCss = "background-color: #456304; padding: 0 5px; border-radius: 3px; color: #fff;";
 
 KG.loginfo = (...str) => {
@@ -582,7 +602,9 @@ KG.logwarn = (...str) => {
 KG.logerr = (...str) => {
 	console.error("%cKissGrabber%c " + str.join(" "), logCss, "");
 }
+//#endregion
 
+//#region Ajax Helpers
 KG.get = (url) => {
 	return new Promise((resolve, reject) => {
 		GM_xmlhttpRequest({
@@ -616,12 +638,13 @@ KG.post = (url, body) => {
 		});
 	});
 }
+//#endregion
 
 
 //allows multiple different approaches to collecting links, if sites differ greatly
 KG.steps = {};
 
-//default
+//#region Default
 KG.steps.defaultBegin = () => {
 	KG.status.func = "defaultGetLink";
 	KG.saveStatus();
@@ -648,7 +671,9 @@ KG.steps.defaultGetLink = () => {
 KG.steps.defaultFinished = () => {
 	KG.displayLinks();
 }
+//#endregion
 
+//#region Turbo
 KG.steps.turboBegin = async () => {
 	$("#KG-linkdisplay").slideDown();
 	KG.showSpinner();
@@ -670,6 +695,7 @@ KG.steps.turboBegin = async () => {
 	KG.saveStatus();
 	KG.displayLinks();
 }
+//#endregion
 
 
 //allows for multiple ways to export collected data
@@ -810,6 +836,7 @@ ping localhost -n 2 > nul\n\n`;
 KG.actions = {};
 KG.actionAux = {};
 
+//#region RapidVideo
 KG.actions.rapidvideo_revertDomain = {
 	name: "revert domain",
 	requireLinkType: "embed",
@@ -869,7 +896,9 @@ KG.actionAux.rapidvideo_getDirect = async (ep) => {
 	}
 	ep.grabLink = "error: preferred qualities not found";
 }
+//#endregion
 
+//#region Beta
 KG.actions.beta_setQuality = {
 	name: "set quality",
 	requireLinkType: "direct",
@@ -899,7 +928,9 @@ KG.actionAux.beta_tryGetQuality = async (ep) => {
 		}
 	}
 }
+//#endregion
 
+//#region Nova
 KG.actions.nova_getDirect = {
 	name: "get direct links",
 	requireLinkType: "embed",
@@ -936,7 +967,9 @@ KG.actionAux.nova_getDirect = async (ep) => {
 	}
 	ep.grabLink = "error: preferred qualities not found";
 }
+//#endregion
 
+//#region Generic
 KG.actionAux.generic_eachEpisode = async (data, func, fin) => {
 	KG.showSpinner();
 	var promises = [];
@@ -953,11 +986,13 @@ KG.actionAux.generic_eachEpisode = async (data, func, fin) => {
 	KG.saveStatus();
 	KG.displayLinks();
 }
+//#endregion
 
 
 //if something doesn't look right on a specific site, a fix can be written here
 KG.fixes = {}
 
+//#region KimCartoon
 KG.fixes["kimcartoon.to_UIFix"] = () => {
 	//linkdisplay
 	var $ld = $("#KG-linkdisplay");
@@ -997,7 +1032,9 @@ KG.fixes["kimcartoon.to_UIFix"] = () => {
 	//general
 	$(".KG-dialog-title").css("font-size", "18px");
 }
+//#endregion
 
+//#region KissAsian
 KG.fixes["kissasian.sh_UIFix"] = () => {
 	$(".KG-preferences-button").css("filter", "invert(0.7)");
 	$(".KG-dialog-close").css("color", "#000");
@@ -1005,6 +1042,7 @@ KG.fixes["kissasian.sh_UIFix"] = () => {
 		$(e.target).css("color", e.type == "mouseenter" ? "#fff" : "#000");
 	});
 }
+//#endregion
 
 
 //HTML and CSS pasted here because Tampermonkey apparently doesn't allow resources to be updated

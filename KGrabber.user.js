@@ -33,8 +33,8 @@ unsafeWindow.KG = {};
 KG.knownServers = {};
 KG.knownServers["kissanime.ru"] = {
 	"rapidvideo": {
-		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-		name: "RapidVideo (no captcha)",
+		regex: '"https://www.novelplanet.me/v/.*?"',
+		name: "RapidNova (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",
 	},

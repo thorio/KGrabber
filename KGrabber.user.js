@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.6.2
+// @version       2.6.3
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -849,7 +849,7 @@ KG.actionAux = {};
 KG.actions.rapidvideo_revertDomain = {
 	name: "revert domain",
 	requireLinkType: "embed",
-	servers: ["rapidvideo", "rapid"],
+	servers: ["rapid"],
 	automatic: true,
 	execute: async (data) => {
 		await KG.timeout(5); //wait for currently running KG.displayLinks to finish
@@ -865,7 +865,7 @@ KG.actions.rapidvideo_revertDomain = {
 KG.actions.rapidvideo_getDirect = {
 	name: "get direct links",
 	requireLinkType: "embed",
-	servers: ["rapidvideo", "rapid"],
+	servers: ["rapid"],
 	execute: async (data) => {
 		KG.actionAux.generic_eachEpisode(data, KG.actionAux.rapidvideo_getDirect, () => {
 			data.linkType = "direct";
@@ -943,7 +943,7 @@ KG.actionAux.beta_tryGetQuality = async (ep) => {
 KG.actions.nova_getDirect = {
 	name: "get direct links",
 	requireLinkType: "embed",
-	servers: ["nova"],
+	servers: ["nova", "rapidvideo"],
 	execute: async (data) => {
 		KG.actionAux.generic_eachEpisode(data, KG.actionAux.nova_getDirect, () => {
 			data.linkType = "direct";

@@ -1,0 +1,28 @@
+<div class="bigBarContainer" id="KG-linkdisplay" style="display: none;">
+	<div class="barTitle">
+		<div class="KG-dialog-title">
+			Extracted Links
+		</div>
+		<a class="KG-dialog-close" onclick="KG.closeLinkdisplay()">
+			close &nbsp;
+		</a>
+	</div>
+	<div class="barContent">
+		<div class="arrow-general">
+			&nbsp;</div>
+		<div id="KG-linkdisplay-text"></div>
+		<div class="KG-button-container" id="KG-action-container">
+			<select id="KG-input-export" onchange="KG.exportData(this.value)">
+				<option value="" selected disabled hidden>Export as</option>
+			</select>
+		</div>
+		<div id="KG-linkdisplay-export" style="display: none;">
+			<textarea id="KG-linkdisplay-export-text" spellcheck="false"></textarea>
+			<div class="KG-button-container">
+				<a id="KG-input-export-download">
+					<input type="button" value="Download" class="KG-button" style="float: right;">
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

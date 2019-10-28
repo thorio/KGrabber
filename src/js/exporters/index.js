@@ -1,7 +1,8 @@
 //allows for multiple ways to export collected data
-KG.exporters = {};
+const util = require("../util"),
+	preferences = require("../config").preferences;
 
-KG.exporters.list = {
+exports.list = {
 	name: "list",
 	extension: "txt",
 	requireSamePage: false,
@@ -15,7 +16,7 @@ KG.exporters.list = {
 	}
 }
 
-KG.exporters.m3u = {
+exports.m3u = {
 	name: "m3u8 playlist",
 	extension: "m3u8",
 	requireSamePage: true,
@@ -23,14 +24,14 @@ KG.exporters.m3u = {
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var str = "#EXTM3U\n";
-		KG.for(data.episodes, (i, obj) => {
+		util.for(data.episodes, (i, obj) => {
 			str += `#EXTINF:0,${listing[obj.num-1].innerText}\n${obj.grabLink}\n`;
 		});
 		return str;
 	}
 }
 
-KG.exporters.json = {
+exports.json = {
 	name: "json",
 	extension: "json",
 	requireSamePage: true,
@@ -54,7 +55,7 @@ KG.exporters.json = {
 	},
 }
 
-KG.exporters.html = {
+exports.html = {
 	name: "html list",
 	extension: "html",
 	requireSamePage: true,
@@ -62,7 +63,7 @@ KG.exporters.html = {
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var str = "<html>\n	<body>\n";
-		KG.for(data.episodes, (i, obj) => {
+		util.for(data.episodes, (i, obj) => {
 			str += `		<a href="${obj.grabLink}" download="${listing[obj.num-1].innerText}.mp4">${listing[obj.num-1].innerText}</a><br>\n`;
 		});
 		str += "	</body>\n</html>\n";
@@ -70,7 +71,7 @@ KG.exporters.html = {
 	}
 }
 
-KG.exporters.csv = {
+exports.csv = {
 	name: "csv",
 	extension: "csv",
 	requireSamePage: true,
@@ -85,7 +86,7 @@ KG.exporters.csv = {
 	}
 }
 
-KG.exporters.aria2c = {
+exports.aria2c = {
 	name: "aria2c file",
 	extension: "txt",
 	requireSamePage: false,
@@ -93,34 +94,34 @@ KG.exporters.aria2c = {
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
 		var str = "";
-		KG.for(data.episodes, (i, obj) => {
+		util.for(data.episodes, (i, obj) => {
 			str += `${obj.grabLink}\n out=${listing[obj.num-1].innerText}.mp4\n`;
 		});
 		return str;
 	}
 }
 
-KG.exporters.idmbat = {
+exports.idmbat = {
 	name: "IDM bat file",
 	extension: "bat",
 	requireSamePage: true,
 	requireDirectLinks: true,
 	export: (data) => {
 		var listing = $(".listing a").get().reverse();
-		var title = KG.makeBatSafe(data.title);
+		var title = util.makeBatSafe(data.title);
 		var str = `::download and double click me!
 @echo off
 set title=${title}
-set idm=${KG.preferences.internet_download_manager.idm_path}
-set args=${KG.preferences.internet_download_manager.arguments}
-set dir=${KG.preferences.internet_download_manager.download_path}
+set idm=${preferences.internet_download_manager.idm_path}
+set args=${preferences.internet_download_manager.arguments}
+set dir=${preferences.internet_download_manager.download_path}
 if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && pause && goto eof
 mkdir "%title%" > nul
 start "" "%idm%"
 ping localhost -n 2 > nul\n\n`;
-		KG.for(data.episodes, (i, obj) => {
-			var epTitle = KG.makeBatSafe(listing[obj.num - 1].innerText);
-			if (!KG.preferences.internet_download_manager.keep_title_in_episode_name &&
+		util.for(data.episodes, (i, obj) => {
+			var epTitle = util.makeBatSafe(listing[obj.num - 1].innerText);
+			if (!preferences.internet_download_manager.keep_title_in_episode_name &&
 				epTitle.slice(0, title.length) === title) {
 				epTitle = epTitle.slice(title.length + 1);
 			}

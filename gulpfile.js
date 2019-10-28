@@ -34,7 +34,6 @@ function html() {
 		.pipe(concat("html.js"))
 		.pipe(insert.prepend("// generated file, provides contents of src\\html\n"))
 		.pipe(gulp.dest(`${build_dir}/js`));
-
 }
 
 async function bundle() {

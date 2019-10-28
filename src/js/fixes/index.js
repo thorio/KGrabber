@@ -1,8 +1,7 @@
 //if something doesn't look right on a specific site, a fix can be written here
-KG.fixes = {}
 
 //#region KimCartoon
-KG.fixes["kimcartoon.to_UIFix"] = () => {
+exports["kimcartoon.to_UIFix"] = () => {
 	//linkdisplay
 	var $ld = $("#KG-linkdisplay");
 	$ld.find(".barTitle").removeClass("barTitle")
@@ -44,7 +43,7 @@ KG.fixes["kimcartoon.to_UIFix"] = () => {
 //#endregion
 
 //#region KissAsian
-KG.fixes["kissasian.sh_UIFix"] = () => {
+exports["kissasian.sh_UIFix"] = () => {
 	$(".KG-preferences-button").css("filter", "invert(0.7)");
 	$(".KG-dialog-close").css("color", "#000");
 	$(".KG-dialog-close").hover((e) => {

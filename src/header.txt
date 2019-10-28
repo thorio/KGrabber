@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.6.3
+// @version       3.0.0-pre1
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -11,13 +11,13 @@
 // @match         http*://kimcartoon.to/*
 // @match         http*://kissasian.sh/*
 // @match         http*://kisstvshow.to/*
-// @grant         GM_xmlhttpRequest
-// @grant         GM_getValue
-// @grant         GM_setValue
 // @connect       rapidvideo.com
 // @connect       googleusercontent.com
 // @connect       googlevideo.com
 // @connect       novelplanet.me
+// @grant         GM_xmlhttpRequest
+// @grant         GM_getValue
+// @grant         GM_setValue
 // @run-at        document-end
 // @noframes
 // @require       http://code.jquery.com/jquery-3.3.1.min.js

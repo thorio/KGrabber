@@ -1,43 +1,43 @@
 //further options after grabbing, such as converting embed to direct links
-
-KG.actions = {};
-KG.actionAux = {};
+const util = require("../util"),
+	{ log, ajax } = util,
+	config = require("../config"),
+	everything = require("../everything");
 
 //#region RapidVideo
-KG.actions.rapidvideo_revertDomain = {
+exports.rapidvideo_revertDomain = {
 	name: "revert domain",
 	requireLinkType: "embed",
 	servers: ["rapid"],
 	automatic: true,
 	execute: async (data) => {
-		await KG.timeout(5); //wait for currently running KG.displayLinks to finish
+		await util.timeout(5); //wait for currently running KG.displayLinks to finish
 		for (var i in data.episodes) {
 			data.episodes[i].grabLink = data.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com")
 		}
 		data.automaticDone = true;
-		KG.saveStatus();
-		KG.displayLinks();
+		everything.saveStatus();
+		everything.displayLinks();
 	},
 }
 
-KG.actions.rapidvideo_getDirect = {
+exports.rapidvideo_getDirect = {
 	name: "get direct links",
 	requireLinkType: "embed",
 	servers: ["rapid"],
 	execute: async (data) => {
-		KG.actionAux.generic_eachEpisode(data, KG.actionAux.rapidvideo_getDirect, () => {
+		generic_eachEpisode(data, rapidvideo_getDirect, () => {
 			data.linkType = "direct";
 		});
 	},
 }
 
-//additional function to reduce clutter
 //asynchronously gets the direct link
-KG.actionAux.rapidvideo_getDirect = async (ep) => {
+async function rapidvideo_getDirect(ep) {
 	if (ep.grabLink.slice(0, 5) == "error") {
 		return;
 	}
-	var response = await KG.get(ep.grabLink);
+	var response = await ajax.get(ep.grabLink);
 	if (response.status != 200) {
 		ep.grabLink = `error: http status ${response.status}`;
 		return;
@@ -50,11 +50,10 @@ KG.actionAux.rapidvideo_getDirect = async (ep) => {
 	}
 
 	var sources = {};
-	KG.for($sources, (i, obj) => {
+	util.for($sources, (i, obj) => {
 		sources[obj.dataset.res] = obj.src;
 	});
-
-	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
+	var parsedQualityPrefs = config.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (sources[i]) {
 			ep.grabLink = sources[i];
@@ -66,29 +65,29 @@ KG.actionAux.rapidvideo_getDirect = async (ep) => {
 //#endregion
 
 //#region Beta
-KG.actions.beta_setQuality = {
+exports.beta_setQuality = {
 	name: "set quality",
 	requireLinkType: "direct",
 	servers: ["beta2"],
 	automatic: true,
 	execute: async (data) => {
-		KG.actionAux.generic_eachEpisode(data, KG.actionAux.beta_tryGetQuality, () => {
+		generic_eachEpisode(data, beta_tryGetQuality, () => {
 			data.automaticDone = true;
 		});
 	},
 }
 
-KG.actionAux.beta_tryGetQuality = async (ep) => {
+async function beta_tryGetQuality(ep) {
 	if (!ep.grabLink.match(/.*=m\d\d/)) { //invalid link
-		KG.logwarn(`invalid beta link "${ep.grabLink}"`);
+		log.logwarn(`invalid beta link "${ep.grabLink}"`);
 		return;
 	}
 	var rawLink = ep.grabLink.slice(0, -4);
 	var qualityStrings = { "1080": "=m37", "720": "=m22", "360": "=m18" };
-	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
+	var parsedQualityPrefs = config.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
-			if (await KG.head(rawLink + qualityStrings[i]).status == 200) {
+			if (await util.ajax.head(rawLink + qualityStrings[i]).status == 200) {
 				ep.grabLink = rawLink + qualityStrings[i];
 				return;
 			}
@@ -98,24 +97,23 @@ KG.actionAux.beta_tryGetQuality = async (ep) => {
 //#endregion
 
 //#region Nova
-KG.actions.nova_getDirect = {
+exports.nova_getDirect = {
 	name: "get direct links",
 	requireLinkType: "embed",
 	servers: ["nova", "rapidvideo"],
 	execute: async (data) => {
-		KG.actionAux.generic_eachEpisode(data, KG.actionAux.nova_getDirect, () => {
+		generic_eachEpisode(data, nova_getDirect, () => {
 			data.linkType = "direct";
 		});
 	},
 }
 
-//additional function to reduce clutter
 //asynchronously gets the direct link
-KG.actionAux.nova_getDirect = async (ep) => {
+async function nova_getDirect(ep) {
 	if (ep.grabLink.slice(0, 5) == "error") {
 		return;
 	}
-	var response = await KG.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`);
+	var response = await ajax.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`);
 	var json = JSON.parse(response.response);
 	if (!json.data || json.data.length < 1) {
 		ep.grabLink = "error: no sources found";
@@ -123,7 +121,7 @@ KG.actionAux.nova_getDirect = async (ep) => {
 	}
 	var sources = json.data;
 
-	var parsedQualityPrefs = KG.preferences.general.quality_order.replace(/\ /g, "").split(",");
+	var parsedQualityPrefs = config.preferences.general.quality_order.replace(/\ /g, "").split(",");
 	for (var i of parsedQualityPrefs) {
 		for (var j of sources) {
 			if (j.label == i + "p") {
@@ -137,20 +135,20 @@ KG.actionAux.nova_getDirect = async (ep) => {
 //#endregion
 
 //#region Generic
-KG.actionAux.generic_eachEpisode = async (data, func, fin) => {
-	KG.showSpinner();
+async function generic_eachEpisode(data, func, fin) {
+	everything.showSpinner();
 	var promises = [];
 	var progress = 0;
 	for (var i in data.episodes) {
 		promises.push(func(data.episodes[i]).then(() => {
 			progress++;
-			KG.spinnerText(`${progress}/${promises.length}`);
+			everything.spinnerText(`${progress}/${promises.length}`);
 		}));
 	}
-	KG.spinnerText(`0/${promises.length}`);
+	everything.spinnerText(`0/${promises.length}`);
 	await Promise.all(promises);
 	fin();
-	KG.saveStatus();
-	KG.displayLinks();
+	everything.saveStatus();
+	everything.displayLinks();
 }
 //#endregion

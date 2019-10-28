@@ -8,8 +8,8 @@ exports.list = {
 	requireSamePage: false,
 	requireDirectLinks: false,
 	export: (data) => {
-		var str = "";
-		for (var i in data.episodes) {
+		let str = "";
+		for (let i in data.episodes) {
 			str += data.episodes[i].grabLink + "\n";
 		}
 		return str;
@@ -22,8 +22,8 @@ exports.m3u = {
 	requireSamePage: true,
 	requireDirectLinks: true,
 	export: (data) => {
-		var listing = $(".listing a").get().reverse();
-		var str = "#EXTM3U\n";
+		let listing = $(".listing a").get().reverse();
+		let str = "#EXTM3U\n";
 		util.for(data.episodes, (i, obj) => {
 			str += `#EXTINF:0,${listing[obj.num-1].innerText}\n${obj.grabLink}\n`;
 		});
@@ -37,14 +37,14 @@ exports.json = {
 	requireSamePage: true,
 	requireDirectLinks: false,
 	export: (data) => {
-		var listing = $(".listing a").get().reverse();
-		var json = {
+		let listing = $(".listing a").get().reverse();
+		let json = {
 			title: data.title,
 			server: data.server,
 			linkType: data.linkType,
 			episodes: []
 		};
-		for (var i in data.episodes) {
+		for (let i in data.episodes) {
 			json.episodes.push({
 				number: data.episodes[i].num,
 				name: listing[data.episodes[i].num - 1].innerText,
@@ -61,8 +61,8 @@ exports.html = {
 	requireSamePage: true,
 	requireDirectLinks: true,
 	export: (data) => {
-		var listing = $(".listing a").get().reverse();
-		var str = "<html>\n	<body>\n";
+		let listing = $(".listing a").get().reverse();
+		let str = "<html>\n	<body>\n";
 		util.for(data.episodes, (i, obj) => {
 			str += `		<a href="${obj.grabLink}" download="${listing[obj.num-1].innerText}.mp4">${listing[obj.num-1].innerText}</a><br>\n`;
 		});
@@ -77,9 +77,9 @@ exports.csv = {
 	requireSamePage: true,
 	requireDirectLinks: false,
 	export: (data) => {
-		var listing = $(".listing a").get().reverse();
-		var str = "episode, name, url\n";
-		for (var i in data.episodes) {
+		let listing = $(".listing a").get().reverse();
+		let str = "episode, name, url\n";
+		for (let i in data.episodes) {
 			str += `${data.episodes[i].num}, ${listing[data.episodes[i].num-1].innerText}, ${data.episodes[i].grabLink}\n`;
 		}
 		return str;
@@ -92,8 +92,8 @@ exports.aria2c = {
 	requireSamePage: false,
 	requireDirectLinks: true,
 	export: (data) => {
-		var listing = $(".listing a").get().reverse();
-		var str = "";
+		let listing = $(".listing a").get().reverse();
+		let str = "";
 		util.for(data.episodes, (i, obj) => {
 			str += `${obj.grabLink}\n out=${listing[obj.num-1].innerText}.mp4\n`;
 		});
@@ -107,9 +107,9 @@ exports.idmbat = {
 	requireSamePage: true,
 	requireDirectLinks: true,
 	export: (data) => {
-		var listing = $(".listing a").get().reverse();
-		var title = util.makeBatSafe(data.title);
-		var str = `::download and double click me!
+		let listing = $(".listing a").get().reverse();
+		let title = util.makeBatSafe(data.title);
+		let str = `::download and double click me!
 @echo off
 set title=${title}
 set idm=${preferences.internet_download_manager.idm_path}
@@ -120,7 +120,7 @@ mkdir "%title%" > nul
 start "" "%idm%"
 ping localhost -n 2 > nul\n\n`;
 		util.for(data.episodes, (i, obj) => {
-			var epTitle = util.makeBatSafe(listing[obj.num - 1].innerText);
+			let epTitle = util.makeBatSafe(listing[obj.num - 1].innerText);
 			if (!preferences.internet_download_manager.keep_title_in_episode_name &&
 				epTitle.slice(0, title.length) === title) {
 				epTitle = epTitle.slice(title.length + 1);

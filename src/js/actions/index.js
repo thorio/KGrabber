@@ -12,8 +12,8 @@ exports.rapidvideo_revertDomain = {
 	automatic: true,
 	execute: async (data) => {
 		await util.timeout(5); //wait for currently running KG.displayLinks to finish
-		for (var i in data.episodes) {
-			data.episodes[i].grabLink = data.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com")
+		for (let i in data.episodes) {
+			data.episodes[i].grabLink = data.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com");
 		}
 		data.automaticDone = true;
 		everything.saveStatus();
@@ -37,24 +37,24 @@ async function rapidvideo_getDirect(ep) {
 	if (ep.grabLink.slice(0, 5) == "error") {
 		return;
 	}
-	var response = await ajax.get(ep.grabLink);
+	let response = await ajax.get(ep.grabLink);
 	if (response.status != 200) {
 		ep.grabLink = `error: http status ${response.status}`;
 		return;
 	}
-	var $html = $(response.response);
-	var $sources = $html.find("source");
+	let $html = $(response.response);
+	let $sources = $html.find("source");
 	if ($sources.length == 0) {
 		ep.grabLink = "error: no sources found";
 		return;
 	}
 
-	var sources = {};
+	let sources = {};
 	util.for($sources, (i, obj) => {
 		sources[obj.dataset.res] = obj.src;
 	});
-	var parsedQualityPrefs = config.preferences.general.quality_order.replace(/\ /g, "").split(",");
-	for (var i of parsedQualityPrefs) {
+	let parsedQualityPrefs = config.preferences.general.quality_order.replace(/\s/g, "").split(",");
+	for (let i of parsedQualityPrefs) {
 		if (sources[i]) {
 			ep.grabLink = sources[i];
 			return;
@@ -82,10 +82,10 @@ async function beta_tryGetQuality(ep) {
 		log.logwarn(`invalid beta link "${ep.grabLink}"`);
 		return;
 	}
-	var rawLink = ep.grabLink.slice(0, -4);
-	var qualityStrings = { "1080": "=m37", "720": "=m22", "360": "=m18" };
-	var parsedQualityPrefs = config.preferences.general.quality_order.replace(/\ /g, "").split(",");
-	for (var i of parsedQualityPrefs) {
+	let rawLink = ep.grabLink.slice(0, -4);
+	let qualityStrings = { "1080": "=m37", "720": "=m22", "360": "=m18" };
+	let parsedQualityPrefs = config.preferences.general.quality_order.replace(/\s/g, "").split(",");
+	for (let i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
 			if (await util.ajax.head(rawLink + qualityStrings[i]).status == 200) {
 				ep.grabLink = rawLink + qualityStrings[i];
@@ -113,17 +113,17 @@ async function nova_getDirect(ep) {
 	if (ep.grabLink.slice(0, 5) == "error") {
 		return;
 	}
-	var response = await ajax.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^\/]*?)$/)[1]}`);
-	var json = JSON.parse(response.response);
+	let response = await ajax.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^/]*?)$/)[1]}`);
+	let json = JSON.parse(response.response);
 	if (!json.data || json.data.length < 1) {
 		ep.grabLink = "error: no sources found";
 		return;
 	}
-	var sources = json.data;
+	let sources = json.data;
 
-	var parsedQualityPrefs = config.preferences.general.quality_order.replace(/\ /g, "").split(",");
-	for (var i of parsedQualityPrefs) {
-		for (var j of sources) {
+	let parsedQualityPrefs = config.preferences.general.quality_order.replace(/\s/g, "").split(",");
+	for (let i of parsedQualityPrefs) {
+		for (let j of sources) {
 			if (j.label == i + "p") {
 				ep.grabLink = j.file;
 				return;
@@ -137,9 +137,9 @@ async function nova_getDirect(ep) {
 //#region Generic
 async function generic_eachEpisode(data, func, fin) {
 	everything.showSpinner();
-	var promises = [];
-	var progress = 0;
-	for (var i in data.episodes) {
+	let promises = [];
+	let progress = 0;
+	for (let i in data.episodes) {
 		promises.push(func(data.episodes[i]).then(() => {
 			progress++;
 			everything.spinnerText(`${progress}/${promises.length}`);

@@ -3,7 +3,7 @@
 //#region KimCartoon
 exports["kimcartoon.to_UIFix"] = () => {
 	//linkdisplay
-	var $ld = $("#KG-linkdisplay");
+	let $ld = $("#KG-linkdisplay");
 	$ld.find(".barTitle").removeClass("barTitle")
 		.css({
 			"height": "20px",
@@ -16,7 +16,7 @@ exports["kimcartoon.to_UIFix"] = () => {
 	$ld.find(".arrow-general").remove();
 
 	//preference panel
-	var $pf = $("#KG-preferences");
+	let $pf = $("#KG-preferences");
 	$pf.find(".barTitle").removeClass("barTitle")
 		.css({
 			"height": "20px",
@@ -29,8 +29,8 @@ exports["kimcartoon.to_UIFix"] = () => {
 	$pf.find(".arrow-general").remove();
 
 	//opts
-	var $opts = $("#KG-opts-widget");
-	var title = $opts.find(".barTitle").html();
+	let $opts = $("#KG-opts-widget");
+	let title = $opts.find(".barTitle").html();
 	$opts.before(`<div class="title-list icon">${title}</div><div class="clear2"></div>`);
 	$(".icon:eq(1)").css({ "width": "100%", "box-sizing": "border-box" });
 	$(".KG-preferences-button").css("margin-top", "5px");

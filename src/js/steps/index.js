@@ -15,7 +15,7 @@ exports.defaultGetLink = () => {
 	if (!util.if(location.pathname, config.sites[location.hostname].contentPath)) { //captcha
 		return;
 	}
-	link = util.findLink(document.body.innerHTML, config.servers[location.hostname][everything.status.server].regex);
+	let link = util.findLink(document.body.innerHTML, config.servers[location.hostname][everything.status.server].regex);
 	everything.status.episodes[everything.status.current].grabLink = link || "error (selected server may not be available)";
 
 	everything.status.current++;
@@ -37,15 +37,15 @@ exports.defaultFinished = () => {
 exports.turboBegin = async () => {
 	$("#KG-linkdisplay").slideDown();
 	everything.showSpinner();
-	var progress = 0;
-	var func = async (ep) => {
-		var html = (await ajax.get(ep.kissLink + `&s=${everything.status.server}`)).response;
-		var link = util.findLink(html, config.servers[location.hostname][everything.status.server].regex);
+	let progress = 0;
+	let func = async (ep) => {
+		let html = (await ajax.get(ep.kissLink + `&s=${everything.status.server}`)).response;
+		let link = util.findLink(html, config.servers[location.hostname][everything.status.server].regex);
 		ep.grabLink = link || "error: server not available or captcha";
 		progress++;
 		everything.spinnerText(`${progress}/${promises.length}`);
 	};
-	var promises = [];
+	let promises = [];
 	util.for(everything.status.episodes, (i, obj) => {
 		promises.push(func(obj));
 	});

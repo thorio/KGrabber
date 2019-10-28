@@ -1,4 +1,4 @@
 unsafeWindow.KG = {};
-var everything = unsafeWindow.KG = require("./everything");
+let everything = unsafeWindow.KG = require("./everything");
 
 everything.siteLoad();

@@ -2,8 +2,8 @@ exports.log = require("./log");
 exports.ajax = require("./ajax");
 
 exports.findLink = (html, regexString) => {
-	var re = new RegExp(regexString);
-	var result = html.match(re);
+	let re = new RegExp(regexString);
+	let result = html.match(re);
 	if (result && result.length > 0) {
 		return result[0].split('"')[1];
 	}
@@ -25,7 +25,7 @@ exports.for = (array, min, max, func) => {
 	}
 	min = Math.max(0, min) || 0;
 	max = Math.min(array.length - 1, max);
-	for (var i = min; i <= max; i++) {
+	for (let i = min; i <= max; i++) {
 		func(i, array[i]);
 	}
 }
@@ -45,5 +45,7 @@ exports.timeout = (time) => {
 exports.tryParseJson = (str) => {
 	try {
 		return JSON.parse(str);
-	} catch {}
+	} catch (e) {
+		// return undefined
+	}
 }

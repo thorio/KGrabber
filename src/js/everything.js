@@ -8,7 +8,7 @@ const config = require("./config"),
 	css = require("./css"),
 	html = require("./html");
 
-var everything = module.exports;
+let everything = module.exports;
 
 //entry function
 exports.siteLoad = () => {
@@ -56,10 +56,10 @@ exports.clearStatus = () => {
 //#region Preferences
 exports.loadPreferences = () => {
 	try {
-		var prefs = JSON.parse(GM_getValue("KG-preferences", ""));
-		for (var i in prefs) { //load values while not removing new defaults
+		let prefs = JSON.parse(GM_getValue("KG-preferences", ""));
+		for (let i in prefs) { //load values while not removing new defaults
 			if (config.preferences[i] != undefined) {
-				for (var j in prefs[i]) {
+				for (let j in prefs[i]) {
 					if (config.preferences[i][j] != undefined) {
 						config.preferences[i][j] = prefs[i][j];
 					}
@@ -72,11 +72,11 @@ exports.loadPreferences = () => {
 	if ($("#KG-preferences").length == 0) {
 		return;
 	}
-	for (var i in config.preferences) {
-		var group = config.preferences[i];
-		var $group = $(`<div id="KG-preferences-container"></div>`);
-		for (var j in config.preferences[i]) {
-			var html = "";
+	for (let i in config.preferences) {
+		let group = config.preferences[i];
+		let $group = $(`<div id="KG-preferences-container"></div>`);
+		for (let j in config.preferences[i]) {
+			let html = "";
 			switch (typeof group[j]) {
 				case "string":
 					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="text" value="${group[j]}" class="KG-input-text right" id="KG-preference-${i}-${j}"></div>`;
@@ -92,7 +92,7 @@ exports.loadPreferences = () => {
 			}
 			$group.append(html);
 		}
-		var headerTitle = i.replace(/_/g, " ").replace(/[a-z]+/g, (s) => s.charAt(0).toUpperCase() + s.slice(1));
+		let headerTitle = i.replace(/_/g, " ").replace(/[a-z]+/g, (s) => s.charAt(0).toUpperCase() + s.slice(1));
 		$("#KG-preferences-container-outer").append(`<div class="KG-preferences-header KG-bigChar">${headerTitle}</div>`)
 			.append($group);
 	}
@@ -101,8 +101,8 @@ exports.loadPreferences = () => {
 
 exports.savePreferences = () => {
 	$("#KG-preferences-container input").each((i, obj) => {
-		var ids = obj.id.slice(14).match(/[^-]+/g);
-		var value;
+		let ids = obj.id.slice(14).match(/[^-]+/g);
+		let value;
 		switch (obj.type) {
 			case "checkbox":
 				value = obj.checked;
@@ -126,8 +126,8 @@ exports.resetPreferences = () => {
 //#region UI
 //injects element into page
 exports.injectWidgets = () => {
-	var site = config.sites[location.hostname];
-	var epCount = $(".listing a").length;
+	let site = config.sites[location.hostname];
+	let epCount = $(".listing a").length;
 
 	//css
 	$(document.head).append(`<style>${css}</style>`);
@@ -137,7 +137,7 @@ exports.injectWidgets = () => {
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
 	$("#KG-input-from").attr("max", epCount);
-	for (var i in config.servers[location.hostname]) {
+	for (let i in config.servers[location.hostname]) {
 		$(`<option value="${i}">${config.servers[location.hostname][i].name}</>`)
 			.appendTo("#KG-input-server");
 	}
@@ -170,7 +170,7 @@ exports.injectWidgets = () => {
 	everything.applyColors();
 
 	//fixes
-	for (var i in site.fixes) {
+	for (let i in site.fixes) {
 		if (fixes[site.fixes[i]]) {
 			fixes[site.fixes[i]]();
 		} else {
@@ -180,7 +180,7 @@ exports.injectWidgets = () => {
 }
 
 exports.applyColors = () => {
-	var site = config.sites[location.hostname];
+	let site = config.sites[location.hostname];
 	$(".KG-episodelist-button, .KG-button")
 		.css({ "color": site.buttonTextColor, "background-color": site.buttonColor });
 	$(".KG-bigChar")
@@ -189,8 +189,8 @@ exports.applyColors = () => {
 
 //grays out servers that aren't available on the url
 exports.markAvailableServers = async (url, server) => {
-	var servers = []
-	var html = await $.get(`${url}&s=${server}`);
+	let servers = []
+	let html = await $.get(`${url}&s=${server}`);
 	$(html).find("#selectServer").children().each((i, obj) => {
 		servers.push(obj.value.match(/s=\w+/g)[0].slice(2, Infinity));
 	})
@@ -206,23 +206,23 @@ exports.markAvailableServers = async (url, server) => {
 }
 
 exports.displayLinks = () => {
-	var html = "";
-	var padLength = Math.max(2, $(".listing a").length.toString().length);
+	let html = "";
+	let padLength = Math.max(2, $(".listing a").length.toString().length);
 	util.for(everything.status.episodes, (i, obj) => {
-		var num = obj.num.toString().padStart(padLength, "0");
-		var number = `<div class="KG-linkdisplay-episodenumber">E${num}:</div>`;
-		var link = `<a href="${obj.grabLink}" target="_blank">${obj.grabLink}</a>`;
+		let num = obj.num.toString().padStart(padLength, "0");
+		let number = `<div class="KG-linkdisplay-episodenumber">E${num}:</div>`;
+		let link = `<a href="${obj.grabLink}" target="_blank">${obj.grabLink}</a>`;
 		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);
 	$("#KG-linkdisplay .KG-dialog-title").text(`Extracted Links | ${everything.status.title}`);
 
 	//exporters
-	var onSamePage = everything.status.url == location.href;
+	let onSamePage = everything.status.url == location.href;
 	$("#KG-input-export").empty();
 	$("#KG-input-export").append(`<option value="" selected disabled hidden>Export as</option>`);
-	for (var i in exporters) {
-		var $exporter = $(`<option value="${i}">${exporters[i].name}</option>`).appendTo("#KG-input-export");
+	for (let i in exporters) {
+		let $exporter = $(`<option value="${i}">${exporters[i].name}</option>`).appendTo("#KG-input-export");
 		if ((exporters[i].requireSamePage && !onSamePage) ||
 			(exporters[i].requireDirectLinks && everything.status.linkType != "direct")
 		) {
@@ -276,7 +276,6 @@ exports.startRange = (start, end) => {
 		linkType: config.servers[location.hostname][$("#KG-input-server").val()].linkType,
 		automaticDone: false,
 	}
-	var epCount = $(".listing a").length;
 	util.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
 		everything.status.episodes.push({
 			kissLink: obj.href,
@@ -284,11 +283,11 @@ exports.startRange = (start, end) => {
 			num: i + 1,
 		});
 	});
-	var customStep = config.servers[location.hostname][everything.status.server].customStep;
+	let customStep = config.servers[location.hostname][everything.status.server].customStep;
 	if (customStep && steps[customStep] && !config.preferences.compatibility.force_default_grabber) {
 		everything.status.func = customStep; //use custom grabber
 	}
-	var experimentalCustomStep = config.servers[location.hostname][everything.status.server].experimentalCustomStep;
+	let experimentalCustomStep = config.servers[location.hostname][everything.status.server].experimentalCustomStep;
 	if (experimentalCustomStep && steps[experimentalCustomStep] && config.preferences.compatibility.enable_experimental_grabbers) {
 		everything.status.func = experimentalCustomStep; //use experimental grabber
 	}
@@ -304,7 +303,7 @@ exports.startRange = (start, end) => {
 exports.exportData = (exporter) => {
 	$("#KG-input-export").val("");
 
-	var text = exporters[exporter].export(everything.status);
+	let text = exporters[exporter].export(everything.status);
 	$("#KG-linkdisplay-export-text").text(text);
 	$("#KG-input-export-download").attr({
 		href: `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`,

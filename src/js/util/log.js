@@ -1,4 +1,4 @@
-var logCss = "background-color: #456304; padding: 0 5px; border-radius: 3px; color: #fff;";
+let logCss = "background-color: #456304; padding: 0 5px; border-radius: 3px; color: #fff;";
 
 exports.loginfo = (...obj) => {
 	console.info("%cKissGrabber", logCss, ...obj);

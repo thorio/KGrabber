@@ -1,29 +1,31 @@
 {
-  "name": "testrepo",
-  "version": "1.0.0",
-  "description": "Available on [GreasyFork](https://greasyfork.org/en/scripts/383649-kissgrabber)!",
-  "main": "gulpfile.js",
-  "dependencies": {},
-  "devDependencies": {
-    "browserify": "^16.5.0",
-    "del": "^5.1.0",
-    "gulp": "^4.0.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-insert": "^0.5.0",
-    "vinyl-source-stream": "^2.0.0"
-  },
-  "scripts": {
-    "build": "gulp build",
-    "clean": "gulp clean"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/thorio/testrepo.git"
-  },
-  "author": "",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/thorio/testrepo/issues"
-  },
-  "homepage": "https://github.com/thorio/testrepo#readme"
+	"name": "testrepo",
+	"version": "1.0.0",
+	"description": "Available on [GreasyFork](https://greasyfork.org/en/scripts/383649-kissgrabber)!",
+	"main": "gulpfile.js",
+	"dependencies": {},
+	"devDependencies": {
+		"browserify": "^16.5.0",
+		"del": "^5.1.0",
+		"eslint": "^6.6.0",
+		"gulp": "^4.0.2",
+		"gulp-concat": "^2.6.1",
+		"gulp-insert": "^0.5.0",
+		"vinyl-source-stream": "^2.0.0"
+	},
+	"scripts": {
+		"build": "npx gulp build",
+		"test": "npx eslint src/**/*.js",
+		"clean": "npx gulp clean"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/thorio/testrepo.git"
+	},
+	"author": "",
+	"license": "GPL-3.0",
+	"bugs": {
+		"url": "https://github.com/thorio/testrepo/issues"
+	},
+	"homepage": "https://github.com/thorio/testrepo#readme"
 }

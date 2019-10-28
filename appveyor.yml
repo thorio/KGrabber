@@ -7,10 +7,10 @@ install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
   - npm install
-  - npm install gulp-cli -g
 
 build_script:
-  - gulp build
+  - npm run build
+  - npm run test
 
 build: on
 

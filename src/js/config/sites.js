@@ -26,4 +26,4 @@ module.exports = {
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
 	},
-}
+};

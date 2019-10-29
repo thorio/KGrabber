@@ -8,7 +8,7 @@ exports.get = (url, headers) => {
 			onerror: reject,
 		});
 	});
-}
+};
 
 exports.head = (url, headers) => {
 	return new Promise((resolve, reject) => {
@@ -20,7 +20,7 @@ exports.head = (url, headers) => {
 			onerror: reject,
 		});
 	});
-}
+};
 
 exports.post = (url, data, headers) => {
 	return new Promise((resolve, reject) => {
@@ -33,4 +33,4 @@ exports.post = (url, data, headers) => {
 			onerror: reject,
 		});
 	});
-}
+};

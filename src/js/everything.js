@@ -25,13 +25,13 @@ exports.siteLoad = () => {
 	if (everything.loadStatus()) {
 		steps[everything.status.func]();
 	}
-}
+};
 
 //#region Status
 //saves data to session storage
 exports.saveStatus = () => {
 	sessionStorage["KG-status"] = JSON.stringify(everything.status);
-}
+};
 
 //attempts to load data from session storage
 exports.loadStatus = () => {
@@ -45,12 +45,12 @@ exports.loadStatus = () => {
 		return false;
 	}
 	return true;
-}
+};
 
 //clears data from session storage
 exports.clearStatus = () => {
 	sessionStorage.clear("KG-data");
-}
+};
 //#endregion
 
 //#region Preferences
@@ -97,7 +97,7 @@ exports.loadPreferences = () => {
 			.append($group);
 	}
 	everything.applyColors();
-}
+};
 
 exports.savePreferences = () => {
 	$("#KG-preferences-container input").each((i, obj) => {
@@ -115,12 +115,12 @@ exports.savePreferences = () => {
 	});
 
 	GM_setValue("KG-preferences", JSON.stringify(config.preferences));
-}
+};
 
 exports.resetPreferences = () => {
 	GM_setValue("KG-preferences", "");
 	location.reload();
-}
+};
 //#endregion
 
 //#region UI
@@ -177,7 +177,7 @@ exports.injectWidgets = () => {
 			log.logerr(`nonexistant fix "${site.fixes[i]}"`);
 		}
 	}
-}
+};
 
 exports.applyColors = () => {
 	let site = config.sites[location.hostname];
@@ -185,15 +185,15 @@ exports.applyColors = () => {
 		.css({ "color": site.buttonTextColor, "background-color": site.buttonColor });
 	$(".KG-bigChar")
 		.css("color", $(".bigChar").css("color"));
-}
+};
 
 //grays out servers that aren't available on the url
 exports.markAvailableServers = async (url, server) => {
-	let servers = []
+	let servers = [];
 	let html = await $.get(`${url}&s=${server}`);
 	$(html).find("#selectServer").children().each((i, obj) => {
 		servers.push(obj.value.match(/s=\w+/g)[0].slice(2, Infinity));
-	})
+	});
 	if (servers.length == 0) {
 		log.logwarn("no servers found");
 	}
@@ -203,7 +203,7 @@ exports.markAvailableServers = async (url, server) => {
 			$(obj).css("color", "#888");
 		}
 	});
-}
+};
 
 exports.displayLinks = () => {
 	let html = "";
@@ -245,7 +245,7 @@ exports.displayLinks = () => {
 				continue;
 			}
 			$(`<input type="button" class="KG-button" value="${actions[i].name}">`)
-				.click(() => { actions[i].execute(everything.status) })
+				.click(() => { actions[i].execute(everything.status); })
 				.appendTo("#KG-action-container");
 		}
 	}
@@ -254,14 +254,14 @@ exports.displayLinks = () => {
 	everything.applyColors();
 
 	$("#KG-linkdisplay").show();
-}
+};
 //#endregion
 
 //#region Start
 //gets link for single episode
 exports.startSingle = (num) => {
 	everything.startRange(num, num);
-}
+};
 
 //gets links for a range of episodes
 exports.startRange = (start, end) => {
@@ -275,7 +275,7 @@ exports.startRange = (start, end) => {
 		func: "defaultBegin",
 		linkType: config.servers[location.hostname][$("#KG-input-server").val()].linkType,
 		automaticDone: false,
-	}
+	};
 	util.for($(`.listing a`).get().reverse(), start - 1, end - 1, (i, obj) => {
 		everything.status.episodes.push({
 			kissLink: obj.href,
@@ -295,7 +295,7 @@ exports.startRange = (start, end) => {
 	everything.saveStatus();
 	steps[everything.status.func]();
 	$("html, body").animate({ scrollTop: 0 }, "slow");
-}
+};
 //#endregion
 
 //#region Misc
@@ -308,40 +308,40 @@ exports.exportData = (exporter) => {
 	$("#KG-input-export-download").attr({
 		href: `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`,
 		download: `${everything.status.title}.${exporters[exporter].extension}`,
-	})
+	});
 	$("#KG-linkdisplay-export").show();
-}
+};
 
 exports.showSpinner = () => {
 	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div><div id="KG-spinner-text"><div>`);
-}
+};
 
 exports.spinnerText = (str) => {
 	$("#KG-spinner-text").text(str);
-}
+};
 
 //hides the linkdisplay
 exports.closeLinkdisplay = () => {
 	$("#KG-linkdisplay").slideUp();
 	everything.clearStatus();
-}
+};
 
 //saves a new preferred server
 exports.updatePreferredServer = () => {
 	localStorage["KG-preferredServer"] = $("#KG-input-server").val();
-}
+};
 
 //loads preferred server
 exports.loadPreferredServer = () => {
 	$("#KG-input-server").val(localStorage["KG-preferredServer"]);
-}
+};
 
 exports.showPreferences = () => {
 	$("#KG-preferences").slideDown();
-}
+};
 
 exports.closePreferences = () => {
 	everything.savePreferences();
 	$("#KG-preferences").slideUp();
-}
+};
 //#endregion

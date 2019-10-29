@@ -15,4 +15,4 @@ module.exports = {
 		enable_experimental_grabbers: false,
 		disable_automatic_actions: false,
 	},
-}
+};

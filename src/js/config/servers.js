@@ -41,7 +41,7 @@ let kissanime = exports["kissanime.ru"] = {
 		name: "Beta",
 		linkType: "direct",
 	},
-}
+};
 
 let kimcartoon = exports["kimcartoon.to"] = {
 	"openload": kissanime.openload,
@@ -67,7 +67,7 @@ let kimcartoon = exports["kimcartoon.to"] = {
 		name: "FE (luxubu.review)",
 		linkType: "embed",
 	},
-}
+};
 
 let kissasian = exports["kissasian.sh"] = {
 	"openload": kissanime.openload,
@@ -93,7 +93,7 @@ let kissasian = exports["kissasian.sh"] = {
 		name: "Alpha",
 		linkType: "direct",
 	},
-}
+};
 
 let kisstvshow = exports["kisstvshow.to"] = {
 	"openload": kissanime.openload,
@@ -115,4 +115,4 @@ let kisstvshow = exports["kisstvshow.to"] = {
 		name: "FE (rubicstreaming.com)",
 		linkType: "embed",
 	},
-}
+};

@@ -14,7 +14,7 @@ exports.list = {
 		}
 		return str;
 	}
-}
+};
 
 exports.m3u = {
 	name: "m3u8 playlist",
@@ -29,7 +29,7 @@ exports.m3u = {
 		});
 		return str;
 	}
-}
+};
 
 exports.json = {
 	name: "json",
@@ -53,7 +53,7 @@ exports.json = {
 		}
 		return JSON.stringify(json);
 	},
-}
+};
 
 exports.html = {
 	name: "html list",
@@ -69,7 +69,7 @@ exports.html = {
 		str += "	</body>\n</html>\n";
 		return str;
 	}
-}
+};
 
 exports.csv = {
 	name: "csv",
@@ -84,7 +84,7 @@ exports.csv = {
 		}
 		return str;
 	}
-}
+};
 
 exports.aria2c = {
 	name: "aria2c file",
@@ -99,7 +99,7 @@ exports.aria2c = {
 		});
 		return str;
 	}
-}
+};
 
 exports.idmbat = {
 	name: "IDM bat file",
@@ -129,4 +129,4 @@ ping localhost -n 2 > nul\n\n`;
 		});
 		return str;
 	}
-}
+};

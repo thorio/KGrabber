@@ -9,7 +9,7 @@ exports.defaultBegin = () => {
 	everything.status.func = "defaultGetLink";
 	everything.saveStatus();
 	location.href = everything.status.episodes[everything.status.current].kissLink + `&s=${everything.status.server}`;
-}
+};
 
 exports.defaultGetLink = () => {
 	if (!util.if(location.pathname, config.sites[location.hostname].contentPath)) { //captcha
@@ -26,11 +26,11 @@ exports.defaultGetLink = () => {
 		location.href = everything.status.episodes[everything.status.current].kissLink + `&s=${everything.status.server}`;
 	}
 	everything.saveStatus();
-}
+};
 
 exports.defaultFinished = () => {
 	everything.displayLinks();
-}
+};
 //#endregion
 
 //#region Turbo
@@ -49,10 +49,10 @@ exports.turboBegin = async () => {
 	util.for(everything.status.episodes, (i, obj) => {
 		promises.push(func(obj));
 	});
-	everything.spinnerText(`0/${promises.length}`)
+	everything.spinnerText(`0/${promises.length}`);
 	await Promise.all(promises);
 	everything.status.func = "defaultFinished";
 	everything.saveStatus();
 	everything.displayLinks();
-}
+};
 //#endregion

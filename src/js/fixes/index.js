@@ -12,7 +12,7 @@ exports["kimcartoon.to_UIFix"] = () => {
 	$("#KG-linkdisplay-title").css({
 		"font-size": "20px",
 		"color": $("a.bigChar").css("color"),
-	})
+	});
 	$ld.find(".arrow-general").remove();
 
 	//preference panel
@@ -39,7 +39,7 @@ exports["kimcartoon.to_UIFix"] = () => {
 
 	//general
 	$(".KG-dialog-title").css("font-size", "18px");
-}
+};
 //#endregion
 
 //#region KissAsian
@@ -49,5 +49,5 @@ exports["kissasian.sh_UIFix"] = () => {
 	$(".KG-dialog-close").hover((e) => {
 		$(e.target).css("color", e.type == "mouseenter" ? "#fff" : "#000");
 	});
-}
+};
 //#endregion

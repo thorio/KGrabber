@@ -19,7 +19,7 @@ exports.rapidvideo_revertDomain = {
 		everything.saveStatus();
 		everything.displayLinks();
 	},
-}
+};
 
 exports.rapidvideo_getDirect = {
 	name: "get direct links",
@@ -30,7 +30,7 @@ exports.rapidvideo_getDirect = {
 			data.linkType = "direct";
 		});
 	},
-}
+};
 
 //asynchronously gets the direct link
 async function rapidvideo_getDirect(ep) {
@@ -38,7 +38,7 @@ async function rapidvideo_getDirect(ep) {
 		return;
 	}
 	let response = await ajax.get(ep.grabLink);
-	if (response.status != 200) {
+	if (response.status != 200) { // TODO replace status codes with constants from http-status-codes
 		ep.grabLink = `error: http status ${response.status}`;
 		return;
 	}
@@ -75,7 +75,7 @@ exports.beta_setQuality = {
 			data.automaticDone = true;
 		});
 	},
-}
+};
 
 async function beta_tryGetQuality(ep) {
 	if (!ep.grabLink.match(/.*=m\d\d/)) { //invalid link
@@ -87,7 +87,7 @@ async function beta_tryGetQuality(ep) {
 	let parsedQualityPrefs = config.preferences.general.quality_order.replace(/\s/g, "").split(",");
 	for (let i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
-			if (await util.ajax.head(rawLink + qualityStrings[i]).status == 200) {
+			if (await util.ajax.head(rawLink + qualityStrings[i]).status == 200) { // TODO rewrite with parallel OR ignore warning
 				ep.grabLink = rawLink + qualityStrings[i];
 				return;
 			}
@@ -106,7 +106,7 @@ exports.nova_getDirect = {
 			data.linkType = "direct";
 		});
 	},
-}
+};
 
 //asynchronously gets the direct link
 async function nova_getDirect(ep) {

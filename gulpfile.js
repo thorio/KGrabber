@@ -9,11 +9,11 @@ const gulp = require("gulp"),
 	build_dir = "./build",
 	prelude_path = require.resolve("browser-pack").replace("index.js", "prelude.js");
 
-var readFile = (path) => new Promise((resolve) => fs.readFile(path, (_err, data) => resolve(data.toString())))
+var readFile = (path) => new Promise((resolve) => fs.readFile(path, (_err, data) => resolve(data.toString())));
 
 var getPrelude = async () => {
 	return "\n// bundled with browserify\n" + (await readFile(prelude_path)).replace(/\s*\/\/.*/g, "").trim();
-}
+};
 
 function copy() {
 	return gulp.src(`${src_dir}/js/**/*`)

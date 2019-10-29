@@ -6,16 +6,12 @@ module.exports = {
 	},
 	"extends": "eslint:recommended",
 	"globals": {
-		"Atomics": "readonly",
-		"SharedArrayBuffer": "readonly",
 		"$": "readonly",
 
-		// tampermonkey functions
+		// tampermonkey
 		"GM_getValue": "readonly",
 		"GM_setValue": "readonly",
 		"GM_xmlhttpRequest": "readonly",
-
-		// direct access to window
 		"unsafeWindow": "writable"
 	},
 	"parserOptions": {
@@ -24,6 +20,9 @@ module.exports = {
 	"rules": {
 		"require-atomic-updates": "off",
 		"no-unused-vars": "warn",
-		"no-useless-escape": "warn"
+		"no-useless-escape": "warn",
+		"no-await-in-loop": "warn",
+		"dot-location": ["warn", "property"],
+		"semi": "warn"
 	}
 }

@@ -1,8 +1,8 @@
 {
-	"name": "testrepo",
-	"version": "1.0.0",
-	"description": "Available on [GreasyFork](https://greasyfork.org/en/scripts/383649-kissgrabber)!",
-	"main": "gulpfile.js",
+	"name": "kissgrabber",
+	"version": "3.0.0-pre2",
+	"description": "Userscript for extracting links from kissanime.ru and similar sites",
+	"main": "src/js/main.js",
 	"dependencies": {},
 	"devDependencies": {
 		"browserify": "^16.5.0",
@@ -20,12 +20,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/thorio/testrepo.git"
+		"url": "git+https://github.com/thorio/KGrabber.git"
 	},
-	"author": "",
+	"author": "Thorou",
 	"license": "GPL-3.0",
 	"bugs": {
-		"url": "https://github.com/thorio/testrepo/issues"
+		"url": "https://github.com/thorio/KGrabber/issues"
 	},
-	"homepage": "https://github.com/thorio/testrepo#readme"
+	"homepage": "https://greasyfork.org/en/scripts/383649-kissgrabber"
 }

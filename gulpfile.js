@@ -7,7 +7,8 @@ const gulp = require("gulp"),
 	fs = require("fs"),
 	src_dir = "./src",
 	build_dir = "./build",
-	prelude_path = require.resolve("browser-pack").replace("index.js", "prelude.js");
+	prelude_path = require.resolve("browser-pack").replace("index.js", "prelude.js"),
+	version_number = require("./package.json").version;
 
 var readFile = (path) => new Promise((resolve) => fs.readFile(path, (_err, data) => resolve(data.toString())));
 
@@ -40,12 +41,12 @@ async function bundle() {
 	return browserify({ entries: [`${build_dir}/js/main.js`] }, { prelude: await getPrelude(), preludePath: "./prelude" })
 		.bundle()
 		.pipe(source("bundle.js"))
-		.pipe(insert.prepend(await readFile(`${src_dir}/header.txt`)))
+		.pipe(insert.prepend((await readFile(`${src_dir}/header.txt`)).replace("{{version}}", version_number)))
 		.pipe(gulp.dest(build_dir));
 }
 
 function clean() {
-	return del(build_dir);
+	return del(`${build_dir}/**/*`);
 }
 
 exports.build = gulp.series(clean, copy, css, html, bundle);

@@ -1,4 +1,4 @@
-{
+module.exports = {
 	"env": {
 		"browser": true,
 		"commonjs": true,
@@ -9,9 +9,13 @@
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly",
 		"$": "readonly",
+
+		// tampermonkey functions
 		"GM_getValue": "readonly",
 		"GM_setValue": "readonly",
 		"GM_xmlhttpRequest": "readonly",
+
+		// direct access to window
 		"unsafeWindow": "writable"
 	},
 	"parserOptions": {

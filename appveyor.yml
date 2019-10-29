@@ -10,9 +10,13 @@ install:
 
 build_script:
   - npm run build
-  - npm run test
 
 build: on
+
+test_script:
+  - npm run test
+
+test: on
 
 artifacts: 
   - path: build/bundle.js

@@ -16,7 +16,8 @@
 	"scripts": {
 		"build": "npx gulp build",
 		"test": "npx eslint src/**/*.js",
-		"clean": "npx gulp clean"
+		"clean": "npx gulp clean",
+		"watch": "npx gulp watch"
 	},
 	"repository": {
 		"type": "git",

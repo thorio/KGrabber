@@ -19,5 +19,5 @@
 // @grant         GM_setValue
 // @run-at        document-end
 // @noframes
-// @require       http://code.jquery.com/jquery-3.3.1.min.js
+// @require       https://code.jquery.com/jquery-3.3.1.min.js
 // ==/UserScript==

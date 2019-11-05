@@ -1,13 +1,13 @@
 <div class="rightBox" id="KG-opts-widget">
 	<div class="barTitle">
 		KissGrabber
-		<button class="KG-preferences-button" onclick="KG.showPreferences()"></button>
+		<button class="KG-preferences-button"></button>
 	</div>
 	<div class="barContent">
 		<div class="arrow-general">
 			&nbsp;
 		</div>
-		<select id="KG-input-server" onchange="KG.updatePreferredServer()" style="">
+		<select id="KG-input-server">
 		</select>
 		<p>
 			from
@@ -15,7 +15,7 @@
 			<input type="number" id="KG-input-to" class="KG-input-episode" min=1>
 		</p>
 		<div class="KG-button-container">
-			<input type="button" class="KG-button" id="KG-input-start" value="Extract Links" onclick="KG.startRange($('#KG-input-from').val(),$('#KG-input-to').val())">
+			<input type="button" class="KG-button" id="KG-input-start" value="Extract Links">
 		</div>
 	</div>
 </div>

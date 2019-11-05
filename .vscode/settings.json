@@ -1,4 +1,13 @@
 {
 	"editor.defaultFormatter": "HookyQR.beautify",
-	"editor.insertSpaces": false
+	"editor.insertSpaces": false,
+	"files.exclude": {
+		".github": true,
+		"build": true,
+		"images": true,
+		"node_modules": true,
+		"LICENSE": true,
+		"package-lock.json": true,
+		"*.code-workspace": true
+	}
 }

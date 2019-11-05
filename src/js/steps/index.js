@@ -1,58 +1,62 @@
 //allows multiple different approaches to collecting links
 const util = require("../util"),
 	ajax = util.ajax,
-	everything = require("../everything"),
-	config = require("../config");
+	statusManager = require("../statusManager"),
+	config = require("../config"),
+	linkDisplay = require("../UI/linkDisplay");
+
+const status = statusManager.get(),
+	site = config.sites.current();
 
 //#region Default
 exports.defaultBegin = () => {
-	everything.status.func = "defaultGetLink";
-	everything.saveStatus();
-	location.href = everything.status.episodes[everything.status.current].kissLink + `&s=${everything.status.server}`;
+	status.func = "defaultGetLink";
+	statusManager.save();
+	location.href = status.episodes[status.current].kissLink + `&s=${status.server}`;
 };
 
 exports.defaultGetLink = () => {
-	if (!util.if(location.pathname, config.sites[location.hostname].contentPath)) { //captcha
+	if (!util.if(location.pathname, site.contentPath)) { //captcha
 		return;
 	}
-	let link = util.findLink(document.body.innerHTML, config.servers[location.hostname][everything.status.server].regex);
-	everything.status.episodes[everything.status.current].grabLink = link || "error (selected server may not be available)";
+	let link = util.findLink(document.body.innerHTML, site.servers[status.server].regex);
+	status.episodes[status.current].grabLink = link || "error (selected server may not be available)";
 
-	everything.status.current++;
-	if (everything.status.current >= everything.status.episodes.length) {
-		everything.status.func = "defaultFinished";
-		location.href = everything.status.url;
+	status.current++;
+	if (status.current >= status.episodes.length) {
+		status.func = "defaultFinished";
+		location.href = status.url;
 	} else {
-		location.href = everything.status.episodes[everything.status.current].kissLink + `&s=${everything.status.server}`;
+		location.href = status.episodes[status.current].kissLink + `&s=${status.server}`;
 	}
-	everything.saveStatus();
+	statusManager.save();
 };
 
 exports.defaultFinished = () => {
-	everything.displayLinks();
+	linkDisplay.load(status);
 };
 //#endregion
 
 //#region Turbo
 exports.turboBegin = async () => {
 	$("#KG-linkdisplay").slideDown();
-	everything.showSpinner();
+	linkDisplay.showSpinner();
 	let progress = 0;
 	let func = async (ep) => {
-		let html = (await ajax.get(ep.kissLink + `&s=${everything.status.server}`)).response;
-		let link = util.findLink(html, config.servers[location.hostname][everything.status.server].regex);
+		let html = (await ajax.get(ep.kissLink + `&s=${status.server}`)).response;
+		let link = util.findLink(html, site.servers[status.server].regex);
 		ep.grabLink = link || "error: server not available or captcha";
 		progress++;
-		everything.spinnerText(`${progress}/${promises.length}`);
+		linkDisplay.setSpinnerText(`${progress}/${promises.length}`);
 	};
 	let promises = [];
-	util.for(everything.status.episodes, (i, obj) => {
+	util.for(status.episodes, (i, obj) => {
 		promises.push(func(obj));
 	});
-	everything.spinnerText(`0/${promises.length}`);
+	linkDisplay.setSpinnerText(`0/${promises.length}`);
 	await Promise.all(promises);
-	everything.status.func = "defaultFinished";
-	everything.saveStatus();
-	everything.displayLinks();
+	status.func = "defaultFinished";
+	statusManager.save();
+	linkDisplay.load(status);
 };
 //#endregion

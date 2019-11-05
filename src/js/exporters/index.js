@@ -1,6 +1,8 @@
 //allows for multiple ways to export collected data
 const util = require("../util"),
-	preferences = require("../config").preferences;
+	preferenceManager = require("../config/preferenceManager");
+
+const preferences = preferenceManager.get();
 
 exports.list = {
 	name: "list",

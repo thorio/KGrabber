@@ -49,5 +49,10 @@ function clean() {
 	return del(`${build_dir}/**/*`);
 }
 
-exports.build = gulp.series(clean, copy, css, html, bundle);
+function watch() {
+	gulp.watch(src_dir, build);
+}
+
+const build = exports.build = gulp.series(clean, copy, css, html, bundle);
+exports.watch = watch;
 exports.clean = clean;

@@ -1,12 +1,12 @@
+<!-- TODO move save and help buttons down, next to reset -->
 <div class="bigBarContainer" id="KG-preferences" style="display: none;">
 	<div class="barTitle">
 		<div class="KG-dialog-title">
 			Preferences
-			<a class="KG-preferences-help-button" href="https://github.com/thorio/KGrabber/wiki/Preferences" target="blank">?</a>
 		</div>
-		<a class="KG-dialog-close" onclick="KG.closePreferences()">
-			save &nbsp;
-		</a>
+		<span class="KG-dialog-close">
+			&#10060; &nbsp;
+		</span>
 	</div>
 	<div class="barContent">
 		<div class="arrow-general">
@@ -14,7 +14,9 @@
 		<div id="KG-preferences-container-outer">
 		</div>
 		<div class="KG-button-container">
-			<input type="button" value="Reset to Defaults" class="KG-button" style="float: right;" onclick="KG.resetPreferences()">
+			<input type="button" value="Reset to Defaults" class="KG-button float-left" id="KG-preferences-reset">
+			<a class="KG-button float-left" href="https://github.com/thorio/KGrabber/wiki/Preferences" target="blank">Help</a>
+			<input type="button" value="Save" class="KG-button float-right" id="KG-preferences-save">
 		</div>
 	</div>
 </div>

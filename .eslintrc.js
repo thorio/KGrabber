@@ -2,18 +2,12 @@ module.exports = {
 	"env": {
 		"browser": true,
 		"commonjs": true,
-		"es6": true
+		"es6": true,
+		"greasemonkey": true,
+		"jquery": true
 	},
 	"extends": "eslint:recommended",
-	"globals": {
-		"$": "readonly",
-
-		// tampermonkey
-		"GM_getValue": "readonly",
-		"GM_setValue": "readonly",
-		"GM_xmlhttpRequest": "readonly",
-		"unsafeWindow": "writable"
-	},
+	"globals": {},
 	"parserOptions": {
 		"ecmaVersion": 2018
 	},

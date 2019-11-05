@@ -13,6 +13,15 @@
 			"presentation": {
 				"reveal": "silent"
 			}
+		},
+		{
+			"type": "gulp",
+			"task": "watch",
+			"group": "none",
+			"presentation": {
+				"reveal": "silent"
+			},
+			"problemMatcher": []
 		}
 	]
 }

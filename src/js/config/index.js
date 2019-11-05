@@ -1,5 +1,4 @@
 module.exports = {
-	preferences: require("./preferences"),
-	servers: require("./servers"),
+	preferenceManager: require("./preferenceManager"),
 	sites: require("./sites"),
 };

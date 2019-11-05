@@ -1,10 +1,4 @@
-let kissanime = exports["kissanime.ru"] = {
-	"rapidvideo": {
-		regex: '"https://www.novelplanet.me/v/.*?"',
-		name: "RapidNova (no captcha)",
-		linkType: "embed",
-		customStep: "turboBegin",
-	},
+let kissanime = exports.kissanime = {
 	"hydrax": {
 		regex: '"https://replay.watch/hydrax.html\\??.*?#slug=.*?"',
 		name: "HydraX (no captcha)",
@@ -43,12 +37,12 @@ let kissanime = exports["kissanime.ru"] = {
 	},
 };
 
-let kimcartoon = exports["kimcartoon.to"] = {
+let kimcartoon = exports.kimcartoon = {
 	"openload": kissanime.openload,
 	"streamango": kissanime.streamango,
 	"beta": kissanime.beta,
 	"rapid": {
-		regex: kissanime.rapidvideo.regex,
+		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 		name: "RapidVideo",
 		linkType: "embed",
 	},
@@ -69,7 +63,7 @@ let kimcartoon = exports["kimcartoon.to"] = {
 	},
 };
 
-let kissasian = exports["kissasian.sh"] = {
+let kissasian = exports.kissasian = {
 	"openload": kissanime.openload,
 	"beta": kissanime.beta,
 	"rapid": kimcartoon.rapid,
@@ -95,7 +89,7 @@ let kissasian = exports["kissasian.sh"] = {
 	},
 };
 
-let kisstvshow = exports["kisstvshow.to"] = {
+exports.kisstvshow = {
 	"openload": kissanime.openload,
 	"streamango": kissanime.streamango,
 	"beta": kissanime.beta,

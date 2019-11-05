@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.6.4
+// @version       2.6.5
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -32,12 +32,6 @@ unsafeWindow.KG = {};
 //#region Servers
 KG.knownServers = {};
 KG.knownServers["kissanime.ru"] = {
-	"rapidvideo": {
-		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-		name: "RapidNova (no captcha)",
-		linkType: "embed",
-		customStep: "turboBegin",
-	},
 	"hydrax": {
 		regex: '"https://replay.watch/hydrax.html\\??.*?#slug=.*?"',
 		name: "HydraX (no captcha)",

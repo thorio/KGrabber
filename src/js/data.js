@@ -1,12 +1,6 @@
 //#region Servers
 KG.knownServers = {};
 KG.knownServers["kissanime.ru"] = {
-	"rapidvideo": {
-		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
-		name: "RapidNova (no captcha)",
-		linkType: "embed",
-		customStep: "turboBegin",
-	},
 	"hydrax": {
 		regex: '"https://replay.watch/hydrax.html\\??.*?#slug=.*?"',
 		name: "HydraX (no captcha)",

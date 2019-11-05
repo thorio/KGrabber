@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       2.6.3
+// @version       2.6.4
 // @description   extracts embed links from kiss sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
@@ -33,7 +33,7 @@ unsafeWindow.KG = {};
 KG.knownServers = {};
 KG.knownServers["kissanime.ru"] = {
 	"rapidvideo": {
-		regex: '"https://www.novelplanet.me/v/.*?"',
+		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 		name: "RapidNova (no captcha)",
 		linkType: "embed",
 		customStep: "turboBegin",
@@ -81,7 +81,7 @@ KG.knownServers["kimcartoon.to"] = {
 	"streamango": KG.knownServers["kissanime.ru"].streamango,
 	"beta": KG.knownServers["kissanime.ru"].beta,
 	"rapid": {
-		regex: KG.knownServers["kissanime.ru"].rapidvideo.regex,
+		regex: '"https://w*?.*?rapidvid.to/e/.*?"',
 		name: "RapidVideo",
 		linkType: "embed",
 	},

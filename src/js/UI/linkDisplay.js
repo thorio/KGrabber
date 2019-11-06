@@ -86,7 +86,8 @@ function setHandlers() {
 }
 
 async function executeAction(action) {
-	await action.execute(status);
+	showSpinner();
+	await action.execute(status, setSpinnerText);
 	statusManager.save();
 	load(status);
 }
@@ -99,10 +100,10 @@ function runExporter(name) {
 	showExports();
 }
 
-exports.showSpinner = () =>
+let showSpinner = () =>
 	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div><div id="KG-spinner-text"><div>`);
 
-exports.setSpinnerText = (str) =>
+let setSpinnerText = (str) =>
 	$("#KG-spinner-text").text(str);
 
 function setExportText(text) {

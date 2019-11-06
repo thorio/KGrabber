@@ -10,8 +10,8 @@ let beta_setQuality = {
 	requireLinkType: "direct", // TODO make enum
 	servers: ["beta2"],
 	automatic: true,
-	execute: async (status) => {
-		await shared.eachEpisode(status, beta_tryGetQuality);
+	execute: async (status, setSpinnerText) => {
+		await shared.eachEpisode(status, beta_tryGetQuality, setSpinnerText);
 		status.automaticDone = true;
 	},
 };

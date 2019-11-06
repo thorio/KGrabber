@@ -10,7 +10,8 @@ let rapidvideo_revertDomain = {
 	requireLinkType: "embed",
 	servers: ["rapid"],
 	automatic: true,
-	execute: async (status) => {
+	// eslint-disable-next-line no-unused-vars
+	execute: async (status, _setSpinnerText) => {
 		for (let i in status.episodes) {
 			status.episodes[i].grabLink = status.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com");
 		}

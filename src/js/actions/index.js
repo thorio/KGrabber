@@ -31,7 +31,7 @@ unsafeWindow.availableActions = exports.available = (server, linkType, automatic
 		return true;
 	});
 
-exports.run = async (action) => {
+exports.run = async (action, setSpinnerText) => {
 	await action.execute();
 	if (action.automatic) {
 		status.automaticDone = true;

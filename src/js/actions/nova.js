@@ -13,8 +13,8 @@ let nova_getDirect = {
 	name: "get direct links",
 	requireLinkType: "embed",
 	servers: ["nova", "rapidvideo"],
-	execute: async (data) => {
-		await shared.eachEpisode(data, _nova_getDirect);
+	execute: async (data, setSpinnerText) => {
+		await shared.eachEpisode(data, _nova_getDirect, setSpinnerText);
 		data.linkType = "direct";
 	},
 };

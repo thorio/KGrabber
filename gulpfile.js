@@ -16,6 +16,8 @@ var getPrelude = async () => {
 	return "\n// bundled with browserify\n" + (await readFile(prelude_path)).replace(/\s*\/\/.*/g, "").trim();
 };
 
+var watching = false;
+
 function copy() {
 	return gulp.src(`${src_dir}/js/**/*`)
 		.pipe(insert.transform((contents, file) => `// src\\js\\${file.relative}\n${contents}`))
@@ -40,6 +42,7 @@ function html() {
 async function bundle() {
 	return browserify({ entries: [`${build_dir}/js/main.js`] }, { prelude: await getPrelude(), preludePath: "./prelude" })
 		.bundle()
+		.on("error", swallowIfWatching)
 		.pipe(source("bundle.js"))
 		.pipe(insert.prepend((await readFile(`${src_dir}/header.txt`)).replace("{{version}}", version_number)))
 		.pipe(gulp.dest(build_dir));
@@ -50,7 +53,14 @@ function clean() {
 }
 
 function watch() {
+	watching = true;
 	gulp.watch(src_dir, build);
+}
+
+function swallowIfWatching(error) {
+	if (!watching) {
+		throw error.toString();
+	}
 }
 
 const build = exports.build = gulp.series(clean, copy, css, html, bundle);

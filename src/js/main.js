@@ -3,15 +3,14 @@ const config = require("./config"),
 	log = util.log,
 	steps = require("./steps"),
 	UI = require("./UI"),
-	statusManager = require("./statusManager");
+	statusManager = require("./statusManager"),
+	page = require("./UI/page");
 
 const status = statusManager.get(),
 	site = config.sites.current();
 
-unsafeWindow.require = require;
-
 if (site) {
-	if (util.if(location.pathname, site.contentPath) && UI.page.getTitle !== "") {
+	if (util.if(page.location.pathname, site.contentPath) && UI.page.title() !== "") {
 		UI.injectAll();
 		util.call(site.patches);
 	}
@@ -20,5 +19,5 @@ if (site) {
 		steps[status.func]();
 	}
 } else {
-	log.err(`${UI.page.getHost} not supported`);
+	log.err(`${UI.page.location.hostname} not supported`);
 }

@@ -3,7 +3,8 @@ const shared = require("./shared"),
 	util = require("../util"),
 	html = require("../html"),
 	actions = require("../actions"),
-	statusManager = require("../statusManager");
+	statusManager = require("../statusManager"),
+	page = require("./page");
 
 const status = statusManager.get();
 
@@ -13,10 +14,10 @@ exports.inject = async () => {
 	if (!$("#KG-linkdisplay").length) util.log.err(new Error("linkDisplay not injected"));
 };
 
-let load = exports.load = (status) => {
+let load = exports.load = () => {
 	setTitle(`Extracted Links | ${status.title}`);
 	loadLinks(status.episodes);
-	loadExporters();
+	loadExporters(exporters.sorted(status.linkType, status.url == page.href));
 	loadActions(actions.available(status.server, status.linkType, status.automaticDone));
 
 	shared.applyColors();
@@ -32,7 +33,7 @@ function setTitle(text) {
 
 function loadLinks(episodes) { // TODO refactor this
 	let html = "";
-	let padLength = Math.max(2, $(".listing a").length.toString().length);
+	let padLength = Math.max(2, page.episodeCount().toString().length);
 	util.for(episodes, (i, obj) => {
 		let num = obj.num.toString().padStart(padLength, "0");
 		let number = `<div class="KG-linkdisplay-episodenumber">E${num}:</div>`;
@@ -45,8 +46,8 @@ function loadLinks(episodes) { // TODO refactor this
 function loadActions(actions) {
 	$("#KG-action-container .KG-button").remove(); //clear old buttons
 	for (let i in actions) {
-		if (actions[i].automatic) { //schedule automatic actions
-			util.defer(() => {
+		if (actions[i].automatic) {
+			util.defer(() => { //schedule automatic actions
 				executeAction(actions[i]);
 			});
 		} else {
@@ -59,18 +60,30 @@ function loadActions(actions) {
 	}
 }
 
-function loadExporters() {
-	let onSamePage = status.url == location.href;
+function loadExporters(arr) {
 	let $exporters = $("#KG-input-export");
 	$exporters.empty() //clear old exporters
-		.append(`<option value="" selected disabled hidden>Export as</option>`); //add label
-	for (let i in exporters) { //add each exporter
-		let $exporter = $(`<option value="${i}">${exporters[i].name}</option>`).appendTo($exporters);
-		if ((exporters[i].requireSamePage && !onSamePage) ||
-			(exporters[i].requireDirectLinks && status.linkType != "direct")
-		) {
-			$exporter.attr("disabled", true);
-		}
+		.off("change")
+		.change((e) => {
+			runExporter(arr[e.target.value].exporter);
+			$(e.target).val(""); //reset display to label
+		})
+		.append($("<option>") //add label
+			.attr({
+				value: "",
+				hidden: true,
+			})
+			.text("Export as")
+		);
+
+	for (let i in arr) { //add each exporter
+		$("<option>")
+			.text(arr[i].exporter.name)
+			.attr({
+				value: i,
+				disabled: !arr[i].available,
+			})
+			.appendTo($exporters);
 	}
 }
 
@@ -79,40 +92,33 @@ function setHandlers() {
 		hide();
 		statusManager.clear();
 	});
-	$("#KG-input-export").change((e) => {
-		runExporter(e.currentTarget.value);
-		$("#KG-input-export").val(""); //reset display to label
-	});
 }
 
 async function executeAction(action) {
 	showSpinner();
-	await action.execute(status, setSpinnerText);
+	await actions.run(action, setSpinnerText);
 	statusManager.save();
-	load(status);
+	load();
 }
 
-function runExporter(name) {
-	let exporter = exporters[name];
+function runExporter(exporter) {
 	let data = exporter.export(status);
 	setExportText(data);
 	setDownloadFile(data, status.title, exporter.extension);
 	showExports();
 }
 
-let showSpinner = () =>
+let showSpinner = exports.showSpinner = () =>
 	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div><div id="KG-spinner-text"><div>`);
 
-let setSpinnerText = (str) =>
+let setSpinnerText = exports.setSpinnerText = (str) =>
 	$("#KG-spinner-text").text(str);
 
-function setExportText(text) {
+let setExportText = (text) =>
 	$("#KG-linkdisplay-export-text").text(text);
-}
 
-function showExports() {
+let showExports = () =>
 	$("#KG-linkdisplay-export").show();
-}
 
 function setDownloadFile(data, filename, extension) {
 	$("#KG-input-export-download").attr({

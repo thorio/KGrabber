@@ -12,17 +12,17 @@ const preferences = config.preferenceManager.get(),
 module.exports = (start, end, serverName) => {
 	let server = site.servers[serverName];
 	statusManager.initialize({
-		title: page.getTitle(),
+		title: page.title(),
 		server: serverName,
-		linkType: server.linkType
+		linkType: server.linkType,
 	});
-	util.for(page.getEpisodeList(), (i, obj) => {
+	util.for(page.episodeList(), (i, obj) => {
 		status.episodes.push({
 			kissLink: obj.href,
 			grabLink: "",
 			num: i + 1,
 		});
-	}, { min: start - 1, max: end - 1, });
+	}, { min: start - 1, max: end - 1 });
 	let customStep = server.customStep;
 	if (customStep && steps[customStep] && !preferences.compatibility.force_default_grabber) {
 		status.func = customStep; //use custom grabber

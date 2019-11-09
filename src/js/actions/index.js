@@ -14,7 +14,7 @@ let actions = [].concat(
 exports.all = () =>
 	actions;
 
-unsafeWindow.availableActions = exports.available = (server, linkType, automaticDone) =>
+exports.available = (server, linkType, automaticDone) =>
 	actions.filter((action) => {
 		//exclude actions that don't support the current server
 		if (!action.servers.includes(server)) {
@@ -32,7 +32,7 @@ unsafeWindow.availableActions = exports.available = (server, linkType, automatic
 	});
 
 exports.run = async (action, setSpinnerText) => {
-	await action.execute();
+	await action.execute(status, setSpinnerText);
 	if (action.automatic) {
 		status.automaticDone = true;
 	}

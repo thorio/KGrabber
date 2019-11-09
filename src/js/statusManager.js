@@ -1,5 +1,6 @@
 const log = require("./util").log,
-	util = require("./util");
+	util = require("./util"),
+	page = require("./UI/page");
 
 let status;
 
@@ -21,7 +22,7 @@ exports.clear = () => {
 exports.initialize = ({ title, server, linkType } = {}) => {
 	util.clear(status);
 	util.merge(status, {
-		url: location.href,
+		url: page.href,
 		episodes: [],
 		current: 0,
 		automaticDone: false,

@@ -1,5 +1,6 @@
 const servers = require("./servers"),
-	patches = require("./patches");
+	patches = require("./patches"),
+	page = require("../../UI/page");
 
 exports = module.exports = {
 	"kissanime.ru": {
@@ -7,7 +8,7 @@ exports = module.exports = {
 		noCaptchaServer: "hydrax",
 		buttonColor: "#548602",
 		buttonTextColor: "#fff",
-		servers: servers.kissanime
+		servers: servers.kissanime,
 	},
 	"kimcartoon.to": {
 		contentPath: "/Cartoon/*",
@@ -16,7 +17,7 @@ exports = module.exports = {
 		buttonTextColor: "#000",
 		optsPosition: 1, // TODO move to patch
 		servers: servers.kimcartoon,
-		patches: [patches.kimcartoon_UIFix]
+		patches: [patches.kimcartoon_UIFix],
 	},
 	"kissasian.sh": {
 		contentPath: "/Drama/*",
@@ -24,16 +25,16 @@ exports = module.exports = {
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
 		servers: servers.kissasian,
-		patches: [patches.kissasian_UIFix]
+		patches: [patches.kissasian_UIFix],
 	},
 	"kisstvshow.to": {
 		contentPath: "/Show/*",
 		noCaptchaServer: "rapid",
 		buttonColor: "#F5B54B",
 		buttonTextColor: "#000",
-		servers: servers.kisstvshow
+		servers: servers.kisstvshow,
 	},
 };
 
 exports.current = () =>
-	exports[location.hostname];
+	exports[page.location.hostname];

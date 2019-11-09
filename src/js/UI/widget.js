@@ -13,8 +13,8 @@ let site = config.sites.current();
 exports.show = () => {
 	inject();
 	load();
-	setServer(preferenceManager.getPreferredServer(page.getHost()));
-	markAvailableServers(util.last(page.getEpisodeList()), site.noCaptchaServer);
+	setServer(preferenceManager.getPreferredServer(page.location.hostname));
+	markAvailableServers(util.last(page.episodeList()), site.noCaptchaServer);
 };
 
 function inject() {
@@ -23,7 +23,7 @@ function inject() {
 }
 
 function load() {
-	let epCount = page.getEpisodeCount();
+	let epCount = page.episodeCount();
 
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
@@ -43,7 +43,7 @@ function setHandlers() {
 		}
 	});
 	$("#KG-input-server").change(() => {
-		preferenceManager.setPreferredServer(page.getHost(), getServer());
+		preferenceManager.setPreferredServer(page.location.hostname, getServer());
 	});
 	$(".KG-preferences-button").click(() => {
 		preferencesUI.show();

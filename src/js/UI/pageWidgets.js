@@ -7,7 +7,7 @@ const shared = require("./shared"),
  * Adds episode numbers and grab buttons to each episode
  */
 exports.injectEpisodeListWidgets = () => {
-	let epCount = page.getEpisodeCount();
+	let epCount = page.episodeCount();
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
 	$(".listing tr:gt(1)").each((i, obj) => {
 		let episode = epCount - i;

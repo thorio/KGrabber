@@ -3,7 +3,8 @@ const util = require("../util"),
 	ajax = util.ajax,
 	statusManager = require("../statusManager"),
 	config = require("../config"),
-	linkDisplay = require("../UI/linkDisplay");
+	linkDisplay = require("../UI/linkDisplay"),
+	page = require("../UI/page");
 
 const status = statusManager.get(),
 	site = config.sites.current();
@@ -12,11 +13,11 @@ const status = statusManager.get(),
 exports.defaultBegin = () => {
 	status.func = "defaultGetLink";
 	statusManager.save();
-	location.href = status.episodes[status.current].kissLink + `&s=${status.server}`;
+	page.href = status.episodes[status.current].kissLink + `&s=${status.server}`;
 };
 
 exports.defaultGetLink = () => {
-	if (!util.if(location.pathname, site.contentPath)) { //captcha
+	if (!util.if(page.location.pathname, site.contentPath)) { //captcha
 		return;
 	}
 	let link = util.findLink(document.body.innerHTML, site.servers[status.server].regex);
@@ -25,15 +26,15 @@ exports.defaultGetLink = () => {
 	status.current++;
 	if (status.current >= status.episodes.length) {
 		status.func = "defaultFinished";
-		location.href = status.url;
+		page.href = status.url;
 	} else {
-		location.href = status.episodes[status.current].kissLink + `&s=${status.server}`;
+		page.href = status.episodes[status.current].kissLink + `&s=${status.server}`;
 	}
 	statusManager.save();
 };
 
 exports.defaultFinished = () => {
-	linkDisplay.load(status);
+	linkDisplay.load();
 };
 //#endregion
 
@@ -57,6 +58,6 @@ exports.turboBegin = async () => {
 	await Promise.all(promises);
 	status.func = "defaultFinished";
 	statusManager.save();
-	linkDisplay.load(status);
+	linkDisplay.load();
 };
 //#endregion

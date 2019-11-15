@@ -1,8 +1,11 @@
+/* eslint-env node */
 const gulp = require("gulp"),
 	concat = require("gulp-concat"),
-	insert = require("gulp-insert"),
+	map = require("map-stream"),
+	header = require("gulp-header"),
 	browserify = require("browserify"),
 	source = require("vinyl-source-stream"),
+	strip = require("gulp-strip-comments"),
 	del = require("del"),
 	fs = require("fs"),
 	src_dir = "./src",
@@ -10,32 +13,51 @@ const gulp = require("gulp"),
 	prelude_path = require.resolve("browser-pack").replace("index.js", "prelude.js"),
 	version_number = require("./package.json").version;
 
-var readFile = (path) => new Promise((resolve) => fs.readFile(path, (_err, data) => resolve(data.toString())));
+let watching = false;
 
-var getPrelude = async () => {
+function readFile(path) {
+	return new Promise((resolve) => fs.readFile(path, (_err, data) => resolve(data.toString())));
+}
+
+async function getPrelude() {
 	return "\n// bundled with browserify\n" + (await readFile(prelude_path)).replace(/\s*\/\/.*/g, "").trim();
-};
+}
 
-var watching = false;
+function swallowIfWatching(error) {
+	if (!watching) {
+		throw error.toString();
+	}
+}
+
+function transform(func) {
+	return map(async (file, callback) => {
+		let contents = file.contents.toString();
+		contents = await func(file, contents);
+		file.contents = Buffer.from(contents);
+		callback(null, file);
+	});
+}
 
 function copy() {
 	return gulp.src(`${src_dir}/js/**/*`)
-		.pipe(insert.transform((contents, file) => `// src\\js\\${file.relative}\n${contents}`))
+		.pipe(strip())
+		.pipe(header("// src\\js\\${file.relative}\n"))
 		.pipe(gulp.dest(`${build_dir}/js`));
 }
 
 function css() {
 	return gulp.src(`${src_dir}/css/*.css`)
 		.pipe(concat("css.js"))
-		.pipe(insert.wrap("// generated file, provides contents of src\\css\nmodule.exports = `", "`;"))
+		.pipe(transform((_, contents) => `// generated file, provides contents of src\\css\nmodule.exports = \`${contents}\`;`))
 		.pipe(gulp.dest(`${build_dir}/js`));
 }
 
-function html() {
+async function html() {
 	return gulp.src(`${src_dir}/html/*.html`)
-		.pipe(insert.transform((contents, file) => `// src\\html\\${file.relative}\nexports[\`${file.stem}\`] = \`${contents}\`;`))
+		.pipe(strip())
+		.pipe(transform((file, contents) => `// src\\html\\${file.relative}\nexports[\`${file.stem}\`] = \`${contents}\`;`))
 		.pipe(concat("html.js"))
-		.pipe(insert.prepend("// generated file, provides contents of src\\html\n"))
+		.pipe(header("// generated file, provides contents of src\\html\n"))
 		.pipe(gulp.dest(`${build_dir}/js`));
 }
 
@@ -44,7 +66,7 @@ async function bundle() {
 		.bundle()
 		.on("error", swallowIfWatching)
 		.pipe(source("bundle.js"))
-		.pipe(insert.prepend((await readFile(`${src_dir}/header.txt`)).replace("{{version}}", version_number)))
+		.pipe(header(await readFile(`${src_dir}/header.txt`), { version: version_number }))
 		.pipe(gulp.dest(build_dir));
 }
 
@@ -57,12 +79,7 @@ function watch() {
 	gulp.watch(src_dir, build);
 }
 
-function swallowIfWatching(error) {
-	if (!watching) {
-		throw error.toString();
-	}
-}
-
 const build = exports.build = gulp.series(clean, copy, css, html, bundle);
+exports.bundle = bundle;
 exports.watch = watch;
 exports.clean = clean;

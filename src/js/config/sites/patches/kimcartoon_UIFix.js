@@ -1,8 +1,11 @@
-//if something doesn't look right on a specific site, a fix can be written here
+function fix() {
+	fixLinkDisplay();
+	fixPreferences();
+	fixWidget();
+	$(".KG-dialog-title").css("font-size", "18px");
+}
 
-//#region KimCartoon
-exports.kimcartoon_UIFix = () => {
-	//linkdisplay
+function fixLinkDisplay() {
 	let $ld = $("#KG-linkdisplay");
 	$ld.find(".barTitle").removeClass("barTitle")
 		.css({
@@ -14,8 +17,9 @@ exports.kimcartoon_UIFix = () => {
 		"color": $("a.bigChar").css("color"),
 	});
 	$ld.find(".arrow-general").remove();
+}
 
-	//preference panel
+function fixPreferences() {
 	let $pf = $("#KG-preferences");
 	$pf.find(".barTitle").removeClass("barTitle")
 		.css({
@@ -27,8 +31,9 @@ exports.kimcartoon_UIFix = () => {
 		"color": $("a.bigChar").css("color"),
 	});
 	$pf.find(".arrow-general").remove();
+}
 
-	//opts
+function fixWidget() {
 	let $opts = $("#KG-opts-widget");
 	let title = $opts.find(".barTitle").html();
 	$opts.before(`<div class="title-list icon">${title}</div><div class="clear2"></div>`);
@@ -36,18 +41,6 @@ exports.kimcartoon_UIFix = () => {
 	$(".KG-preferences-button").css("margin-top", "5px");
 	$opts.find(".barTitle").remove();
 	$opts.find(".arrow-general").remove();
+}
 
-	//general
-	$(".KG-dialog-title").css("font-size", "18px");
-};
-//#endregion
-
-//#region KissAsian
-exports.kissasian_UIFix = () => {
-	$(".KG-preferences-button").css("filter", "invert(0.7)");
-	$(".KG-dialog-close").css("color", "#000");
-	$(".KG-dialog-close").hover((e) => {
-		$(e.target).css("color", e.type == "mouseenter" ? "#fff" : "#000");
-	});
-};
-//#endregion
+module.exports = fix;

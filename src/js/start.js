@@ -10,7 +10,7 @@ const preferences = config.preferenceManager.get(),
 
 //gets links for a range of episodes
 module.exports = (start, end, serverName) => {
-	let server = site.servers[serverName];
+	let server = site.servers.get(serverName);
 	statusManager.initialize({
 		title: page.title(),
 		server: serverName,

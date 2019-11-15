@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          KissGrabber
 // @namespace     thorou
-// @version       {{version}}
+// @version       ${version}
 // @description   extracts links from kissanime.ru and similar sites
 // @author        Thorou
 // @license       GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt

@@ -34,5 +34,3 @@ function filter(exporter, linkType, samePage) {
 	}
 	return true;
 }
-
-unsafeWindow.lol = exports;

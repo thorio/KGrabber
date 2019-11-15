@@ -22,6 +22,6 @@ module.exports = {
 		"comma-dangle": ["warn", {
 			"arrays": "always-multiline",
 			"objects": "always-multiline",
-		}]
+		}],
 	}
 }

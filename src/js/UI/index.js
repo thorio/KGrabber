@@ -14,9 +14,9 @@ function injectCss() {
 
 exports.injectAll = () => {
 	injectCss();
+	linkDisplay.inject();
 	preferences.inject();
 	preferences.load(config.preferenceManager.get());
-	linkDisplay.inject();
 	widget.show();
 	pageWidgets.injectEpisodeListWidgets();
 };

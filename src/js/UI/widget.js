@@ -28,8 +28,8 @@ function load() {
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
 	$("#KG-input-from").attr("max", epCount);
-	for (let i in site.servers) {
-		$(`<option value="${i}">${site.servers[i].name}</>`)
+	for (let server of site.servers) {
+		$(`<option value="${server.identifier}">${server.name}</>`)
 			.appendTo("#KG-input-server");
 	}
 	setHandlers();

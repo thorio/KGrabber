@@ -26,7 +26,7 @@ exports.for = (array, func, { min = 0, max = array.length - 1 } = {}) => {
 	}
 };
 
-/** 
+/**
  * replaces characters that have special meaning in a batch file or are forbidden in directory names
  */
 exports.makeBatSafe = (str) => {
@@ -50,7 +50,7 @@ exports.defer = async (func = () => {}) => {
 	func();
 };
 
-/** 
+/**
  * returns parsed json or undefined if parse fails
  */
 exports.tryParseJson = (str) => {

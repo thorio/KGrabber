@@ -20,7 +20,7 @@ exports.defaultGetLink = () => {
 	if (!util.if(page.location.pathname, site.contentPath)) { //captcha
 		return;
 	}
-	let link = util.findLink(document.body.innerHTML, site.servers[status.server].regex);
+	let link = util.findLink(document.body.innerHTML, site.servers.get(status.server).regex);
 	status.episodes[status.current].grabLink = link || "error (selected server may not be available)";
 
 	status.current++;
@@ -45,7 +45,7 @@ exports.turboBegin = async () => {
 	let progress = 0;
 	let func = async (ep) => {
 		let html = (await ajax.get(ep.kissLink + `&s=${status.server}`)).response;
-		let link = util.findLink(html, site.servers[status.server].regex);
+		let link = util.findLink(html, site.servers.get(status.server).regex);
 		ep.grabLink = link || "error: server not available or captcha";
 		progress++;
 		linkDisplay.setSpinnerText(`${progress}/${promises.length}`);

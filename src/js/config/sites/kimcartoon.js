@@ -1,4 +1,5 @@
 const Server = require("../../types/Server"),
+	Site = require("../../types/Site"),
 	Dictionary = require("../../types/Dictionary"),
 	LinkTypes = require("../../types/LinkTypes"),
 	uiFix = require("./patches/kimcartoon_UIFix");
@@ -47,11 +48,11 @@ let servers = new Dictionary([
 	}),
 ]);
 
-module.exports = {
-	contentPath: "/Cartoon/*",
+module.exports = new Site("kimcartoon.to", {
+	contentPath: "Cartoon",
 	noCaptchaServer: "rapid",
 	buttonColor: "#ecc835",
 	buttonTextColor: "#000",
 	servers,
 	patches: [uiFix],
-};
+});

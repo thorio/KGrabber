@@ -10,9 +10,9 @@ const status = statusManager.get(),
 	site = config.sites.current();
 
 if (site) {
-	if (util.if(page.location.pathname, site.contentPath) && UI.page.title() !== "") {
+	if (site.onContentPath(page.location.pathname) && UI.page.title() !== "") {
 		UI.injectAll();
-		util.call(site.patches);
+		site.applyPatches();
 	}
 
 	if (status.func) {

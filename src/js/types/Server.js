@@ -35,7 +35,7 @@ module.exports = class Server {
 	 * @param {String} html
 	 * @returns {String} The link found or undefined
 	 */
-	match(html) {
+	findLink(html) {
 		return html.match(this.regex)[0]
 			.split('"')[1];
 	}

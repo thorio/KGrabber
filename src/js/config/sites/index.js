@@ -1,11 +1,12 @@
-const page = require("../../UI/page");
+const Dictionary = require("../../types/Dictionary"),
+	page = require("../../UI/page");
 
-exports = module.exports = {
-	"kissanime.ru": require("./kissanime"),
-	"kimcartoon.to": require("./kimcartoon"),
-	"kissasian.sh": require("./kissasian"),
-	"kisstvshow.to": require("./kisstvshow"),
-};
+exports = module.exports = new Dictionary([
+	require("./kissanime"),
+	require("./kimcartoon"),
+	require("./kissasian"),
+	require("./kisstvshow"),
+]);
 
 exports.current = () =>
-	exports[page.location.hostname];
+	exports.get(page.location.hostname);

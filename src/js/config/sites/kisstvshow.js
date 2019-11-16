@@ -1,4 +1,5 @@
 const Server = require("../../types/Server"),
+	Site = require("../../types/Site"),
 	Dictionary = require("../../types/Dictionary"),
 	LinkTypes = require("../../types/LinkTypes");
 
@@ -46,10 +47,10 @@ let servers = new Dictionary([
 	}),
 ]);
 
-module.exports = {
-	contentPath: "/Show/*",
+module.exports = new Site("kisstvshow.to", {
+	contentPath: "Show",
 	noCaptchaServer: "rapid",
 	buttonColor: "#F5B54B",
 	buttonTextColor: "#000",
 	servers,
-};
+});

@@ -1,4 +1,5 @@
 const Server = require("../../types/Server"),
+	Site = require("../../types/Site"),
 	Dictionary = require("../../types/Dictionary"),
 	LinkTypes = require("../../types/LinkTypes"),
 	uiFix = require("./patches/kissasian_UIFix");
@@ -47,11 +48,11 @@ let servers = new Dictionary([
 	}),
 ]);
 
-module.exports = {
-	contentPath: "/Drama/*",
+module.exports = new Site("kissasian.sh", {
+	contentPath: "Drama",
 	noCaptchaServer: "rapid",
 	buttonColor: "#F5B54B",
 	buttonTextColor: "#000",
 	servers,
 	patches: [uiFix],
-};
+});

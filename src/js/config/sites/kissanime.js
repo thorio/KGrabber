@@ -1,4 +1,5 @@
 const Server = require("../../types/Server"),
+	Site = require("../../types/Site"),
 	Dictionary = require("../../types/Dictionary"),
 	LinkTypes = require("../../types/LinkTypes");
 
@@ -47,10 +48,10 @@ let servers = new Dictionary([
 	}),
 ]);
 
-module.exports = {
-	contentPath: "/Anime/*",
+module.exports = new Site("kissanime.ru", {
+	contentPath: "Anime",
 	noCaptchaServer: "hydrax",
 	buttonColor: "#548602",
 	buttonTextColor: "#fff",
 	servers,
-};
+});

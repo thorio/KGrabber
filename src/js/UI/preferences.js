@@ -4,8 +4,15 @@ const log = require("../util/log"),
 	page = require("./page"),
 	preferenceManager = require("../config/preferenceManager");
 
-exports.show = () =>
+let hasLoaded = false;
+
+exports.show = () => {
+	if (!hasLoaded) {
+		load(preferenceManager.get());
+		hasLoaded = true;
+	}
 	$("#KG-preferences").slideDown();
+};
 
 let hide = exports.hide = () =>
 	$("#KG-preferences").slideUp();
@@ -15,7 +22,7 @@ exports.inject = () => {
 	setHandlers();
 };
 
-exports.load = (preferences) => {
+let load = (preferences) => {
 	for (let i in preferences) {
 		let group = preferences[i];
 		let $group = $(`<div id="KG-preferences-container"></div>`);

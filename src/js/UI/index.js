@@ -16,7 +16,6 @@ exports.injectAll = () => {
 	injectCss();
 	linkDisplay.inject();
 	preferences.inject();
-	preferences.load(config.preferenceManager.get());
 	widget.show();
 	pageWidgets.injectEpisodeListWidgets();
 };

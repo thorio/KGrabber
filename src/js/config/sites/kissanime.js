@@ -1,8 +1,8 @@
 const Server = require("../../types/Server"),
-	ServerDictionary = require("../../types/ServerDictionary"),
+	Dictionary = require("../../types/Dictionary"),
 	LinkTypes = require("../../types/LinkTypes");
 
-let servers = new ServerDictionary([
+let servers = new Dictionary([
 		new Server("hydrax", {
 		regex: /"https:\/\/replay.watch\/hydrax.html\??.*?#slug=.*?"/,
 		name: "HydraX (no captcha)",

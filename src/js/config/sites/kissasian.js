@@ -1,9 +1,9 @@
 const Server = require("../../types/Server"),
-	ServerDictionary = require("../../types/ServerDictionary"),
+	Dictionary = require("../../types/Dictionary"),
 	LinkTypes = require("../../types/LinkTypes"),
 	uiFix = require("./patches/kissasian_UIFix");
 
-let servers = new ServerDictionary([
+let servers = new Dictionary([
 		new Server("openload", {
 		regex: /"https:\/\/openload.co\/embed\/.*?"/,
 		name: "Openload",

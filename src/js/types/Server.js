@@ -31,9 +31,9 @@ module.exports = class Server {
 	}
 
 	/**
-	 * Matches the server's RegExp against the parameter
+	 * Searches for a link in html
 	 * @param {String} html
-	 * @returns {String} Link found
+	 * @returns {String} The link found or undefined
 	 */
 	match(html) {
 		return html.match(this.regex)[0]

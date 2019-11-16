@@ -1,8 +1,10 @@
+const LinkTypes = require("../types/LinkTypes");
+
 module.exports = {
 	name: "list",
 	extension: "txt",
 	requireSamePage: false,
-	linkTypes: ["direct", "embed"],
+	linkTypes: [LinkTypes.DIRECT, LinkTypes.EMBED],
 	export: (status) => {
 		let str = "";
 		for (let i in status.episodes) {

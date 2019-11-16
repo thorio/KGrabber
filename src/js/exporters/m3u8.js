@@ -1,10 +1,11 @@
-const util = require("../util");
+const LinkTypes = require("../types/LinkTypes"),
+	util = require("../util");
 
 module.exports = {
 	name: "m3u8 playlist",
 	extension: "m3u8",
 	requireSamePage: true,
-	linkTypes: ["direct"],
+	linkTypes: [LinkTypes.DIRECT],
 	export: (status) => {
 		let listing = $(".listing a").get().reverse();
 		let str = "#EXTM3U\n";

@@ -1,10 +1,11 @@
-const page = require("../UI/page");
+const LinkTypes = require("../types/LinkTypes"),
+	page = require("../UI/page");
 
 module.exports = {
 	name: "html list",
 	extension: "html",
 	requireSamePage: true,
-	linkTypes: ["direct"],
+	linkTypes: [LinkTypes.DIRECT],
 	export: (status) => {
 		let listing = page.episodeList();
 		let str = "<html>\n	<body>\n";

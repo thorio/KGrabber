@@ -1,8 +1,10 @@
+const LinkTypes = require("../types/LinkTypes");
+
 module.exports = {
 	name: "json",
 	extension: "json",
 	requireSamePage: true,
-	linkTypes: ["direct", "embed"],
+	linkTypes: [LinkTypes.DIRECT, LinkTypes.EMBED],
 	export: (status) => {
 		let listing = $(".listing a").get().reverse();
 		let json = {

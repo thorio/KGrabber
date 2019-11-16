@@ -1,8 +1,10 @@
+const LinkTypes = require("../types/LinkTypes");
+
 module.exports = {
 	name: "aria2c file",
 	extension: "txt",
 	requireSamePage: false,
-	linkTypes: ["direct"],
+	linkTypes: [LinkTypes.DIRECT],
 	export: (status) => {
 		let listing = $(".listing a").get().reverse();
 		let str = "";

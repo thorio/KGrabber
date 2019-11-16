@@ -1,10 +1,11 @@
-const page = require("../UI/page");
+const LinkTypes = require("../types/LinkTypes"),
+	page = require("../UI/page");
 
 module.exports = {
 	name: "csv",
 	extension: "csv",
 	requireSamePage: true,
-	linkTypes: ["direct", "embed"],
+	linkTypes: [LinkTypes.DIRECT, LinkTypes.EMBED],
 	export: (status) => {
 		let listing = page.episodeList();
 		let str = "episode, name, url\n";

@@ -1,5 +1,4 @@
-const css = require("../css"),
-	config = require("../config");
+const css = require("../css");
 
 const preferences = exports.preferences = require("./preferences"),
 	linkDisplay = exports.linkDisplay = require("./linkDisplay"),

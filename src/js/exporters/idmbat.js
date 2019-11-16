@@ -1,4 +1,5 @@
-const util = require("../util"),
+const LinkTypes = require("../types/LinkTypes"),
+	util = require("../util"),
 	preferenceManager = require("../config/preferenceManager");
 
 const preferences = preferenceManager.get();
@@ -7,7 +8,7 @@ module.exports = {
 	name: "IDM bat file",
 	extension: "bat",
 	requireSamePage: true,
-	linkTypes: ["direct"],
+	linkTypes: [LinkTypes.DIRECT],
 	export: (status) => {
 		let listing = $(".listing a").get().reverse();
 		let title = util.makeBatSafe(status.title);

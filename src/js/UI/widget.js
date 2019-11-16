@@ -18,8 +18,7 @@ exports.show = () => {
 };
 
 function inject() {
-	let optsPosition = site.optsPosition || 0;
-	$(`#rightside .clear2:eq(${optsPosition})`).after(html.widget);
+	$(`#rightside .clear2:eq(0)`).after(html.widget);
 }
 
 function load() {

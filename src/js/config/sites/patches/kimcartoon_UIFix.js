@@ -35,6 +35,7 @@ function fixPreferences() {
 
 function fixWidget() {
 	let $opts = $("#KG-opts-widget");
+	$opts.insertAfter(`#rightside .clear2:eq(2)`);
 	let title = $opts.find(".barTitle").html();
 	$opts.before(`<div class="title-list icon">${title}</div><div class="clear2"></div>`);
 	$(".icon:eq(1)").css({ "width": "100%", "box-sizing": "border-box" });

@@ -52,7 +52,6 @@ module.exports = {
 	noCaptchaServer: "rapid",
 	buttonColor: "#ecc835",
 	buttonTextColor: "#000",
-	optsPosition: 1, // TODO move to patch
 	servers,
 	patches: [uiFix],
 };

@@ -54,5 +54,3 @@ module.exports = {
 	buttonTextColor: "#fff",
 	servers,
 };
-
-unsafeWindow.lol = servers;

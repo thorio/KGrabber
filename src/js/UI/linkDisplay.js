@@ -96,7 +96,7 @@ function setHandlers() {
 
 async function executeAction(action) {
 	showSpinner();
-	await actions.run(action, setSpinnerText);
+	await actions.execute(action, setSpinnerText);
 	statusManager.save();
 	load();
 }

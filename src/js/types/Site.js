@@ -9,14 +9,14 @@ const Dictionary = require("./Dictionary"),
  */
 module.exports = class Site {
 	/**
-	 * @param {String} hostname
+	 * @param {String} hostname The site's hostname
 	 * @param {Object} obj
-	 * @param {String} obj.contentPath
-	 * @param {String} obj.noCaptchaServer
-	 * @param {String} obj.buttonColor
-	 * @param {String} obj.buttonTextColor
-	 * @param {Dictionary<Server>} obj.servers
-	 * @param {Function[]} [obj.patches]
+	 * @param {String} obj.contentPath Path to the site's content, i.e. 'Anime'
+	 * @param {String} obj.noCaptchaServer Server that doesn't require a captcha to view
+	 * @param {String} obj.buttonColor Color for injected buttons
+	 * @param {String} obj.buttonTextColor Text color for injected buttons
+	 * @param {Dictionary<Server>} obj.servers List of servers this site provides
+	 * @param {Function[]} [obj.patches] List of patches to be applied to this site
 	 */
 	constructor(hostname, { contentPath, noCaptchaServer, buttonColor, buttonTextColor, servers, patches = [] }) {
 		this.hostname = hostname;
@@ -34,7 +34,7 @@ module.exports = class Site {
 
 	/**
 	 * Checks if pathname matches contentPath
-	 * @param {String} pathname
+	 * @param {String} pathname Current location.pathname
 	 * @returns {Boolean}
 	 */
 	onContentPath(pathname) {

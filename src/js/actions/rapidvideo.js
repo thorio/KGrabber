@@ -1,33 +1,33 @@
 const util = require("../util"),
 	{ ajax } = util,
 	preferenceManager = require("../config/preferenceManager"),
-	shared = require("./shared");
+	shared = require("./shared"),
+	Action = require("../types/Action"),
+	LinkTypes = require("../types/LinkTypes");
 
 const preferences = preferenceManager.get();
 
-let rapidvideo_revertDomain = {
-	name: "revert domain",
-	requireLinkType: "embed",
+let rapidvideo_revertDomain = new Action("revert domain", {
+	linkType: LinkTypes.EMBED,
 	servers: ["rapid"],
 	automatic: true,
 	// eslint-disable-next-line no-unused-vars
-	execute: async (status, _setSpinnerText) => {
-		for (let i in status.episodes) {
-			status.episodes[i].grabLink = status.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com");
-		}
-		status.automaticDone = true;
-	},
-};
+}, async (status, _setProgress) => {
+	for (let i in status.episodes) {
+		status.episodes[i].grabLink = status.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com");
+	}
+	status.automaticDone = true;
+});
 
-let rapidvideo_getDirect = {
-	name: "get direct links",
-	requireLinkType: "embed",
+
+
+let rapidvideo_getDirect = new Action("get direct links", {
+	linkType: LinkTypes.EMBED,
 	servers: ["rapid"],
-	execute: async (status) => {
-		await shared.eachEpisode(status, _rapidvideo_getDirect);
-		status.linkType = "direct";
-	},
-};
+}, async (status, setProgress) => {
+	await shared.eachEpisode(status, _rapidvideo_getDirect, setProgress);
+	status.linkType = LinkTypes.DIRECT;
+});
 
 //asynchronously gets the direct link
 async function _rapidvideo_getDirect(ep) {

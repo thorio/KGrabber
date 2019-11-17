@@ -1,6 +1,8 @@
 const ajax = require("../util/ajax"),
 	preferenceManager = require("../config/preferenceManager"),
-	shared = require("./shared");
+	shared = require("./shared"),
+	Action = require("../types/Action"),
+	LinkTypes = require("../types/LinkTypes");
 
 const preferences = preferenceManager.get();
 // TODO add error if video is being encoded
@@ -9,15 +11,13 @@ const preferences = preferenceManager.get();
 // 	"data": "We are encoding this video, please check back later"
 // }
 
-let nova_getDirect = {
-	name: "get direct links",
-	requireLinkType: "embed",
+let nova_getDirect = new Action("get direct links", {
+	linkType: LinkTypes.EMBED,
 	servers: ["nova", "rapidvideo"],
-	execute: async (data, setSpinnerText) => {
-		await shared.eachEpisode(data, _nova_getDirect, setSpinnerText);
-		data.linkType = "direct";
-	},
-};
+}, async (data, setProgress) => {
+	await shared.eachEpisode(data, _nova_getDirect, setProgress);
+	data.linkType = LinkTypes.DIRECT;
+});
 
 //asynchronously gets the direct link
 async function _nova_getDirect(ep) {

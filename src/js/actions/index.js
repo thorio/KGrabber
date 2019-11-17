@@ -37,7 +37,7 @@ exports.available = (server, linkType, automaticDone) =>
 			return false;
 		}
 		//exclude actions with the wrong link type
-		if (action.requireLinkType != linkType) {
+		if (action.linkType != linkType) {
 			return false;
 		}
 		//exclude automatic actions if they were already completed or the user has disabled automatic actions

@@ -13,7 +13,7 @@ const preferences = preferenceManager.get();
 
 let nova_getDirect = new Action("get direct links", {
 	linkType: LinkTypes.EMBED,
-	servers: ["nova", "rapidvideo"],
+	servers: ["nova"],
 }, async (data, setProgress) => {
 	await shared.eachEpisode(data, _nova_getDirect, setProgress);
 	data.linkType = LinkTypes.DIRECT;

@@ -1,6 +1,5 @@
 const config = require("./config"),
-	util = require("./util"),
-	log = util.log,
+	{ log } = require("./util"),
 	steps = require("./steps"),
 	UI = require("./UI"),
 	statusManager = require("./statusManager"),

@@ -77,7 +77,7 @@ let getServer = exports.getServer = () =>
 	$("#KG-input-server").val();
 
 let getStartEpisode = () =>
-	$('#KG-input-from').val();
+	$('#KG-input-from').val() - 1;
 
 let getEndEpisode = () =>
-	$('#KG-input-to').val();
+	$('#KG-input-to').val() - 1;

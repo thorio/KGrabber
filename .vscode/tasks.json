@@ -15,9 +15,11 @@
 			}
 		},
 		{
+			"label": "gulp watch",
 			"type": "gulp",
 			"task": "watch",
 			"group": "none",
+			"auto": true,
 			"presentation": {
 				"reveal": "silent"
 			},

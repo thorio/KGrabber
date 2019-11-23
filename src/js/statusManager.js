@@ -1,9 +1,16 @@
 const log = require("./util").log,
 	util = require("./util"),
-	page = require("./UI/page");
+	page = require("./UI/page"),
+	Status = require("./types/Status");
 
+/**
+ * @type {Status}
+ */
 let status;
 
+/**
+ * @returns {Status}
+ */
 exports.get = () => {
 	if (status === undefined) {
 		status = load();
@@ -11,37 +18,51 @@ exports.get = () => {
 	return status;
 };
 
-exports.save = () =>
+/**
+ * Saves the status to sessionStorage
+ */
+exports.save = () => {
 	sessionStorage["KG-status"] = JSON.stringify(status);
+};
 
+/**
+ * Resets status
+ */
 exports.clear = () => {
 	util.clear(status);
 	sessionStorage.clear("KG-data");
 };
 
-exports.initialize = ({ title, server, linkType } = {}) => {
-	util.clear(status);
-	util.merge(status, {
+/**
+ * Initializes the status
+ * @param {Object} [obj]
+ * @param {String} obj.title
+ * @param {String} obj.serverID
+ * @param {String} obj.linkType
+ */
+exports.initialize = ({ title, serverID, linkType } = {}) => {
+	return status.initialize({
 		url: page.href,
-		episodes: [],
-		current: 0,
-		automaticDone: false,
-		func: "defaultBegin",
 		title,
-		server,
+		serverID,
 		linkType,
 	});
 };
 
-//attempts to load data from session storage
+/**
+ * Attempts to load data from session storage
+ * @returns {Status}
+ */
 function load() {
-	if (sessionStorage["KG-status"]) {
+	let json = sessionStorage["KG-status"];
+	if (json) {
 		try {
-			return JSON.parse(sessionStorage["KG-status"]);
-		} catch (e) {
-			log.err("unable to parse JSON", { error: e, json: sessionStorage["KG-status"] });
+			return Status.deserialize(json);
+		} catch (error) {
+			log.err("unable to parse JSON", { error, json });
 		}
 	}
 
-	return {};
+	// no status found or parsing failed, return new status
+	return new Status();
 }

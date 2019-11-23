@@ -10,12 +10,13 @@ exports.injectEpisodeListWidgets = () => {
 	let epCount = page.episodeCount();
 	$(".listing tr:eq(0)").prepend(`<th class="KG-episodelist-header">#</th>`);
 	$(".listing tr:gt(1)").each((i, obj) => {
-		let episode = epCount - i;
-		$(`<input type="button" value="grab" class="KG-episodelist-button">&nbsp;`).click(() => {
+		let episode = epCount - i - 1;
+		$(`<input type="button" value="grab" class="KG-episodelist-button">&nbsp;`)
+			.click(() => {
 				start(episode, episode, widget.getServer());
 			})
 			.prependTo($(obj).children(":eq(0)"));
-		$(`<td class="KG-episodelist-number">${epCount-i}</td>`).prependTo(obj);
+		$(`<td class="KG-episodelist-number">${episode + 1}</td>`).prependTo(obj);
 	});
 
 	shared.applyColors();

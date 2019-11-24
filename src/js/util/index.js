@@ -34,17 +34,6 @@ exports.defer = async (func = () => {}) => {
 	func();
 };
 
-/**
- * returns parsed json or undefined if parse fails
- */
-exports.tryParseJson = (str) => {
-	try {
-		return JSON.parse(str);
-	} catch (e) {
-		// return undefined
-	}
-};
-
 exports.clone = (obj) =>
 	$.extend(true, {}, obj);
 

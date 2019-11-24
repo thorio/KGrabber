@@ -27,7 +27,8 @@ exports.get = () => {
 };
 
 let save = exports.save = (newPreferences) => {
-	preferences = newPreferences;
+	util.clear(preferences);
+	util.merge(preferences, newPreferences);
 	GM_setValue("KG-preferences", JSON.stringify(preferences));
 };
 

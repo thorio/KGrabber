@@ -23,11 +23,13 @@ module.exports = class Server {
 	/**
 	 * Determines the first step.
 	 * @param {String} defaultStep
-	 * @param {Boolean} experimentalEnabled
+	 * @param {Boolean} allowExperimental
 	 * @returns {String} First step for this server
 	 */
-	getEffectiveStep(defaultStep, experimentalEnabled) {
-		return experimentalEnabled && this.experimentalStep || this.customStep || defaultStep;
+	getEffectiveStep(defaultStep, allowExperimental, allowCustom) {
+		return allowExperimental && this.experimentalStep ||
+			allowCustom && this.customStep ||
+			defaultStep;
 	}
 
 	/**

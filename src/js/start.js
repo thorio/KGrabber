@@ -1,8 +1,3 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const Server = require("./types/Server");
-/* eslint-enable no-unused-vars */
-
 const config = require("./config"),
 	util = require("./util"),
 	steps = require("./steps"),
@@ -29,7 +24,7 @@ module.exports = (start, end, serverID) => {
 		linkType: server.linkType,
 	});
 	status.episodes = getEpisodes(start, end);
-	status.func = determineFirstStep(server);
+	status.func = server.getEffectiveStep(defaultStep, preferences.compatibility.enable_experimental_grabbers, !preferences.compatibility.force_default_grabber);
 
 	statusManager.save();
 	steps[status.func]();
@@ -52,25 +47,4 @@ function getEpisodes(start, end) {
 	});
 
 	return episodes;
-}
-
-/**
- * Determines the correct step for the combination of server settings and preferences
- * @param {Server} server
- * @returns {String}
- */
-function determineFirstStep(server) {
-	let step = defaultStep;
-
-	let customStep = server.customStep;
-	if (customStep && steps[customStep] && !preferences.compatibility.force_default_grabber) {
-		status.func = customStep; //use custom grabber
-	}
-
-	let experimentalCustomStep = server.experimentalCustomStep;
-	if (experimentalCustomStep && steps[experimentalCustomStep] && preferences.compatibility.enable_experimental_grabbers) {
-		status.func = experimentalCustomStep; //use experimental grabber
-	}
-
-	return step;
 }

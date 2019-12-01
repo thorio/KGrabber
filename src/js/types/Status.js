@@ -13,6 +13,7 @@ module.exports = class Status {
 	 */
 	constructor() {
 		this._reset();
+		Object.seal(this);
 	}
 
 	/**

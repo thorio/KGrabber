@@ -9,6 +9,7 @@ module.exports = class Dictionary {
 	constructor(objects = []) {
 		this._data = {};
 		this.add(...objects);
+		Object.freeze(this);
 	}
 
 	/**

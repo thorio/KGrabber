@@ -26,6 +26,7 @@ module.exports = class Site {
 		this.buttonTextColor = buttonTextColor;
 		this.servers = servers;
 		this.patches = patches;
+		Object.freeze(this);
 	}
 
 	get identifier() {

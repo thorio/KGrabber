@@ -18,6 +18,7 @@ module.exports = class Server {
 		this.linkType = linkType;
 		this.customStep = customStep;
 		this.experimentalStep = experimentalStep;
+		Object.freeze(this);
 	}
 
 	/**

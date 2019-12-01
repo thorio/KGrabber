@@ -11,6 +11,7 @@ module.exports = class Episode {
 		// this.processedLink = ""; //TODO implement these
 		// this.error = "";
 		this.num = episodeNumber; //TODO rename to episodeNumber
+		Object.seal(this);
 	}
 
 	get link() {

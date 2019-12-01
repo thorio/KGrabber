@@ -22,6 +22,7 @@ module.exports = class Action {
 		this.servers = servers;
 		this.automatic = automatic;
 		this._func = func;
+		Object.freeze(this);
 	}
 
 	/**

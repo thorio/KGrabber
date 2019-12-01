@@ -20,7 +20,7 @@ function readFile(path) {
 }
 
 async function getPrelude() {
-	return "\n// bundled with browserify\n" + (await readFile(prelude_path)).replace(/\s*\/\/.*/g, "").trim();
+	return `\n// bundled with browserify\n"use strict";\n` + (await readFile(prelude_path)).replace(/\s*\/\/.*/g, "").trim();
 }
 
 function swallowIfWatching(error) {

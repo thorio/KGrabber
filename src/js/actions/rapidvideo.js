@@ -7,27 +7,26 @@ const util = require("../util"),
 
 const preferences = preferenceManager.get();
 
-let rapidvideo_revertDomain = new Action("revert domain", {
-	linkType: LinkTypes.EMBED,
-	servers: ["rapid"],
-	automatic: true,
-	// eslint-disable-next-line no-unused-vars
-}, async (status, _setProgress) => {
-	for (let i in status.episodes) {
-		status.episodes[i].grabLink = status.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com");
-	}
-	status.automaticDone = true;
-});
-
-
-
-let rapidvideo_getDirect = new Action("get direct links", {
-	linkType: LinkTypes.EMBED,
-	servers: ["rapid"],
-}, async (status, setProgress) => {
-	await shared.eachEpisode(status, _rapidvideo_getDirect, setProgress);
-	status.linkType = LinkTypes.DIRECT;
-});
+module.exports = [
+	new Action("revert domain", {
+		linkType: LinkTypes.EMBED,
+		servers: ["rapid"],
+		automatic: true,
+		// eslint-disable-next-line no-unused-vars
+	}, async (status, _setProgress) => {
+		for (let i in status.episodes) {
+			status.episodes[i].grabLink = status.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com");
+		}
+		status.automaticDone = true;
+	}),
+	new Action("get direct links", {
+		linkType: LinkTypes.EMBED,
+		servers: ["rapid"],
+	}, async (status, setProgress) => {
+		await shared.eachEpisode(status.episodes, _rapidvideo_getDirect, setProgress);
+		status.linkType = LinkTypes.DIRECT;
+	}),
+];
 
 //asynchronously gets the direct link
 async function _rapidvideo_getDirect(ep) {
@@ -59,5 +58,3 @@ async function _rapidvideo_getDirect(ep) {
 	}
 	ep.grabLink = "error: preferred qualities not found";
 }
-
-module.exports = [rapidvideo_getDirect, rapidvideo_revertDomain];

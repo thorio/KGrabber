@@ -1,11 +1,11 @@
 const css = require("../css");
 
-const preferences = exports.preferences = require("./preferences"),
-	linkDisplay = exports.linkDisplay = require("./linkDisplay"),
-	widget = exports.widget = require("./widget"),
-	pageWidgets = exports.pageWidgets = require("./pageWidgets");
+const preferences = require("./preferences"),
+	linkDisplay = require("./linkDisplay"),
+	widget = require("./widget"),
+	pageWidgets = require("./pageWidgets");
 
-exports.page = require("./page");
+exports = module.exports = { preferences, linkDisplay, widget, pageWidgets, page: require("./page") };
 
 function injectCss() {
 	$(document.head).append(`<style>${css}</style>`);

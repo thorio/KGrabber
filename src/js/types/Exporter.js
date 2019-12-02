@@ -3,7 +3,7 @@
 const Status = require("./Status");
 /* eslint-enable no-unused-vars */
 
-class Exporter {
+module.exports = class Exporter {
 	/**
 	 * @param {Object} obj
 	 * @param {String} obj.name Display name
@@ -29,6 +29,4 @@ class Exporter {
 	export (status) {
 		return this._export(status);
 	}
-}
-
-module.exports = Exporter;
+};

@@ -1,5 +1,4 @@
 module.exports = class Episode {
-
 	/**
 	 * Creates a new Episode
 	 * @param {Number} episodeNumber

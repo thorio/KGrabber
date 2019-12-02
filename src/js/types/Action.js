@@ -4,7 +4,7 @@ const Status = require("./Status");
 /* eslint-enable no-unused-vars */
 
 /**
- * Describes an action that can be performed after links have been retrieved
+ * Represents an action that can be performed after links have been retrieved
  * @class Action
  */
 module.exports = class Action {

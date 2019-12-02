@@ -6,16 +6,18 @@ const util = require("../util"),
 
 const preferences = preferenceManager.get();
 
-let beta_setQuality = new Action("set quality", {
-	linkType: LinkTypes.DIRECT,
-	servers: ["beta2"],
-	automatic: true,
-}, async (status, setProgress) => {
-	await shared.eachEpisode(status, beta_tryGetQuality, setProgress);
-	status.automaticDone = true;
-});
+module.exports = [
+	new Action("set quality", {
+		linkType: LinkTypes.DIRECT,
+		servers: ["beta2"],
+		automatic: true,
+	}, async (status, setProgress) => {
+		await shared.eachEpisode(status.episodes, tryGetQuality, setProgress);
+		status.automaticDone = true;
+	}),
+];
 
-async function beta_tryGetQuality(episode) {
+async function tryGetQuality(episode) {
 	if (!episode.grabLink.match(/.*=m\d\d/)) {
 		util.log.warn(`invalid beta link "${episode.grabLink}"`);
 		return;
@@ -34,5 +36,3 @@ async function beta_tryGetQuality(episode) {
 		}
 	}
 }
-
-module.exports = [beta_setQuality];

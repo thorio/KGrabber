@@ -3,10 +3,10 @@
 const Exporter = require("../types/Exporter");
 /* eslint-enable no-unused-vars */
 
-/** 
+/**
  * @type {Exporter[]}
  */
-let exporters = [
+const exporters = [
 	require("./list"),
 	require("./m3u8"),
 	require("./json"),
@@ -51,6 +51,7 @@ exports.sorted = (linkType, samePage) =>
  * @param {Exporter} exporter
  * @param {String} linkType
  * @param {Boolean} samePage
+ * @private
  */
 function filter(exporter, linkType, samePage) {
 	//exclude exporters that are incompatible with the linktype

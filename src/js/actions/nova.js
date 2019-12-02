@@ -11,16 +11,18 @@ const preferences = preferenceManager.get();
 // 	"data": "We are encoding this video, please check back later"
 // }
 
-let nova_getDirect = new Action("get direct links", {
-	linkType: LinkTypes.EMBED,
-	servers: ["nova"],
-}, async (data, setProgress) => {
-	await shared.eachEpisode(data, _nova_getDirect, setProgress);
-	data.linkType = LinkTypes.DIRECT;
-});
+module.exports = [
+	new Action("get direct links", {
+		linkType: LinkTypes.EMBED,
+		servers: ["nova"],
+	}, async (status, setProgress) => {
+		await shared.eachEpisode(status.episodes, getDirect, setProgress);
+		status.linkType = LinkTypes.DIRECT;
+	}),
+];
 
 //asynchronously gets the direct link
-async function _nova_getDirect(ep) {
+async function getDirect(ep) {
 	if (ep.grabLink.slice(0, 5) == "error") {
 		return;
 	}
@@ -43,5 +45,3 @@ async function _nova_getDirect(ep) {
 	}
 	ep.grabLink = "error: preferred qualities not found";
 }
-
-module.exports = [nova_getDirect];

@@ -7,7 +7,6 @@ const Episode = require("./Episode");
  * @class Status
  */
 module.exports = class Status {
-
 	/**
 	 * Creates an empty object
 	 */

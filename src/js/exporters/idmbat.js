@@ -33,13 +33,13 @@ function runExport(status) {
  */
 function getHeader(title) {
 	return `::download and double click me!
-	@echo off
-	set title=${title}
-	set idm=${preferences.internet_download_manager.idm_path}
-	set args=${preferences.internet_download_manager.arguments}
-	set dir=${preferences.internet_download_manager.download_path}
-	if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && pause && goto eof
-	mkdir "%title%" > nul
-	start "" "%idm%"
-	ping localhost -n 2 > nul\n\n`;
+@echo off
+set title=${title}
+set idm=${preferences.internet_download_manager.idm_path}
+set args=${preferences.internet_download_manager.arguments}
+set dir=${preferences.internet_download_manager.download_path}
+if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && pause && goto eof
+mkdir "%title%" > nul
+start "" "%idm%"
+ping localhost -n 2 > nul\n\n`;
 }

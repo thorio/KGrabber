@@ -7,8 +7,9 @@ const gulp = require("gulp"),
 	source = require("vinyl-source-stream"),
 	strip = require("gulp-strip-comments"),
 	del = require("del"),
-	fs = require("fs"),
-	src_dir = "./src",
+	fs = require("fs");
+
+const src_dir = "./src",
 	build_dir = "./build",
 	prelude_path = require.resolve("browser-pack").replace("index.js", "prelude.js"),
 	version_number = require("./package.json").version;
@@ -79,7 +80,6 @@ function watch() {
 	gulp.watch(src_dir, build);
 }
 
-const build = exports.build = gulp.series(clean, copy, css, html, bundle);
-exports.bundle = bundle;
-exports.watch = watch;
-exports.clean = clean;
+const build = gulp.series(clean, copy, css, html, bundle);
+
+module.exports = { build, bundle, watch, clean };

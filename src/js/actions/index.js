@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 const Action = require("../types/Action");
 /* eslint-enable no-unused-vars */
+
 const preferenceManager = require("../config/preferenceManager"),
 	statusManager = require("../statusManager");
 

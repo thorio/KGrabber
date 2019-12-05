@@ -1,3 +1,8 @@
+// needed for jsdoc
+/* eslint-disable no-unused-vars */
+const Episode = require("../types/Episode");
+/* eslint-enable no-unused-vars */
+
 const util = require("../util"),
 	statusManager = require("../statusManager"),
 	config = require("../config"),
@@ -10,7 +15,7 @@ exports.turboBegin = async () => {
 	$("#KG-linkdisplay").slideDown();
 	linkDisplay.showSpinner();
 	let progress = 0;
-	let func = async (ep) => {
+	let func = async ( /** @type {Episode} */ ep) => {
 		let html = (await util.ajax.get(ep.kissLink + `&s=${status.server}`)).response;
 		let link = site.servers.get(status.server).findLink(html);
 		ep.grabLink = link || "error: server not available or captcha";
@@ -18,7 +23,7 @@ exports.turboBegin = async () => {
 		linkDisplay.setSpinnerText(`${progress}/${promises.length}`);
 	};
 	let promises = [];
-	util.for(status.episodes, (i, obj) => {
+	util.for(status.episodes, (i, /** @type {Episode} */ obj) => {
 		promises.push(func(obj));
 	});
 	linkDisplay.setSpinnerText(`0/${promises.length}`);

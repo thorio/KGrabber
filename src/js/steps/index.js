@@ -2,5 +2,5 @@
 
 module.exports = Object.assign(
 	require("./default"),
-	require("./turbo"),
+	require("./turbo")
 );

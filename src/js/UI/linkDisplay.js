@@ -1,3 +1,8 @@
+// needed for jsdoc
+/* eslint-disable no-unused-vars */
+const Episode = require("../types/Episode");
+/* eslint-enable no-unused-vars */
+
 const shared = require("./shared"),
 	exporters = require("../exporters"),
 	util = require("../util"),
@@ -31,10 +36,13 @@ function setTitle(text) {
 	$("#KG-linkdisplay .KG-dialog-title").text(text);
 }
 
+/**
+ * @param {Episode[]} episodes
+ */
 function loadLinks(episodes) { // TODO refactor this
 	let html = "";
 	let padLength = Math.max(2, page.episodeCount().toString().length);
-	util.for(episodes, (i, obj) => {
+	util.for(episodes, (i, /** @type {Episode} */ obj) => {
 		let num = obj.num.toString().padStart(padLength, "0");
 		let number = `<div class="KG-linkdisplay-episodenumber">E${num}:</div>`;
 		let link = `<a href="${obj.grabLink}" target="_blank">${obj.grabLink}</a>`;

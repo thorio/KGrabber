@@ -1,3 +1,8 @@
+// needed for jsdoc
+/* eslint-disable no-unused-vars */
+const Episode = require("../types/Episode");
+/* eslint-enable no-unused-vars */
+
 const ajax = require("../util/ajax"),
 	preferenceManager = require("../config/preferenceManager"),
 	shared = require("./shared"),
@@ -21,15 +26,19 @@ module.exports = [
 	}),
 ];
 
-//asynchronously gets the direct link
-async function getDirect(ep) {
-	if (ep.grabLink.slice(0, 5) == "error") {
+/**
+ * Asynchronously gets the direct link
+ * @param {Episode} episode
+ * @returns {Promise<void>}
+ */
+async function getDirect(episode) {
+	if (episode.grabLink.slice(0, 5) == "error") {
 		return;
 	}
-	let response = await ajax.post(`https://www.novelplanet.me/api/source/${ep.grabLink.match(/\/([^/]*?)$/)[1]}`);
+	let response = await ajax.post(`https://www.novelplanet.me/api/source/${episode.grabLink.match(/\/([^/]*?)$/)[1]}`);
 	let json = JSON.parse(response.response);
 	if (!json.data || json.data.length < 1) {
-		ep.grabLink = "error: no sources found";
+		episode.grabLink = "error: no sources found";
 		return;
 	}
 	let sources = json.data;
@@ -38,10 +47,10 @@ async function getDirect(ep) {
 	for (let i of parsedQualityPrefs) {
 		for (let j of sources) {
 			if (j.label == i + "p") {
-				ep.grabLink = j.file;
+				episode.grabLink = j.file;
 				return;
 			}
 		}
 	}
-	ep.grabLink = "error: preferred qualities not found";
+	episode.grabLink = "error: preferred qualities not found";
 }

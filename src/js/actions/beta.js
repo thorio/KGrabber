@@ -1,3 +1,8 @@
+// needed for jsdoc
+/* eslint-disable no-unused-vars */
+const Episode = require("../types/Episode");
+/* eslint-enable no-unused-vars */
+
 const util = require("../util"),
 	preferenceManager = require("../config/preferenceManager"),
 	shared = require("./shared"),
@@ -17,6 +22,11 @@ module.exports = [
 	}),
 ];
 
+/**
+ * Asynchronously sets the quality
+ * @param {Episode} episode
+ * @returns {Promise<void>}
+ */
 async function tryGetQuality(episode) {
 	if (!episode.grabLink.match(/.*=m\d\d/)) {
 		util.log.warn(`invalid beta link "${episode.grabLink}"`);

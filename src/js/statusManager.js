@@ -1,5 +1,4 @@
 const log = require("./util").log,
-	util = require("./util"),
 	page = require("./UI/page"),
 	Status = require("./types/Status");
 

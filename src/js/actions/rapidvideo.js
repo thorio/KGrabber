@@ -1,3 +1,8 @@
+// needed for jsdoc
+/* eslint-disable no-unused-vars */
+const Episode = require("../types/Episode");
+/* eslint-enable no-unused-vars */
+
 const util = require("../util"),
 	{ ajax } = util,
 	preferenceManager = require("../config/preferenceManager"),
@@ -28,20 +33,24 @@ module.exports = [
 	}),
 ];
 
-//asynchronously gets the direct link
-async function _rapidvideo_getDirect(ep) {
-	if (ep.grabLink.slice(0, 5) == "error") {
+/**
+ * Asynchronously gets the direct link
+ * @param {Episode} episode
+ * @returns {Promise<void>}
+ */
+async function _rapidvideo_getDirect(episode) {
+	if (episode.grabLink.slice(0, 5) == "error") {
 		return;
 	}
-	let response = await ajax.get(ep.grabLink);
+	let response = await ajax.get(episode.grabLink);
 	if (response.status != 200) { // TODO replace status codes with constants from http-status-codes
-		ep.grabLink = `error: http status ${response.status}`;
+		episode.grabLink = `error: http status ${response.status}`;
 		return;
 	}
 	let $html = $(response.response);
 	let $sources = $html.find("source");
 	if ($sources.length == 0) {
-		ep.grabLink = "error: no sources found";
+		episode.grabLink = "error: no sources found";
 		return;
 	}
 
@@ -52,9 +61,9 @@ async function _rapidvideo_getDirect(ep) {
 	let parsedQualityPrefs = preferences.general.quality_order.replace(/\s/g, "").split(",");
 	for (let i of parsedQualityPrefs) {
 		if (sources[i]) {
-			ep.grabLink = sources[i];
+			episode.grabLink = sources[i];
 			return;
 		}
 	}
-	ep.grabLink = "error: preferred qualities not found";
+	episode.grabLink = "error: preferred qualities not found";
 }

@@ -4,6 +4,7 @@ const gulp = require("gulp"),
 	map = require("map-stream"),
 	header = require("gulp-header"),
 	browserify = require("browserify"),
+	strictify = require("strictify"),
 	source = require("vinyl-source-stream"),
 	strip = require("gulp-strip-comments"),
 	del = require("del"),
@@ -11,6 +12,7 @@ const gulp = require("gulp"),
 
 const src_dir = "./src",
 	build_dir = "./build",
+	header_path = `${src_dir}/header.txt`,
 	prelude_path = require.resolve("browser-pack").replace("index.js", "prelude.js"),
 	version_number = require("./package.json").version;
 
@@ -20,8 +22,12 @@ function readFile(path) {
 	return new Promise((resolve) => fs.readFile(path, (_err, data) => resolve(data.toString())));
 }
 
+async function getHeader() {
+	return readFile(header_path);
+}
+
 async function getPrelude() {
-	return `\n// bundled with browserify\n"use strict";\n` + (await readFile(prelude_path)).replace(/\s*\/\/.*/g, "").trim();
+	return `\n// bundled with browserify\n` + (await readFile(prelude_path)).replace(/\s*\/\/.*/g, "").trim();
 }
 
 function swallowIfWatching(error) {
@@ -33,6 +39,7 @@ function swallowIfWatching(error) {
 function transform(func) {
 	return map(async (file, callback) => {
 		let contents = file.contents.toString();
+		console.log(file);
 		contents = await func(file, contents);
 		file.contents = Buffer.from(contents);
 		callback(null, file);
@@ -63,11 +70,11 @@ async function html() {
 }
 
 async function bundle() {
-	return browserify({ entries: [`${build_dir}/js/main.js`] }, { prelude: await getPrelude(), preludePath: "./prelude" })
+	return browserify({ entries: [`${build_dir}/js/main.js`], transform: [strictify] }, { prelude: await getPrelude(), preludePath: "./prelude" })
 		.bundle()
 		.on("error", swallowIfWatching)
 		.pipe(source("bundle.js"))
-		.pipe(header(await readFile(`${src_dir}/header.txt`), { version: version_number }))
+		.pipe(header(await getHeader(), { version: version_number }))
 		.pipe(gulp.dest(build_dir));
 }
 
@@ -80,6 +87,6 @@ function watch() {
 	gulp.watch(src_dir, build);
 }
 
-const build = gulp.series(clean, copy, css, html, bundle);
+const build = gulp.series(copy, css, html, bundle);
 
 module.exports = { build, bundle, watch, clean };

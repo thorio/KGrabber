@@ -29,7 +29,7 @@ exports.save = () => {
  * Resets status
  */
 exports.clear = () => {
-	util.clear(status);
+	status.clear();
 	sessionStorage.clear("KG-data");
 };
 

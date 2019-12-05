@@ -13,6 +13,7 @@
 		"gulp-header": "^2.0.9",
 		"gulp-strip-comments": "^2.5.2",
 		"map-stream": "0.0.7",
+		"strictify": "^0.2.0",
 		"vinyl-source-stream": "^2.0.0"
 	},
 	"scripts": {

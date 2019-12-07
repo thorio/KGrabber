@@ -16,9 +16,9 @@ exports.turboBegin = async () => {
 	linkDisplay.showSpinner();
 	let progress = 0;
 	let func = async ( /** @type {Episode} */ ep) => {
-		let html = (await util.ajax.get(ep.kissLink + `&s=${status.server}`)).response;
-		let link = site.servers.get(status.server).findLink(html);
-		ep.grabLink = link || "error: server not available or captcha";
+		let html = (await util.ajax.get(ep.kissLink + `&s=${status.serverID}`)).response;
+		let link = site.servers.get(status.serverID).findLink(html);
+		ep.grabbedLink = link || "error: server not available or captcha";
 		progress++;
 		linkDisplay.setSpinnerText(`${progress}/${promises.length}`);
 	};

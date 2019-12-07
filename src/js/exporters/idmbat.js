@@ -26,12 +26,12 @@ function runExport(status) {
 	let title = util.makeBatSafe(status.title);
 	let str = getHeader(title);
 	for (let episode of status.episodes) {
-		let epTitle = util.makeBatSafe(listing[episode.num - 1].innerText);
+		let epTitle = util.makeBatSafe(listing[episode.episodeNumber - 1].innerText);
 		if (!preferences.internet_download_manager.keep_title_in_episode_name &&
 			epTitle.slice(0, title.length) === title) {
 			epTitle = epTitle.slice(title.length + 1);
 		}
-		str += `"%idm%" /n /p "%dir%\\%title%" /f "${epTitle}.mp4" /d "${episode.grabLink}" %args%\n`;
+		str += `"%idm%" /n /p "%dir%\\%title%" /f "${epTitle}.mp4" /d "${episode.grabbedLink}" %args%\n`;
 	}
 	return str;
 }

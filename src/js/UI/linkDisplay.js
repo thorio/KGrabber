@@ -23,7 +23,7 @@ let load = exports.load = () => {
 	setTitle(`Extracted Links | ${status.title}`);
 	loadLinks(status.episodes);
 	loadExporters(exporters.sorted(status.linkType, status.url == page.href));
-	loadActions(actions.available(status.server, status.linkType, status.automaticDone));
+	loadActions(actions.available(status.serverID, status.linkType, status.automaticDone));
 
 	shared.applyColors();
 	$("#KG-linkdisplay").show();
@@ -43,9 +43,9 @@ function loadLinks(episodes) { // TODO refactor this
 	let html = "";
 	let padLength = Math.max(2, page.episodeCount().toString().length);
 	util.for(episodes, (i, /** @type {Episode} */ obj) => {
-		let num = obj.num.toString().padStart(padLength, "0");
+		let num = obj.episodeNumber.toString().padStart(padLength, "0");
 		let number = `<div class="KG-linkdisplay-episodenumber">E${num}:</div>`;
-		let link = `<a href="${obj.grabLink}" target="_blank">${obj.grabLink}</a>`;
+		let link = `<a href="${obj.grabbedLink}" target="_blank">${obj.grabbedLink}</a>`;
 		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);

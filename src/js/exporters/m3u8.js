@@ -22,7 +22,7 @@ function runExport(status) {
 	let listing = $(".listing a").get().reverse();
 	let str = "#EXTM3U\n";
 	util.for(status.episodes, (i, obj) => {
-		str += `#EXTINF:0,${listing[obj.num-1].innerText}\n${obj.grabLink}\n`;
+		str += `#EXTINF:0,${listing[obj.episodeNumber-1].innerText}\n${obj.grabbedLink}\n`;
 	});
 	return str;
 }

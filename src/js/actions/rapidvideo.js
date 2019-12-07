@@ -20,7 +20,7 @@ module.exports = [
 		// eslint-disable-next-line no-unused-vars
 	}, async (status, _setProgress) => {
 		for (let i in status.episodes) {
-			status.episodes[i].grabLink = status.episodes[i].grabLink.replace("rapidvid.to", "rapidvideo.com");
+			status.episodes[i].grabbedLink = status.episodes[i].grabbedLink.replace("rapidvid.to", "rapidvideo.com");
 		}
 		status.automaticDone = true;
 	}),
@@ -39,18 +39,18 @@ module.exports = [
  * @returns {Promise<void>}
  */
 async function _rapidvideo_getDirect(episode) {
-	if (episode.grabLink.slice(0, 5) == "error") {
+	if (episode.grabbedLink.slice(0, 5) == "error") {
 		return;
 	}
-	let response = await ajax.get(episode.grabLink);
+	let response = await ajax.get(episode.grabbedLink);
 	if (response.status != 200) { // TODO replace status codes with constants from http-status-codes
-		episode.grabLink = `error: http status ${response.status}`;
+		episode.grabbedLink = `error: http status ${response.status}`;
 		return;
 	}
 	let $html = $(response.response);
 	let $sources = $html.find("source");
 	if ($sources.length == 0) {
-		episode.grabLink = "error: no sources found";
+		episode.grabbedLink = "error: no sources found";
 		return;
 	}
 
@@ -61,9 +61,9 @@ async function _rapidvideo_getDirect(episode) {
 	let parsedQualityPrefs = preferences.general.quality_order.replace(/\s/g, "").split(",");
 	for (let i of parsedQualityPrefs) {
 		if (sources[i]) {
-			episode.grabLink = sources[i];
+			episode.grabbedLink = sources[i];
 			return;
 		}
 	}
-	episode.grabLink = "error: preferred qualities not found";
+	episode.grabbedLink = "error: preferred qualities not found";
 }

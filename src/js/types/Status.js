@@ -28,7 +28,7 @@ module.exports = class Status {
 		this.func = "";
 		this.url = "";
 		this.title = "";
-		this.server = ""; // TODO rename to serverID
+		this.serverID = "";
 		this.linkType = "";
 	}
 
@@ -44,7 +44,7 @@ module.exports = class Status {
 		this._reset();
 		this.url = url;
 		this.title = title;
-		this.server = serverID;
+		this.serverID = serverID;
 		this.linkType = linkType;
 	}
 

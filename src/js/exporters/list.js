@@ -20,7 +20,7 @@ module.exports = new Exporter({
 function runExport(status) {
 	let str = "";
 	for (let i in status.episodes) {
-		str += status.episodes[i].grabLink + "\n";
+		str += status.episodes[i].grabbedLink + "\n";
 	}
 	return str;
 }

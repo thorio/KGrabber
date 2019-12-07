@@ -6,18 +6,18 @@ module.exports = class Episode {
 	 */
 	constructor(episodeNumber, href) {
 		this.kissLink = href;
-		this.grabLink = ""; //TODO rename to grabbedLink
+		this.grabbedLink = "";
 		// this.processedLink = ""; //TODO implement these
 		// this.error = "";
-		this.num = episodeNumber; //TODO rename to episodeNumber
+		this.episodeNumber = episodeNumber;
 		Object.seal(this);
 	}
 
 	get link() {
-		return this.processedLink || this.grabLink;
+		return this.processedLink || this.grabbedLink;
 	}
 
 	get display() {
-		return this.error || this.processedLink || this.grabLink;
+		return this.error || this.processedLink || this.grabbedLink;
 	}
 };

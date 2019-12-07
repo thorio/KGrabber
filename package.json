@@ -3,7 +3,9 @@
 	"version": "3.0.0-pre2",
 	"description": "Userscript for extracting links from kissanime.ru and similar sites",
 	"main": "src/js/main.js",
-	"dependencies": {},
+	"dependencies": {
+		"http-status-codes": "^1.4.0"
+	},
 	"devDependencies": {
 		"browserify": "^16.5.0",
 		"del": "^5.1.0",

@@ -7,7 +7,8 @@ const util = require("../util"),
 	preferenceManager = require("../config/preferenceManager"),
 	shared = require("./shared"),
 	Action = require("../types/Action"),
-	LinkTypes = require("../types/LinkTypes");
+	LinkTypes = require("../types/LinkTypes"),
+	HttpStatusCodes = require("http-status-codes");
 
 const preferences = preferenceManager.get();
 
@@ -39,7 +40,7 @@ async function tryGetQuality(episode) {
 		if (qualityStrings[i]) {
 			// don't want to needlessly spam the servers
 			// eslint-disable-next-line no-await-in-loop
-			if (await util.ajax.head(rawLink + qualityStrings[i]).status == 200) {
+			if (await util.ajax.head(rawLink + qualityStrings[i]).status == HttpStatusCodes.OK) {
 				episode.grabbedLink = rawLink + qualityStrings[i];
 				return;
 			}

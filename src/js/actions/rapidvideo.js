@@ -8,7 +8,8 @@ const util = require("../util"),
 	preferenceManager = require("../config/preferenceManager"),
 	shared = require("./shared"),
 	Action = require("../types/Action"),
-	LinkTypes = require("../types/LinkTypes");
+	LinkTypes = require("../types/LinkTypes"),
+	HttpStatusCodes = require("http-status-codes");
 
 const preferences = preferenceManager.get();
 
@@ -43,7 +44,7 @@ async function _rapidvideo_getDirect(episode) {
 		return;
 	}
 	let response = await ajax.get(episode.grabbedLink);
-	if (response.status != 200) { // TODO replace status codes with constants from http-status-codes
+	if (response.status != HttpStatusCodes.OK) {
 		episode.grabbedLink = `error: http status ${response.status}`;
 		return;
 	}

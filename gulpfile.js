@@ -39,7 +39,6 @@ function swallowIfWatching(error) {
 function transform(func) {
 	return map(async (file, callback) => {
 		let contents = file.contents.toString();
-		console.log(file);
 		contents = await func(file, contents);
 		file.contents = Buffer.from(contents);
 		callback(null, file);

@@ -4,17 +4,13 @@ const Episode = require("../types/Episode");
 /* eslint-enable no-unused-vars */
 
 const ajax = require("../util/ajax"),
+	util = require("../util"),
 	preferenceManager = require("../config/preferenceManager"),
 	shared = require("./shared"),
 	Action = require("../types/Action"),
 	LinkTypes = require("../types/LinkTypes");
 
 const preferences = preferenceManager.get();
-// TODO add error if video is being encoded
-// {
-// 	"success": false,
-// 	"data": "We are encoding this video, please check back later"
-// }
 
 module.exports = [
 	new Action("get direct links", {
@@ -36,9 +32,15 @@ async function getDirect(episode) {
 		return;
 	}
 	let response = await ajax.post(`https://www.novelplanet.me/api/source/${episode.functionalLink.match(/\/([^/]*?)$/)[1]}`);
+	if (response.success === false && response.data.includes("encoding")) {
+		episode.error = "video is still being encoded";
+		util.log.err(`nova: ${episode.error}`, response);
+		return;
+	}
 	let json = JSON.parse(response.response);
 	if (!json.data || json.data.length < 1) {
 		episode.error = "no sources found";
+		util.log.err(`nova: ${episode.error}`, response);
 		return;
 	}
 	let sources = json.data;
@@ -53,4 +55,5 @@ async function getDirect(episode) {
 		}
 	}
 	episode.error = "preferred qualities not found";
+	util.log.err(`nova: ${episode.error}`, response);
 }

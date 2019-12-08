@@ -21,7 +21,7 @@ module.exports = [
 		// eslint-disable-next-line no-unused-vars
 	}, async (status, _setProgress) => {
 		for (let i in status.episodes) {
-			status.episodes[i].grabbedLink = status.episodes[i].grabbedLink.replace("rapidvid.to", "rapidvideo.com");
+			status.episodes[i].processedLink = status.episodes[i].processedLink.replace("rapidvid.to", "rapidvideo.com");
 		}
 		status.automaticDone = true;
 	}),
@@ -40,18 +40,18 @@ module.exports = [
  * @returns {Promise<void>}
  */
 async function _rapidvideo_getDirect(episode) {
-	if (episode.grabbedLink.slice(0, 5) == "error") {
+	if (episode.error) {
 		return;
 	}
-	let response = await ajax.get(episode.grabbedLink);
+	let response = await ajax.get(episode.functionalLink);
 	if (response.status != HttpStatusCodes.OK) {
-		episode.grabbedLink = `error: http status ${response.status}`;
+		episode.error = `http status ${response.status}`;
 		return;
 	}
 	let $html = $(response.response);
 	let $sources = $html.find("source");
 	if ($sources.length == 0) {
-		episode.grabbedLink = "error: no sources found";
+		episode.error = "no sources found";
 		return;
 	}
 
@@ -62,9 +62,9 @@ async function _rapidvideo_getDirect(episode) {
 	let parsedQualityPrefs = preferences.general.quality_order.replace(/\s/g, "").split(",");
 	for (let i of parsedQualityPrefs) {
 		if (sources[i]) {
-			episode.grabbedLink = sources[i];
+			episode.processedLink = sources[i];
 			return;
 		}
 	}
-	episode.grabbedLink = "error: preferred qualities not found";
+	episode.error = "preferred qualities not found";
 }

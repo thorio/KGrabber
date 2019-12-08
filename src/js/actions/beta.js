@@ -29,11 +29,14 @@ module.exports = [
  * @returns {Promise<void>}
  */
 async function tryGetQuality(episode) {
-	if (!episode.grabbedLink.match(/.*=m\d\d/)) {
-		util.log.warn(`invalid beta link "${episode.grabbedLink}"`);
+	if (episode.error) {
 		return;
 	}
-	let rawLink = episode.grabbedLink.slice(0, -4);
+	if (!episode.functionalLink.match(/.*=m\d\d/)) {
+		util.log.warn(`invalid beta link "${episode.functionalLink}"`);
+		return;
+	}
+	let rawLink = episode.functionalLink.slice(0, -4);
 	let qualityStrings = { "1080": "=m37", "720": "=m22", "360": "=m18" };
 	let parsedQualityPrefs = preferences.general.quality_order.replace(/\s/g, "").split(",");
 	for (let i of parsedQualityPrefs) {
@@ -41,7 +44,7 @@ async function tryGetQuality(episode) {
 			// don't want to needlessly spam the servers
 			// eslint-disable-next-line no-await-in-loop
 			if (await util.ajax.head(rawLink + qualityStrings[i]).status == HttpStatusCodes.OK) {
-				episode.grabbedLink = rawLink + qualityStrings[i];
+				episode.processedLink = rawLink + qualityStrings[i];
 				return;
 			}
 		}

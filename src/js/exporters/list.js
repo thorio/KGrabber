@@ -19,8 +19,10 @@ module.exports = new Exporter({
  */
 function runExport(status) {
 	let str = "";
-	for (let i in status.episodes) {
-		str += status.episodes[i].grabbedLink + "\n";
+	for (let episode of status.episodes) {
+		if (!episode.error) {
+			str += episode.functionalLink + "\n";
+		}
 	}
 	return str;
 }

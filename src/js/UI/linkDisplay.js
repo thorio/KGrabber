@@ -45,7 +45,7 @@ function loadLinks(episodes) { // TODO refactor this
 	util.for(episodes, (i, /** @type {Episode} */ obj) => {
 		let num = obj.episodeNumber.toString().padStart(padLength, "0");
 		let number = `<div class="KG-linkdisplay-episodenumber">E${num}:</div>`;
-		let link = `<a href="${obj.grabbedLink}" target="_blank">${obj.grabbedLink}</a>`;
+		let link = `<a href="${obj.functionalLink}" target="_blank">${obj.displayLink}</a>`;
 		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);

@@ -16,8 +16,13 @@ exports.defaultGetLink = () => {
 	if (!site.onContentPath(page.location.pathname)) { //captcha
 		return;
 	}
+	let episode = status.episodes[status.current];
 	let link = site.servers.get(status.serverID).findLink(document.body.innerHTML);
-	status.episodes[status.current].grabbedLink = link || "error (selected server may not be available)";
+	if (link) {
+		episode.grabbedLink = link;
+	} else {
+		episode.error = "selected server may not be available";
+	}
 
 	status.current++;
 	if (status.current >= status.episodes.length) {

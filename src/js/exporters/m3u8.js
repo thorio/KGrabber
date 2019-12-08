@@ -4,8 +4,8 @@ const Status = require("../types/Status");
 /* eslint-enable no-unused-vars */
 
 const LinkTypes = require("../types/LinkTypes"),
-	util = require("../util"),
-	Exporter = require("../types/Exporter");
+	Exporter = require("../types/Exporter"),
+	page = require("../UI/page");
 
 module.exports = new Exporter({
 	name: "m3u8 playlist",
@@ -19,10 +19,12 @@ module.exports = new Exporter({
  * @returns {String}
  */
 function runExport(status) {
-	let listing = $(".listing a").get().reverse();
+	let listing = page.episodeList();
 	let str = "#EXTM3U\n";
-	util.for(status.episodes, (i, obj) => {
-		str += `#EXTINF:0,${listing[obj.episodeNumber-1].innerText}\n${obj.grabbedLink}\n`;
-	});
+	for (let episode of status.episodes) {
+		if (!episode.error) {
+			str += `#EXTINF:0,${listing[episode.episodeNumber-1].innerText}\n${episode.functionalLink}\n`;
+		}
+	}
 	return str;
 }

@@ -21,8 +21,10 @@ module.exports = new Exporter({
 function runExport(status) {
 	let listing = page.episodeList();
 	let str = "episode, name, url\n";
-	for (let i in status.episodes) {
-		str += `${status.episodes[i].episodeNumber}, ${listing[status.episodes[i].episodeNumber-1].innerText}, ${status.episodes[i].grabbedLink}\n`;
+	for (let episode of status.episodes) {
+		if (!episode.error) {
+			str += `${episode.episodeNumber}, ${listing[episode.episodeNumber-1].innerText}, ${episode.functionalLink}\n`;
+		}
 	}
 	return str;
 }

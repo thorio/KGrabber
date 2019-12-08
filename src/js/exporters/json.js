@@ -4,7 +4,8 @@ const Status = require("../types/Status");
 /* eslint-enable no-unused-vars */
 
 const LinkTypes = require("../types/LinkTypes"),
-	Exporter = require("../types/Exporter");
+	Exporter = require("../types/Exporter"),
+	page = require("../UI/page");
 
 module.exports = new Exporter({
 	name: "json",
@@ -18,18 +19,23 @@ module.exports = new Exporter({
  * @returns {String}
  */
 function runExport(status) {
-	let listing = $(".listing a").get().reverse();
+	let listing = page.episodeList();
 	let json = {
-		title: status.title,
-		server: status.serverID,
-		linkType: status.linkType,
+		version: "2.0",
+		scriptVersion: GM_info.script.version,
 		episodes: [],
+		url: status.url,
+		title: status.title,
+		serverID: status.serverID,
+		linkType: status.linkType,
 	};
-	for (let i in status.episodes) {
+	for (let episode of status.episodes) {
 		json.episodes.push({
-			number: status.episodes[i].episodeNumber,
-			name: listing[status.episodes[i].episodeNumber - 1].innerText,
-			link: status.episodes[i].grabbedLink,
+			grabbedLink: episode.grabbedLink,
+			processedLink: episode.processedLink,
+			error: episode.error,
+			episodeNumber: episode.episodeNumber,
+			name: listing[episode.episodeNumber - 1].innerText,
 		});
 	}
 	return JSON.stringify(json);

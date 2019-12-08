@@ -21,7 +21,9 @@ function runExport(status) {
 	let listing = $(".listing a").get().reverse();
 	let str = "";
 	for (let episode of status.episodes) {
-		str += `${episode.grabbedLink}\n out=${listing[episode.episodeNumber-1].innerText}.mp4\n`;
+		if (!episode.error) {
+			str += `${episode.functionalLink}\n out=${listing[episode.episodeNumber-1].innerText}.mp4\n`;
+		}
 	}
 	return str;
 }

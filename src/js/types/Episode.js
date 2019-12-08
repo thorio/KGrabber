@@ -2,22 +2,24 @@ module.exports = class Episode {
 	/**
 	 * Creates a new Episode
 	 * @param {Number} episodeNumber
-	 * @param {String} href
+	 * @param {String} kissLink
 	 */
-	constructor(episodeNumber, href) {
-		this.kissLink = href;
+	constructor(episodeNumber, kissLink) {
+		this.kissLink = kissLink;
 		this.grabbedLink = "";
-		// this.processedLink = ""; //TODO implement these
-		// this.error = "";
+		this.processedLink = "";
+		this.error = "";
 		this.episodeNumber = episodeNumber;
 		Object.seal(this);
 	}
 
-	get link() {
+	get functionalLink() {
 		return this.processedLink || this.grabbedLink;
 	}
 
-	get display() {
-		return this.error || this.processedLink || this.grabbedLink;
+	get displayLink() {
+		return this.error ?
+			`error: ${this.error}` :
+			this.processedLink || this.grabbedLink;
 	}
 };

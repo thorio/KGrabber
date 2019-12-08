@@ -1,7 +1,4 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
 const Episode = require("./Episode");
-/* eslint-enable no-unused-vars */
 
 /**
  * @class Status
@@ -71,6 +68,9 @@ module.exports = class Status {
 	 */
 	static deserialize(json) {
 		let obj = JSON.parse(json);
+		for (let i in obj.episodes) {
+			obj.episodes[i] = Object.assign(new Episode, obj.episodes[i]);
+		}
 		return Object.assign(new this, obj);
 	}
 };

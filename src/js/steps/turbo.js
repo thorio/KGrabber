@@ -15,10 +15,14 @@ exports.turboBegin = async () => {
 	$("#KG-linkdisplay").slideDown();
 	linkDisplay.showSpinner();
 	let progress = 0;
-	let func = async ( /** @type {Episode} */ ep) => {
-		let html = (await util.ajax.get(ep.kissLink + `&s=${status.serverID}`)).response;
+	let func = async ( /** @type {Episode} */ episode) => {
+		let html = (await util.ajax.get(episode.kissLink + `&s=${status.serverID}`)).response;
 		let link = site.servers.get(status.serverID).findLink(html);
-		ep.grabbedLink = link || "error: server not available or captcha";
+		if (link) {
+			episode.grabbedLink = link;
+		} else {
+			episode.error = "error: server not available or captcha";
+		}
 		progress++;
 		linkDisplay.setSpinnerText(`${progress}/${promises.length}`);
 	};

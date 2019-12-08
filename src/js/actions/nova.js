@@ -32,13 +32,13 @@ module.exports = [
  * @returns {Promise<void>}
  */
 async function getDirect(episode) {
-	if (episode.grabbedLink.slice(0, 5) == "error") {
+	if (episode.error) {
 		return;
 	}
-	let response = await ajax.post(`https://www.novelplanet.me/api/source/${episode.grabbedLink.match(/\/([^/]*?)$/)[1]}`);
+	let response = await ajax.post(`https://www.novelplanet.me/api/source/${episode.functionalLink.match(/\/([^/]*?)$/)[1]}`);
 	let json = JSON.parse(response.response);
 	if (!json.data || json.data.length < 1) {
-		episode.grabbedLink = "error: no sources found";
+		episode.error = "no sources found";
 		return;
 	}
 	let sources = json.data;
@@ -47,10 +47,10 @@ async function getDirect(episode) {
 	for (let i of parsedQualityPrefs) {
 		for (let j of sources) {
 			if (j.label == i + "p") {
-				episode.grabbedLink = j.file;
+				episode.processedLink = j.file;
 				return;
 			}
 		}
 	}
-	episode.grabbedLink = "error: preferred qualities not found";
+	episode.error = "preferred qualities not found";
 }

@@ -69,7 +69,7 @@ function loadActions(actions) {
 }
 
 function loadExporters(arr) {
-	let $exporters = $("#KG-linkdisplay-export");
+	let $exporters = $("#KG-linkdisplay-export-dropdown");
 	$exporters.empty() //clear old exporters
 		.off("change")
 		.change((e) => {

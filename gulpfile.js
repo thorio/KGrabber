@@ -55,8 +55,9 @@ function copy() {
 
 function css() {
 	return gulp.src(`${src_dir}/css/*.css`)
+		.pipe(header("/* src\\css\\${file.relative} */\n\n"))
 		.pipe(concat("css.js"))
-		.pipe(transform((_, contents) => `// generated file, provides contents of src\\css\nmodule.exports = \`${contents}\`;`))
+		.pipe(transform((_, contents) => `// generated file, provides contents of src\\css\nmodule.exports = \`\n${contents}\`;`))
 		.pipe(gulp.dest(`${build_dir}/js`));
 }
 

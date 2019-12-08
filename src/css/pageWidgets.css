@@ -1,0 +1,16 @@
+.KG-episodelist-header {
+	width: 3%;
+	text-align: center !important;
+}
+
+.KG-episodelist-number {
+	text-align: right;
+	padding-right: 4px;
+}
+
+.KG-episodelist-button {
+	background-color: #527701;
+	color: #ffffff;
+	border: none;
+	cursor: pointer;
+}

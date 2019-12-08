@@ -69,7 +69,7 @@ function loadActions(actions) {
 }
 
 function loadExporters(arr) {
-	let $exporters = $("#KG-input-export");
+	let $exporters = $("#KG-linkdisplay-export");
 	$exporters.empty() //clear old exporters
 		.off("change")
 		.change((e) => {
@@ -117,10 +117,10 @@ function runExporter(exporter) {
 }
 
 let showSpinner = exports.showSpinner = () =>
-	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div><div id="KG-spinner-text"><div>`);
+	$("#KG-linkdisplay-text").html(`<div class="loader">Loading...</div><div id="KG-loader-text"><div>`);
 
 let setSpinnerText = exports.setSpinnerText = (str) =>
-	$("#KG-spinner-text").text(str);
+	$("#KG-loader-text").text(str);
 
 let setExportText = (text) =>
 	$("#KG-linkdisplay-export-text").text(text);
@@ -129,7 +129,7 @@ let showExports = () =>
 	$("#KG-linkdisplay-export").show();
 
 function setDownloadFile(data, filename, extension) {
-	$("#KG-input-export-download").attr({
+	$("#KG-linkdisplay-export-download").attr({
 		href: `data:text/plain;charset=utf-8,${encodeURIComponent(data)}`,
 		download: `${filename}.${extension}`,
 	});

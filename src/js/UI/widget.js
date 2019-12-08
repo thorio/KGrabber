@@ -29,7 +29,7 @@ function load() {
 	$("#KG-input-from").attr("max", epCount);
 	for (let server of site.servers) {
 		$(`<option value="${server.identifier}">${server.name}</>`)
-			.appendTo("#KG-input-server");
+			.appendTo("#KG-widget-server");
 	}
 	setHandlers();
 	shared.applyColors();
@@ -41,7 +41,7 @@ function setHandlers() {
 			$("#KG-input-start").click();
 		}
 	});
-	$("#KG-input-server").change(() => {
+	$("#KG-widget-server").change(() => {
 		preferenceManager.setPreferredServer(page.location.hostname, getServer());
 	});
 	$(".KG-preferences-button").click(() => {
@@ -63,7 +63,7 @@ async function markAvailableServers(url, server) {
 		log.warn("no servers found");
 	}
 
-	$("#KG-input-server option").each((i, obj) => {
+	$("#KG-widget-server option").each((i, obj) => {
 		if (servers.indexOf(obj.value) < 0) {
 			$(obj).css("color", "#888");
 		}
@@ -71,10 +71,10 @@ async function markAvailableServers(url, server) {
 }
 
 let setServer = (server) =>
-	$("#KG-input-server").val(server);
+	$("#KG-widget-server").val(server);
 
 let getServer = exports.getServer = () =>
-	$("#KG-input-server").val();
+	$("#KG-widget-server").val();
 
 let getStartEpisode = () =>
 	$('#KG-input-from').val() - 1;

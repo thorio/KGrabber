@@ -30,13 +30,13 @@ let load = (preferences) => {
 			let html = "";
 			switch (typeof group[j]) {
 				case "string":
-					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="text" value="${group[j]}" class="KG-input-text right" id="KG-preference-${i}-${j}"></div>`;
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="text" value="${group[j]}" class="KG-preferences-input-text right" id="KG-preference-${i}-${j}"></div>`;
 					break;
 				case "boolean":
-					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="checkbox" ${group[j] ? "checked" : ""} class="KG-input-checkbox right" id="KG-preference-${i}-${j}"></div>`;
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="checkbox" ${group[j] ? "checked" : ""} class="KG-preferences-input-checkbox right" id="KG-preference-${i}-${j}"></div>`;
 					break;
 				case "number":
-					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="number" value="${group[j]}" class="KG-input-text right" id="KG-preference-${i}-${j}"></div>`;
+					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="number" value="${group[j]}" class="KG-preferences-input-text right" id="KG-preference-${i}-${j}"></div>`;
 					break;
 				default:
 					log.err(`unknown type "${typeof group[j]}" of preferences.${i}.${j}`);

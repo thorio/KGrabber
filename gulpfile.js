@@ -5,6 +5,7 @@ const gulp = require("gulp"),
 	header = require("gulp-header"),
 	browserify = require("browserify"),
 	strictify = require("strictify"),
+	less = require("gulp-less"),
 	source = require("vinyl-source-stream"),
 	strip = require("gulp-strip-comments"),
 	del = require("del"),
@@ -53,8 +54,9 @@ function copy() {
 }
 
 function css() {
-	return gulp.src(`${src_dir}/css/*.css`)
+	return gulp.src(`${src_dir}/css/*.less`)
 		.pipe(header("/* src\\css\\${file.relative} */\n\n"))
+		.pipe(less())
 		.pipe(concat("css.js"))
 		.pipe(transform((_, contents) => `// generated file, provides contents of src\\css\nmodule.exports = \`\n${contents}\`;`))
 		.pipe(gulp.dest(`${build_dir}/js`));

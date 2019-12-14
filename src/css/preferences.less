@@ -1,0 +1,62 @@
+@import "colors.less";
+@import "images.less";
+
+#KG-preferences-container-outer {
+	overflow: auto;
+}
+
+.KG-preferences-header {
+	font-size: 17px;
+	letter-spacing: 0px;
+	width: 100%;
+	margin: 10px 0 5px 0;
+}
+
+#KG-preferences-container {
+	overflow: auto;
+
+	div {
+		box-sizing: border-box;
+		height: 26px;
+		width: 50%;
+		padding: 0 5px;
+		margin: 2px 0;
+		float: left;
+		line-height: 26px;
+		font-size: 14px;
+
+		span {
+			padding-top: 5px;
+		}
+	}
+}
+
+.KG-preferences-button {
+	width: 18px;
+	height: 18px;
+	margin: 3px;
+	float: right;
+	border: none;
+	background-color: @color-none;
+	opacity: 0.7;
+	background-image: @image-settings;
+	background-size: cover;
+	cursor: pointer;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.KG-preferences-input-text {
+	width: 150px;
+	border: 1px solid @color-element-border;
+	background: @color-element-background;
+	padding: 3px;
+	margin-left: 5px;
+	color: @color-text-primary;
+}
+
+.KG-preferences-input-checkbox {
+	height: 22px;
+}

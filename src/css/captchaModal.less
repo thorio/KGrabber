@@ -1,0 +1,59 @@
+@import "colors.less";
+
+.KG-captchaModal-container {
+	background-color: @color-modal-backdrop;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100vw;
+	height: 100vh;
+	z-index: 9000;
+	overflow: hidden scroll;
+}
+
+.KG-captchaModal {
+	width: 1000px;
+	margin: auto;
+	margin-top: 195px;
+	margin-bottom: 50px;
+}
+
+
+.KG-captchaModal-description-header {
+	width: 100%;
+	font-size: 1.7em;
+	text-align: center;
+
+	span {
+		@margin: 20px;
+		color: @color-text-highlight;
+		margin-right: @margin;
+
+		&:not(:last-child)::after {
+			content: "-";
+			margin-left: @margin;
+			color: @color-text-primary;
+		}
+	}
+}
+
+.KG-captchaModal-image-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+
+	img {
+		margin: 30px;
+		width: 160px;
+		cursor: pointer;
+
+		&.active {
+			outline: 5px solid @color-text-highlight;
+		}
+	}
+}
+
+#KG-captchaModal-status {
+	margin-left: 25px;
+}

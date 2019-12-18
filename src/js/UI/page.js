@@ -34,3 +34,10 @@ Object.defineProperty(exports, "location", {
 	/** @returns {Location} */
 	get: () => util.merge({}, location), // make a copy of location to disallow writes
 });
+
+/**
+ * Enables/Disables scrolling
+ */
+exports.scroll = (enable) => {
+	$(document.body).css("overflow", enable ? "" : "hidden");
+};

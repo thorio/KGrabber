@@ -21,7 +21,6 @@ module.exports = class Status {
 		this.episodes = [];
 		this.current = 0;
 		this.automaticDone = false;
-		this.active = false;
 		this.func = "";
 		this.url = "";
 		this.title = "";

@@ -1,6 +1,7 @@
 //allows multiple different approaches to collecting links
 
-module.exports = Object.assign(
+module.exports = Object.assign({},
 	require("./default"),
-	require("./turbo")
+	require("./turbo"),
+	require("./captchaModal")
 );

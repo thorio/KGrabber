@@ -15,13 +15,16 @@ module.exports = {
 		"require-atomic-updates": "off",
 		"no-unused-vars": "warn",
 		"no-useless-escape": "warn",
-		"no-await-in-loop": "warn",
+		"no-await-in-loop": "off",
 		"dot-location": ["warn", "property"],
 		"semi": "warn",
 		"no-restricted-globals": ["error", "status"],
 		"comma-dangle": ["warn", {
 			"arrays": "always-multiline",
 			"objects": "always-multiline",
+		}],
+		"no-constant-condition": ["warn", {
+			"checkLoops": false,
 		}],
 	}
 }

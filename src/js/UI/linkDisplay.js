@@ -26,8 +26,14 @@ let load = exports.load = () => {
 	loadActions(actions.available(status.serverID, status.linkType, status.automaticDone));
 
 	shared.applyColors();
-	$("#KG-linkdisplay").show();
+	show(true);
 };
+
+/**
+ * @param {Boolean} instant
+ */
+let show = exports.show = (instant) =>
+	instant ? $("#KG-linkdisplay").show() : $("#KG-linkdisplay").slideDown();
 
 let hide = exports.hide = () =>
 	$("#KG-linkdisplay").slideUp();
@@ -36,10 +42,12 @@ function setTitle(text) {
 	$("#KG-linkdisplay .KG-dialog-title").text(text);
 }
 
+// TODO convert to html table
+// TODO add metadata display
 /**
  * @param {Episode[]} episodes
  */
-function loadLinks(episodes) { // TODO refactor this
+function loadLinks(episodes) {
 	let html = "";
 	let padLength = Math.max(2, page.episodeCount().toString().length);
 	util.for(episodes, (i, /** @type {Episode} */ obj) => {

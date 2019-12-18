@@ -1,11 +1,16 @@
 /**
+ * @typedef {Object} Response
+ * @property {String} response
+ */
+
+/**
  * Makes an HTTP request
  * @param {String} method
  * @param {String} url
  * @param {Object} obj
  * @param {any} obj.data
  * @param {Object} obj.headers
- * @returns {Promise<Object>} Response
+ * @returns {Promise<Response>} Response
  * @private
  */
 function request(method, url, { data, headers } = {}) {
@@ -25,7 +30,7 @@ function request(method, url, { data, headers } = {}) {
  * Makes a HTTP GET request
  * @param {String} url
  * @param {Object} headers
- * @returns {Promise<Object>} Response
+ * @returns {Promise<Response>} Response
  */
 exports.get = (url, headers) => {
 	return request("GET", url, { headers });
@@ -36,7 +41,7 @@ exports.get = (url, headers) => {
  * @param {String} url
  * @param {Object} headers
  * @param {Object} data
- * @returns {Promise<Object>} Response
+ * @returns {Promise<Response>} Response
  */
 exports.post = (url, data, headers) => {
 	return request("POST", url, { data, headers });
@@ -46,7 +51,7 @@ exports.post = (url, data, headers) => {
  * Makes a HTTP HEAD request
  * @param {String} url
  * @param {Object} headers
- * @returns {Promise<Object>} Response
+ * @returns {Promise<Response>} Response
  */
 exports.head = (url, headers) => {
 	return request("HEAD", url, { headers });

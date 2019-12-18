@@ -80,3 +80,16 @@ exports.merge = (obj1, obj2) =>
  */
 exports.last = (arr) =>
 	arr[arr.length - 1];
+
+/**
+ * form/urlencodes the given object
+ * @param {Object} obj
+ * @returns {String}
+ */
+exports.urlEncode = (obj) => {
+	let str = "";
+	for (let i in obj) {
+		str += `${encodeURIComponent(i)}=${encodeURIComponent(obj[i])}&`;
+	}
+	return str.slice(0, -1); // remove trailing '&'
+};

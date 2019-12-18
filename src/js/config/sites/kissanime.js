@@ -15,6 +15,7 @@ let servers = new Dictionary([
 		regex: /"https:\/\/www.novelplanet.me\/v\/.*?"/,
 		name: "Nova",
 		linkType: LinkTypes.EMBED,
+		customStep: "modalBegin",
 	}),
 
 		new Server("beta2", {

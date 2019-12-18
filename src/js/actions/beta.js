@@ -41,8 +41,6 @@ async function tryGetQuality(episode) {
 	let parsedQualityPrefs = preferences.general.quality_order.replace(/\s/g, "").split(",");
 	for (let i of parsedQualityPrefs) {
 		if (qualityStrings[i]) {
-			// don't want to needlessly spam the servers
-			// eslint-disable-next-line no-await-in-loop
 			if (await util.ajax.head(rawLink + qualityStrings[i]).status == HttpStatusCodes.OK) {
 				episode.processedLink = rawLink + qualityStrings[i];
 				return;

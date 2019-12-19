@@ -21,7 +21,7 @@ exports.turboBegin = async () => {
 		if (link) {
 			episode.grabbedLink = link;
 		} else {
-			episode.error = "error: server not available or captcha";
+			episode.error = "server not available or captcha";
 		}
 		progress++;
 		linkDisplay.setSpinnerText(`${progress}/${promises.length}`);

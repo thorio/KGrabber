@@ -57,7 +57,7 @@ async function doCaptcha(url) {
 		$form.find("img").each((i, obj) => images.push(obj.src));
 		let answerCap = (await captchaModal.queue(new Captcha(texts, images))).join(",") + ","; // trailing comma because... kissanime
 		let response = (await util.ajax.post("/Special/AreYouHuman2", util.urlEncode({ reUrl: url, answerCap }), { "content-type": "application/x-www-form-urlencoded" })).response;
-		if (response.includes("AreYouHuman2")) {
+		if (isCaptchaFail(response)) {
 			continue; // captcha failed, retry
 		}
 		return response; // captcha completed
@@ -73,7 +73,7 @@ function getLink(html, episode) {
 	if (link) {
 		episode.grabbedLink = link;
 	} else {
-		episode.error = "error: server not available or captcha";
+		episode.error = "server not available";
 	}
 }
 
@@ -81,6 +81,7 @@ function getLink(html, episode) {
  * @param {String} html
  * @returns {Boolean}
  */
-function isCaptcha(html) {
-	return $(html).find("form#formVerify1").length > 0;
+function isCaptchaFail(html) {
+	let lowerCase = html.toLowerCase();
+	return lowerCase.includes("wrong answer") || lowerCase.includes("AreYouHuman");
 }

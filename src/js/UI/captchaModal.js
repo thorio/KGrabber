@@ -5,15 +5,19 @@ const Captcha = require("../types/Captcha");
 
 const util = require("../util"),
 	html = require("../html"),
-	page = require("./page");
+	page = require("./page"),
+	{ sites } = require("../config");
 
 /**@type {{captcha: Captcha, resolve: function():void}[]} */
 let queue = [];
+let injected = false;
 
-exports.inject = async () => {
+function inject() {
 	$("body").append(html.captchaModal);
-	//if (!$("#KG-linkdisplay").length) util.log.err(new Error("linkDisplay not injected"));
-};
+	sites.current().applyPatch("captchaModal");
+	injected = true;
+	if (!$(".KG-captchaModal").length) util.log.err(new Error("captchaModal not injected"));
+}
 
 /**
  * @param {Captcha} captcha
@@ -52,6 +56,7 @@ exports.setStatusText = (text) => {
 };
 
 function show() {
+	if (!injected) inject();
 	$(".KG-captchaModal-container").fadeIn("fast");
 	page.scroll(false);
 }
@@ -115,7 +120,3 @@ async function toggleImage(image, captcha, resolve) {
 function applyColors() {
 
 }
-
-// TODO remove dis
-exports.show = show;
-unsafeWindow.lulw = { show, hide, load, p: exports.setStatusText };

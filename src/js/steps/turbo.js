@@ -12,7 +12,7 @@ const status = statusManager.get(),
 	site = config.sites.current();
 
 exports.turboBegin = async () => {
-	$("#KG-linkdisplay").slideDown();
+	linkDisplay.show();
 	linkDisplay.showSpinner();
 	let progress = 0;
 	let func = async ( /** @type {Episode} */ episode) => {

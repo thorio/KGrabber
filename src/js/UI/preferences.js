@@ -2,25 +2,25 @@ const log = require("../util/log"),
 	shared = require("./shared"),
 	html = require("../html"),
 	page = require("./page"),
-	preferenceManager = require("../config/preferenceManager");
+	{ sites, preferenceManager } = require("../config");
 
-let hasLoaded = false;
+let injected = false;
 
 exports.show = () => {
-	if (!hasLoaded) {
-		load(preferenceManager.get());
-		hasLoaded = true;
-	}
+	if (!injected) inject();
 	$("#KG-preferences").slideDown();
 };
 
 let hide = exports.hide = () =>
 	$("#KG-preferences").slideUp();
 
-exports.inject = () => {
+function inject() {
 	$("#leftside").prepend(html.preferences);
 	setHandlers();
-};
+	load(preferenceManager.get());
+	sites.current().applyPatch("preferences");
+	injected = true;
+}
 
 let load = (preferences) => {
 	for (let i in preferences) {

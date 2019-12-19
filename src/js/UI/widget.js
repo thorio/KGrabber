@@ -5,7 +5,6 @@ const shared = require("./shared"),
 	log = util.log,
 	page = require("./page"),
 	start = require("../start"),
-	preferenceManager = require("../config/preferenceManager"),
 	preferencesUI = require("./preferences");
 
 let site = config.sites.current();
@@ -13,12 +12,13 @@ let site = config.sites.current();
 exports.show = () => {
 	inject();
 	load();
-	setServer(preferenceManager.getPreferredServer(page.location.hostname));
+	setServer(config.preferenceManager.getPreferredServer(page.location.hostname));
 	markAvailableServers(util.last(page.episodeList()), site.noCaptchaServer);
 };
 
 function inject() {
 	$(`#rightside .clear2:eq(0)`).after(html.widget);
+	config.sites.current().applyPatch("widget");
 }
 
 function load() {
@@ -42,7 +42,7 @@ function setHandlers() {
 		}
 	});
 	$("#KG-widget-server").change(() => {
-		preferenceManager.setPreferredServer(page.location.hostname, getServer());
+		config.preferenceManager.setPreferredServer(page.location.hostname, getServer());
 	});
 	$(".KG-preferences-button").click(() => {
 		preferencesUI.show();

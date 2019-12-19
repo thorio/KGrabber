@@ -9,31 +9,37 @@ const shared = require("./shared"),
 	html = require("../html"),
 	actions = require("../actions"),
 	statusManager = require("../statusManager"),
-	page = require("./page");
+	page = require("./page"),
+	{ sites } = require("../config");
 
 const status = statusManager.get();
+let injected = false;
 
-exports.inject = async () => {
+function inject() {
 	$("#leftside").prepend(html.linkDisplay);
 	setHandlers();
+	sites.current().applyPatch("linkDisplay");
+	injected = true;
 	if (!$("#KG-linkdisplay").length) util.log.err(new Error("linkDisplay not injected"));
-};
+}
 
 let load = exports.load = () => {
+	show(true);
 	setTitle(`Extracted Links | ${status.title}`);
 	loadLinks(status.episodes);
 	loadExporters(exporters.sorted(status.linkType, status.url == page.href));
 	loadActions(actions.available(status.serverID, status.linkType, status.automaticDone));
 
 	shared.applyColors();
-	show(true);
 };
 
 /**
  * @param {Boolean} instant
  */
-let show = exports.show = (instant) =>
+let show = exports.show = (instant) => {
+	if (!injected) inject();
 	instant ? $("#KG-linkdisplay").show() : $("#KG-linkdisplay").slideDown();
+};
 
 let hide = exports.hide = () =>
 	$("#KG-linkdisplay").slideUp();

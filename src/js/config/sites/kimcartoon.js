@@ -54,5 +54,5 @@ module.exports = new Site("kimcartoon.to", {
 	buttonColor: "#ecc835",
 	buttonTextColor: "#000",
 	servers,
-	patches: [uiFix],
+	patches: uiFix,
 });

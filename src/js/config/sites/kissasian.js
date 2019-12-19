@@ -54,5 +54,5 @@ module.exports = new Site("kissasian.sh", {
 	buttonColor: "#F5B54B",
 	buttonTextColor: "#000",
 	servers,
-	patches: [uiFix],
+	patches: uiFix,
 });

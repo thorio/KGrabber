@@ -16,9 +16,9 @@ module.exports = class Site {
 	 * @param {String} obj.buttonColor Color for injected buttons
 	 * @param {String} obj.buttonTextColor Text color for injected buttons
 	 * @param {Dictionary<Server>} obj.servers List of servers this site provides
-	 * @param {Function[]} [obj.patches] List of patches to be applied to this site
+	 * @param {Object} [obj.patches] patches to be applied to this site
 	 */
-	constructor(hostname, { contentPath, noCaptchaServer, buttonColor, buttonTextColor, servers, patches = [] }) {
+	constructor(hostname, { contentPath, noCaptchaServer, buttonColor, buttonTextColor, servers, patches = {} }) {
 		this.hostname = hostname;
 		this.contentPath = new RegExp(`^/${contentPath}/`);
 		this.noCaptchaServer = noCaptchaServer;
@@ -43,11 +43,10 @@ module.exports = class Site {
 	}
 
 	/**
-	 * Applies all patches for this Site
+	 * Applies a specific patch
+	 * @param {String} uiElement
 	 */
-	applyPatches() {
-		for (let patch of this.patches) {
-			patch();
-		}
+	applyPatch(uiElement = "page") {
+		if (this.patches[uiElement]) this.patches[uiElement]();
 	}
 };

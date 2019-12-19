@@ -9,14 +9,14 @@ const status = statusManager.get(),
 	site = config.sites.current();
 
 if (site) {
-	if (site.onContentPath(page.location.pathname) && UI.page.title() !== "") {
+	if (site.onContentPath(page.location.pathname) && page.title() !== "") {
 		UI.injectAll();
-		site.applyPatches();
+		site.applyPatch();
 	}
 
 	if (status.func) {
 		steps[status.func]();
 	}
 } else {
-	log.err(`${UI.page.location.hostname} not supported`);
+	log.err(`${page.location.hostname} not supported`);
 }

@@ -83,5 +83,5 @@ function getLink(html, episode) {
  */
 function isCaptchaFail(html) {
 	let lowerCase = html.toLowerCase();
-	return lowerCase.includes("wrong answer") || lowerCase.includes("AreYouHuman");
+	return lowerCase.includes("wrong answer") || lowerCase.includes("areyouhuman2");
 }

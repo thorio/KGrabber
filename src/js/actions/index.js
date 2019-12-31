@@ -11,6 +11,7 @@ const status = statusManager.get();
  * @type {Action[]}
  */
 let actions = [].concat(
+	require("./generic"),
 	require("./rapidvideo"),
 	require("./beta"),
 	require("./nova")

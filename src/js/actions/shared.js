@@ -1,9 +1,14 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Episode = require("../types/Episode");
+const Episode = require("../types/Episode"),
+	Status = require("../types/Status");
 /* eslint-enable no-unused-vars */
 
-const util = require("../util");
+const util = require("../util"),
+	preferenceManager = require("../config/preferenceManager");
+
+const preferences = preferenceManager.get();
+
 /**
  * Executes a function for each episode and awaits them all
  * @param {Episode[]} episodes
@@ -28,4 +33,29 @@ exports.eachEpisode = (episodes, func, setProgress) => {
 	}
 	setProgress(`0/${promises.length}`);
 	return Promise.all(promises);
+};
+
+/**
+ * Common logic for determening action availability
+ * @param {Status} status
+ * @param {Object} obj
+ * @param {Boolean} obj.automatic
+ * @param {String} obj.linkType
+ * @param {String[]} obj.servers
+ * @returns {Boolean}
+ */
+exports.availableFunc = (status, { automatic, linkType, servers }) => {
+	//exclude actions that don't support the current server
+	if (!servers.includes(status.serverID)) {
+		return false;
+	}
+	//exclude actions with the wrong link type
+	if (linkType != status.linkType) {
+		return false;
+	}
+	//exclude automatic actions if they were already completed or the user has disabled automatic actions
+	if (automatic && status.automaticDone || preferences.compatibility.disable_automatic_actions) {
+		return false;
+	}
+	return true;
 };

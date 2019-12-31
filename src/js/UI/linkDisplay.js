@@ -28,7 +28,7 @@ let load = exports.load = () => {
 	setTitle(`Extracted Links | ${status.title}`);
 	loadLinks(status.episodes);
 	loadExporters(exporters.sorted(status.linkType, status.url == page.href));
-	loadActions(actions.available(status.serverID, status.linkType, status.automaticDone));
+	loadActions(actions.available());
 
 	shared.applyColors();
 };

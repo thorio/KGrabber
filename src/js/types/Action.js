@@ -11,18 +11,24 @@ module.exports = class Action {
 	/**
 	 * @param {String} name Display name
 	 * @param {Object} obj
-	 * @param {String} obj.linkType LinkType required
-	 * @param {String[]} obj.servers List of compatible servers
-	 * @param {Boolean} [obj.automatic] Should the action be automatically performed?
-	 * @param {function(Status, function(String):void):Promise<void>} func Executes the action
+	 * @param {function(Action, Status):Boolean} obj.availableFunc Determines whether the action should be displayed
+	 * @param {function(Status, function(String):void):Promise<void>} obj.executeFunc Executes the action
+	 * @param {Boolean} [obj.automatic] Should the action be performed automatically?
 	 */
-	constructor(name, { linkType, servers, automatic = false }, func) {
+	constructor(name, { availableFunc, executeFunc, automatic = false }) {
 		this.name = name;
-		this.linkType = linkType;
-		this.servers = servers;
 		this.automatic = automatic;
-		this._func = func;
+		this._executeFunc = executeFunc;
+		this._availableFunc = availableFunc;
 		Object.freeze(this);
+	}
+
+	/**
+	 * @param {Status} status
+	 * @returns {Boolean}
+	 */
+	isAvailable(status) {
+		return this._availableFunc(this, status);
 	}
 
 	/**
@@ -32,6 +38,6 @@ module.exports = class Action {
 	 * @return {Promise<void>} Resolves when the Action is complete
 	 */
 	invoke(status, setProgress) {
-		return this._func(status, setProgress);
+		return this._executeFunc(status, setProgress);
 	}
 };

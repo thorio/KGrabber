@@ -14,12 +14,17 @@ const preferences = preferenceManager.get();
 
 module.exports = [
 	new Action("set quality", {
-		linkType: LinkTypes.DIRECT,
-		servers: ["beta2"],
+		executeFunc: async (status, setProgress) => {
+			await shared.eachEpisode(status.episodes, tryGetQuality, setProgress);
+		},
+		availableFunc: (action, status) => {
+			return shared.availableFunc(status, {
+				automatic: action.automatic,
+				linkType: LinkTypes.DIRECT,
+				servers: ["beta2"],
+			});
+		},
 		automatic: true,
-	}, async (status, setProgress) => {
-		await shared.eachEpisode(status.episodes, tryGetQuality, setProgress);
-		status.automaticDone = true;
 	}),
 ];
 

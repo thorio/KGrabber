@@ -14,11 +14,17 @@ const preferences = preferenceManager.get();
 
 module.exports = [
 	new Action("get direct links", {
-		linkType: LinkTypes.EMBED,
-		servers: ["nova"],
-	}, async (status, setProgress) => {
-		await shared.eachEpisode(status.episodes, getDirect, setProgress);
-		status.linkType = LinkTypes.DIRECT;
+		executeFunc: async (status, setProgress) => {
+			await shared.eachEpisode(status.episodes, getDirect, setProgress);
+			status.linkType = LinkTypes.DIRECT;
+		},
+		availableFunc: (action, status) => {
+			return shared.availableFunc(status, {
+				automatic: action.automatic,
+				linkType: LinkTypes.EMBED,
+				servers: ["nova"],
+			});
+		},
 	}),
 ];
 

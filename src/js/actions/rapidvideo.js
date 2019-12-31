@@ -15,22 +15,33 @@ const preferences = preferenceManager.get();
 
 module.exports = [
 	new Action("revert domain", {
-		linkType: LinkTypes.EMBED,
-		servers: ["rapid"],
-		automatic: true,
 		// eslint-disable-next-line no-unused-vars
-	}, async (status, _setProgress) => {
-		for (let i in status.episodes) {
-			status.episodes[i].processedLink = status.episodes[i].processedLink.replace("rapidvid.to", "rapidvideo.com");
-		}
-		status.automaticDone = true;
+		executeFunc: async (status, _setProgress) => {
+			for (let i in status.episodes) {
+				status.episodes[i].processedLink = status.episodes[i].processedLink.replace("rapidvid.to", "rapidvideo.com");
+			}
+		},
+		availableFunc: (action, status) => {
+			return shared.availableFunc(status, {
+				automatic: action.automatic,
+				linkType: LinkTypes.EMBED,
+				servers: ["rapid"],
+			});
+		},
+		automatic: true,
 	}),
 	new Action("get direct links", {
-		linkType: LinkTypes.EMBED,
-		servers: ["rapid"],
-	}, async (status, setProgress) => {
-		await shared.eachEpisode(status.episodes, _rapidvideo_getDirect, setProgress);
-		status.linkType = LinkTypes.DIRECT;
+		executeFunc: async (status, setProgress) => {
+			await shared.eachEpisode(status.episodes, _rapidvideo_getDirect, setProgress);
+			status.linkType = LinkTypes.DIRECT;
+		},
+		availableFunc: (action, status) => {
+			return shared.availableFunc(status, {
+				automatic: action.automatic,
+				linkType: LinkTypes.EMBED,
+				servers: ["rapid"],
+			});
+		},
 	}),
 ];
 

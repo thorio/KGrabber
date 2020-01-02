@@ -1,6 +1,6 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Exporter = require("../types/Exporter");
+const { Exporter } = require("../types");
 /* eslint-enable no-unused-vars */
 
 /**

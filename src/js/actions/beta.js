@@ -1,13 +1,12 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Episode = require("../types/Episode");
+const { Episode } = require("../types");
 /* eslint-enable no-unused-vars */
 
 const util = require("../util"),
 	preferenceManager = require("../config/preferenceManager"),
 	shared = require("./shared"),
-	Action = require("../types/Action"),
-	LinkTypes = require("../types/LinkTypes"),
+	{ Action, LinkTypes } = require("../types"),
 	HttpStatusCodes = require("http-status-codes");
 
 const preferences = preferenceManager.get();

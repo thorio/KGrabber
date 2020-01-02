@@ -1,11 +1,11 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Episode = require("../types/Episode");
+const { Episode } = require("../types");
 /* eslint-enable no-unused-vars */
 
-const { sites } = require("../config"),
-	shared = require("./shared"),
-	Action = require("../types/Action");
+const shared = require("./shared"),
+	{ sites } = require("../config"),
+	{ Action } = require("../types");
 
 const site = sites.current();
 

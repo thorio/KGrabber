@@ -1,11 +1,10 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Episode = require("../types/Episode"),
-	Status = require("../types/Status");
+const { Episode, Status } = require("../types");
 /* eslint-enable no-unused-vars */
 
 const util = require("../util"),
-	preferenceManager = require("../config/preferenceManager");
+	{ preferenceManager } = require("../config");
 
 const preferences = preferenceManager.get();
 
@@ -36,7 +35,7 @@ exports.eachEpisode = (episodes, func, setProgress) => {
 };
 
 /**
- * Common logic for determening action availability
+ * Common logic for determining action availability
  * @param {Status} status
  * @param {Object} obj
  * @param {Boolean} obj.automatic

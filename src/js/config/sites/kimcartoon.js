@@ -1,7 +1,4 @@
-const Server = require("../../types/Server"),
-	Site = require("../../types/Site"),
-	Dictionary = require("../../types/Dictionary"),
-	LinkTypes = require("../../types/LinkTypes"),
+const { Server, Site, Dictionary, LinkTypes } = require("../../types"),
 	uiFix = require("./patches/kimcartoon_UIFix");
 
 let servers = new Dictionary([

@@ -1,10 +1,9 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Status = require("../types/Status");
+const { Status } = require("../types");
 /* eslint-enable no-unused-vars */
 
-const LinkTypes = require("../types/LinkTypes"),
-	Exporter = require("../types/Exporter");
+const { LinkTypes, Exporter } = require("../types");
 
 module.exports = new Exporter({
 	name: "list",

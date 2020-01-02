@@ -1,6 +1,6 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Episode = require("../types/Episode");
+const { Episode } = require("../types");
 /* eslint-enable no-unused-vars */
 
 const util = require("../util"),
@@ -8,7 +8,7 @@ const util = require("../util"),
 	config = require("../config"),
 	linkDisplay = require("../UI/linkDisplay"),
 	captchaModal = require("../UI/captchaModal"),
-	Captcha = require("../types/Captcha");
+	{ Captcha } = require("../types");
 
 const status = statusManager.get(),
 	site = config.sites.current();

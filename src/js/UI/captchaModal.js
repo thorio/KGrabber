@@ -1,6 +1,6 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Captcha = require("../types/Captcha");
+const { Captcha } = require("../types");
 /* eslint-enable no-unused-vars */
 
 const util = require("../util"),

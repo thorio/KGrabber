@@ -1,4 +1,4 @@
-const Dictionary = require("../../types/Dictionary"),
+const { Dictionary } = require("../../types"),
 	page = require("../../UI/page");
 
 const sites = new Dictionary([

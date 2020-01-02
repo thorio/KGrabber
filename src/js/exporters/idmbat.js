@@ -1,12 +1,11 @@
 // needed for jsdoc
 /* eslint-disable no-unused-vars */
-const Status = require("../types/Status");
+const { Status } = require("../types");
 /* eslint-enable no-unused-vars */
 
-const LinkTypes = require("../types/LinkTypes"),
+const { LinkTypes, Exporter } = require("../types"),
 	util = require("../util"),
-	preferenceManager = require("../config/preferenceManager"),
-	Exporter = require("../types/Exporter");
+	preferenceManager = require("../config/preferenceManager");
 
 const preferences = preferenceManager.get();
 

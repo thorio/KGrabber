@@ -1,6 +1,6 @@
 const log = require("./util").log,
 	page = require("./UI/page"),
-	Status = require("./types/Status");
+	{ Status } = require("./types");
 
 /**
  * @type {Status}

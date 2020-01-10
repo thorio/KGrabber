@@ -15,3 +15,7 @@ exports.warn = (...obj) => {
 exports.err = (...obj) => {
 	console.error("%cKissGrabber", logCss, ...obj);
 };
+
+exports.debug = (...obj) => {
+	console.debug("%cKissGrabber", logCss, ...obj);
+};

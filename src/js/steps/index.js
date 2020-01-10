@@ -1,7 +1,27 @@
-//allows multiple different approaches to collecting links
+const { log } = require("../util");
 
-module.exports = Object.assign({},
+const steps = Object.assign({},
 	require("./default"),
 	require("./turbo"),
 	require("./captchaModal")
 );
+
+/**
+ * Executes a step
+ * @param {String} stepName
+ */
+exports.execute = (stepName) => {
+	if (steps[stepName]) {
+		steps[stepName]();
+	} else {
+		log.err(`tried executing invalid step '${stepName}'`);
+	}
+};
+
+/**
+ * Adds the given steps
+ * @param {Object} steps
+ */
+exports.add = (newSteps) => {
+	Object.assign(steps, newSteps);
+};

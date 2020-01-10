@@ -4,16 +4,14 @@ const { Episode } = require("../types");
 /* eslint-enable no-unused-vars */
 
 const shared = require("./shared"),
-	{ sites } = require("../config"),
+	config = require("../config"),
 	{ Action } = require("../types");
-
-const site = sites.current();
 
 module.exports = [
 	new Action("reset", {
 		executeFunc: async (status, setProgress) => {
-			await shared.eachEpisode(status.episodes, _rapidvideo_getDirect, setProgress);
-			status.linkType = site.servers.get(status.serverID).linkType;
+			await shared.eachEpisode(status.episodes, reset, setProgress);
+			status.linkType = config.sites.current().servers.get(status.serverID).linkType;
 			status.automaticDone = false;
 		},
 		availableFunc: (action, status) => {
@@ -32,7 +30,7 @@ module.exports = [
  * @param {Episode} episode
  * @returns {Promise<void>}
  */
-async function _rapidvideo_getDirect(episode) {
+async function reset(episode) {
 	episode.error = "";
 	episode.processedLink = "";
 }

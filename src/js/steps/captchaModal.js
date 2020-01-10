@@ -10,8 +10,7 @@ const util = require("../util"),
 	captchaModal = require("../UI/captchaModal"),
 	{ Captcha } = require("../types");
 
-const status = statusManager.get(),
-	site = config.sites.current();
+const status = statusManager.get();
 
 exports.modalBegin = async () => {
 	linkDisplay.show();
@@ -69,7 +68,7 @@ async function doCaptcha(url) {
  * @param {Episode} episode
  */
 function getLink(html, episode) {
-	let link = site.servers.get(status.serverID).findLink(html);
+	let link = config.sites.current().servers.get(status.serverID).findLink(html);
 	if (link) {
 		episode.grabbedLink = link;
 	} else {

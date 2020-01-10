@@ -3,8 +3,7 @@ const statusManager = require("../statusManager"),
 	linkDisplay = require("../UI/linkDisplay"),
 	page = require("../UI/page");
 
-const status = statusManager.get(),
-	site = config.sites.current();
+const status = statusManager.get();
 
 exports.defaultBegin = () => {
 	status.func = "defaultGetLink";
@@ -13,11 +12,11 @@ exports.defaultBegin = () => {
 };
 
 exports.defaultGetLink = () => {
-	if (!site.onContentPath(page.location.pathname)) { //captcha
+	if (!config.sites.current().onContentPath(page.location.pathname)) { //captcha
 		return;
 	}
 	let episode = status.episodes[status.current];
-	let link = site.servers.get(status.serverID).findLink(document.body.innerHTML);
+	let link = config.sites.current().servers.get(status.serverID).findLink(document.body.innerHTML);
 	if (link) {
 		episode.grabbedLink = link;
 	} else {

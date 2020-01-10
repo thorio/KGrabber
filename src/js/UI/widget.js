@@ -7,13 +7,11 @@ const shared = require("./shared"),
 	start = require("../start"),
 	preferencesUI = require("./preferences");
 
-let site = config.sites.current();
-
 exports.show = () => {
 	inject();
 	load();
 	setServer(config.preferenceManager.getPreferredServer(page.location.hostname));
-	markAvailableServers(util.last(page.episodeList()), site.noCaptchaServer);
+	markAvailableServers(util.last(page.episodeList()), config.sites.current().noCaptchaServer);
 };
 
 function inject() {
@@ -27,7 +25,7 @@ function load() {
 	$("#KG-input-to").val(epCount)
 		.attr("max", epCount);
 	$("#KG-input-from").attr("max", epCount);
-	for (let server of site.servers) {
+	for (let server of config.sites.current().servers) {
 		$(`<option value="${server.identifier}">${server.name}</>`)
 			.appendTo("#KG-widget-server");
 	}

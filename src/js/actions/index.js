@@ -36,6 +36,13 @@ exports.available = () =>
 	);
 
 /**
+ * @param {Action} action
+ */
+exports.add = (action) => {
+	actions.push(action);
+};
+
+/**
  * Executes an action
  * @param {Action} action Action to be executed
  * @param {function(String):void} setSpinnerText Function that sets the UI progress text

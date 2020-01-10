@@ -3,7 +3,10 @@ const config = require("./config"),
 	steps = require("./steps"),
 	UI = require("./UI"),
 	statusManager = require("./statusManager"),
-	page = require("./UI/page");
+	page = require("./UI/page"),
+	pluginLoader = require("./pluginLoader");
+
+pluginLoader.load();
 
 const status = statusManager.get(),
 	site = config.sites.current();
@@ -15,8 +18,8 @@ if (site) {
 	}
 
 	if (status.func) {
-		steps[status.func]();
+		steps.execute(status.func);
 	}
 } else {
-	log.err(`${page.location.hostname} not supported`);
+	log.err(`'${page.location.hostname}' is not supported`);
 }

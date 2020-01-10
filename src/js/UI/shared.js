@@ -5,5 +5,5 @@ exports.applyColors = () => {
 	$(".KG-episodelist-button, .KG-button")
 		.css({ "color": site.buttonTextColor, "background-color": site.buttonColor });
 	$(".KG-preferences-header")
-		.css("color", $(".bigChar").css("color"));
+		.css({ "color": $(".bigChar").css("color") });
 };

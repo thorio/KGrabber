@@ -47,6 +47,13 @@ exports.sorted = (linkType, samePage) =>
 	.sort((a, b) => b.available - a.available);
 
 /**
+ * @param {Exporter} exporter
+ */
+exports.add = (exporter) => {
+	exporters.push(exporter);
+};
+
+/**
  * Determines wether an exporter is available
  * @param {Exporter} exporter
  * @param {String} linkType

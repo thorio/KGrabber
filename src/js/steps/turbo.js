@@ -8,8 +8,7 @@ const util = require("../util"),
 	config = require("../config"),
 	linkDisplay = require("../UI/linkDisplay");
 
-const status = statusManager.get(),
-	site = config.sites.current();
+const status = statusManager.get();
 
 exports.turboBegin = async () => {
 	linkDisplay.show();
@@ -17,7 +16,7 @@ exports.turboBegin = async () => {
 	let progress = 0;
 	let func = async ( /** @type {Episode} */ episode) => {
 		let html = (await util.ajax.get(episode.kissLink + `&s=${status.serverID}`)).response;
-		let link = site.servers.get(status.serverID).findLink(html);
+		let link = config.sites.current().servers.get(status.serverID).findLink(html);
 		if (link) {
 			episode.grabbedLink = link;
 		} else {

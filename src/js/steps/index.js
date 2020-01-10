@@ -2,7 +2,6 @@ const { log } = require("../util");
 
 const steps = Object.assign({},
 	require("./default"),
-	require("./turbo"),
 	require("./captchaModal")
 );
 

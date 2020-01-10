@@ -11,7 +11,10 @@ exports.show = () => {
 	inject();
 	load();
 	setServer(config.preferenceManager.getPreferredServer(page.location.hostname));
-	markAvailableServers(util.last(page.episodeList()), config.sites.current().noCaptchaServer);
+	let noCaptchaServer = config.sites.current().noCaptchaServer;
+	if (noCaptchaServer != null) {
+		markAvailableServers(util.last(page.episodeList()), noCaptchaServer);
+	}
 };
 
 function inject() {

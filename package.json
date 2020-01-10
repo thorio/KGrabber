@@ -1,5 +1,5 @@
 {
-	"name": "kissgrabber",
+	"name": "kgrabber",
 	"version": "3.0.0-pre2",
 	"description": "Userscript for extracting links from kissanime.ru and similar sites",
 	"main": "src/js/main.js",
@@ -34,5 +34,5 @@
 	"bugs": {
 		"url": "https://github.com/thorio/KGrabber/issues"
 	},
-	"homepage": "https://greasyfork.org/en/scripts/383649-kissgrabber"
+	"homepage": "https://greasyfork.org/en/scripts/383649"
 }

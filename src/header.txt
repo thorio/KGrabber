@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name          KissGrabber
+// @name          KGrabber
 // @namespace     thorou
 // @version       ${version}
 // @description   extracts links from kissanime.ru and similar sites

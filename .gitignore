@@ -1,6 +1,3 @@
 /node_modules
-*.sublime-workspace
-*.sublime-project
-/KGrabber.user.js
-*.code-workspace
 /build
+*.code-workspace

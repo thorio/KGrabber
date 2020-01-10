@@ -13,16 +13,16 @@ module.exports = class PluginContext {
 	 * @param {function(Action):void} obj.addActionFunc
 	 * @param {function(Site):void} obj.addSiteFunc
 	 * @param {function(Exporter):void} obj.addExporterFunc
-	 * @param {function(Step):void} obj.addStepFunc
+	 * @param {function(Step):void} obj.addStepsFunc
 	 * @param {Object} obj.types
 	 * @param {Object} obj.ui
 	 * @param {Object} obj.preferences
 	 */
-	constructor({ addActionFunc, addSiteFunc, addExporterFunc, addStepFunc, types, ui, preferences }) {
+	constructor({ addActionFunc, addSiteFunc, addExporterFunc, addStepsFunc, types, ui, preferences }) {
 		this._addActionFunc = addActionFunc;
 		this._addSiteFunc = addSiteFunc;
 		this._addExporterFunc = addExporterFunc;
-		this._addStepFunc = addStepFunc;
+		this._addStepsFunc = addStepsFunc;
 		this.types = types;
 		this.ui = ui;
 		this.preferences = preferences;
@@ -57,7 +57,7 @@ module.exports = class PluginContext {
 	 * Adds a new Step to the script
 	 * @param {Step} step
 	 */
-	addStep(step) {
-		this._addStepFunc(step);
+	addSteps(step) {
+		this._addStepsFunc(step);
 	}
 };

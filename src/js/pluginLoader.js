@@ -31,7 +31,7 @@ function loadPlugins() {
 			addActionFunc: actions.add,
 			addSiteFunc: sites.add,
 			addExporterFunc: exporters.add,
-			addStepFunc: steps.add,
+			addStepsFunc: steps.add,
 			types,
 			ui,
 			preferences,

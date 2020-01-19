@@ -1,8 +1,8 @@
 /**
- * @typedef {import("../../types/Site")} Site
+ * @typedef {import("kgrabber-types/Site")} Site
  */
 
-const { Dictionary } = require("../../types"),
+const { Dictionary } = require("kgrabber-types"),
 	page = require("../../UI/page");
 
 const sites = new Dictionary([

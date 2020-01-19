@@ -1,4 +1,4 @@
-const { Server, Site, Dictionary, LinkTypes } = require("../../types");
+const { Server, Site, Dictionary, LinkTypes } = require("kgrabber-types");
 
 let servers = new Dictionary([
 	new Server("openload", {

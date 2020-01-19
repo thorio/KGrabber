@@ -1,5 +1,5 @@
 const util = require("./util"),
-	{ PluginContext } = require("./types"),
+	{ PluginContext } = require("kgrabber-types"),
 	{ preferenceManager, sites } = require("./config"),
 	statusManager = require("./statusManager"),
 	actions = require("./actions"),

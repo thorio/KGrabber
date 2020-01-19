@@ -3,7 +3,7 @@ const config = require("./config"),
 	steps = require("./steps"),
 	page = require("./UI/page"),
 	statusManager = require("./statusManager"),
-	{ Episode } = require("./types");
+	{ Episode } = require("kgrabber-types");
 
 const preferences = config.preferenceManager.get(),
 	status = statusManager.get(),

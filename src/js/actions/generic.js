@@ -1,10 +1,10 @@
 /**
- * @typedef {import("../types/Episode")} Episode
+ * @typedef {import("kgrabber-types/Episode")} Episode
  */
 
 const shared = require("./shared"),
 	config = require("../config"),
-	{ Action } = require("../types");
+	{ Action } = require("kgrabber-types");
 
 module.exports = [
 	new Action("reset", {

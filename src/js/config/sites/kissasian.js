@@ -1,4 +1,4 @@
-const { Server, Site, Dictionary, LinkTypes } = require("../../types"),
+const { Server, Site, Dictionary, LinkTypes } = require("kgrabber-types"),
 	uiFix = require("./patches/kissasian_UIFix");
 
 let servers = new Dictionary([

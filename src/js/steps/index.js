@@ -1,6 +1,6 @@
 /**
- * @typedef {import("../types/Status")} Status
- * @typedef {import("../types/Site")} Site
+ * @typedef {import("kgrabber-types/Status")} Status
+ * @typedef {import("kgrabber-types/Site")} Site
  */
 
 const { log } = require("../util");

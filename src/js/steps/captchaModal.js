@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../types/Episode")} Episode
+ * @typedef {import("kgrabber-types/Episode")} Episode
  */
 
 const util = require("../util"),
@@ -7,7 +7,7 @@ const util = require("../util"),
 	config = require("../config"),
 	linkDisplay = require("../UI/linkDisplay"),
 	captchaModal = require("../UI/captchaModal"),
-	{ Captcha } = require("../types");
+	{ Captcha } = require("kgrabber-types");
 
 const status = statusManager.get();
 

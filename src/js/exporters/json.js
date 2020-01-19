@@ -1,8 +1,8 @@
 /**
- * @typedef {import("../types/Status")} Status
+ * @typedef {import("kgrabber-types/Status")} Status
  */
 
-const { LinkTypes, Exporter } = require("../types"),
+const { LinkTypes, Exporter } = require("kgrabber-types"),
 	page = require("../UI/page");
 
 module.exports = new Exporter({

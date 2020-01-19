@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../types/Action")} Action
+ * @typedef {import("kgrabber-types/Action")} Action
  */
 
 const statusManager = require("../statusManager");

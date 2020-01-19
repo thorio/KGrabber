@@ -1,12 +1,12 @@
 /**
- * @typedef {import("../types/Episode")} Episode
+ * @typedef {import("kgrabber-types/Episode")} Episode
  */
 
 const util = require("../util"),
 	{ ajax } = util,
 	preferenceManager = require("../config/preferenceManager"),
 	shared = require("./shared"),
-	{ Action, LinkTypes } = require("../types"),
+	{ Action, LinkTypes } = require("kgrabber-types"),
 	HttpStatusCodes = require("http-status-codes");
 
 const preferences = preferenceManager.get();

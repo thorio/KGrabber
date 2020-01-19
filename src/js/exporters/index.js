@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../types/Exporter")} Exporter
+ * @typedef {import("kgrabber-types/Exporter")} Exporter
  */
 
 /**

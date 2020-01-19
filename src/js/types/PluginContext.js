@@ -11,18 +11,18 @@ module.exports = class PluginContext {
 	 * @param {function(Site):void} obj.addSiteFunc
 	 * @param {function(Exporter):void} obj.addExporterFunc
 	 * @param {function(Step):void} obj.addStepsFunc
-	 * @param {Object} obj.types
 	 * @param {Object} obj.ui
 	 * @param {Object} obj.preferences
+	 * @param {Object} obj.statusManager
 	 */
-	constructor({ addActionFunc, addSiteFunc, addExporterFunc, addStepsFunc, types, ui, preferences }) {
+	constructor({ addActionFunc, addSiteFunc, addExporterFunc, addStepsFunc, ui, preferences, statusManager }) {
 		this._addActionFunc = addActionFunc;
 		this._addSiteFunc = addSiteFunc;
 		this._addExporterFunc = addExporterFunc;
 		this._addStepsFunc = addStepsFunc;
-		this.types = types;
 		this.ui = ui;
 		this.preferences = preferences;
+		this.statusManager = statusManager;
 		Object.freeze(this);
 	}
 

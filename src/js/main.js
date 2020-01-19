@@ -18,7 +18,7 @@ if (site) {
 	}
 
 	if (status.func) {
-		steps.execute(status.func);
+		steps.execute(status.func, status, site);
 	}
 } else {
 	log.err(`'${page.location.hostname}' is not supported`);

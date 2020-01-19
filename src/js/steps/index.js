@@ -1,3 +1,8 @@
+/**
+ * @typedef {import("../types/Status")} Status
+ * @typedef {import("../types/Site")} Site
+ */
+
 const { log } = require("../util");
 
 const steps = Object.assign({},
@@ -8,12 +13,14 @@ const steps = Object.assign({},
 /**
  * Executes a step
  * @param {String} stepName
+ * @param {Status} status
+ * @param {Site} site
  */
-exports.execute = (stepName) => {
+exports.execute = (stepName, status, site) => {
 	if (steps[stepName]) {
-		steps[stepName]();
+		steps[stepName](status, site);
 	} else {
-		log.err(`tried executing invalid step '${stepName}'`);
+		log.err(`tried executing invalid step '${stepName}'`, { steps });
 	}
 };
 

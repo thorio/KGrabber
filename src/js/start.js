@@ -16,7 +16,8 @@ const preferences = config.preferenceManager.get(),
  * @param {String} serverID
  */
 module.exports = (start, end, serverID) => {
-	let server = config.sites.current().servers.get(serverID);
+	let site = config.sites.current();
+	let server = site.servers.get(serverID);
 	statusManager.initialize({
 		title: page.title(),
 		serverID,
@@ -26,7 +27,7 @@ module.exports = (start, end, serverID) => {
 	status.func = server.getEffectiveStep(defaultStep, preferences.compatibility.enable_experimental_grabbers, !preferences.compatibility.force_default_grabber);
 
 	statusManager.save();
-	steps.execute(status.func);
+	steps.execute(status.func, status, site);
 	$("html, body").animate({ scrollTop: 0 }, "slow");
 };
 

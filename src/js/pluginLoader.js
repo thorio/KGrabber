@@ -1,11 +1,15 @@
-const types = require("./types"),
-	{ PluginContext } = types,
-	util = require("./util"),
+const util = require("./util"),
+	{ PluginContext } = require("./types"),
 	{ preferenceManager, sites } = require("./config"),
+	statusManager = require("./statusManager"),
 	actions = require("./actions"),
 	exporters = require("./exporters"),
 	steps = require("./steps"),
-	ui = require("./UI");
+	ui = {
+		captchaModal: require("./UI/captchaModal"),
+		linkDisplay: require("./UI/linkDisplay"),
+		page: require("./UI/page"),
+	};
 
 const $ = unsafeWindow.$, // use the jquery instance of the page, not the script
 	applicationName = "KGrabberPlugin",
@@ -32,9 +36,9 @@ function loadPlugins() {
 			addSiteFunc: sites.add,
 			addExporterFunc: exporters.add,
 			addStepsFunc: steps.add,
-			types,
 			ui,
 			preferences,
+			statusManager,
 		});
 
 		for (let pluginID of foundPlugins) {

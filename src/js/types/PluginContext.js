@@ -1,11 +1,8 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const Action = require("./Action"),
-	Dictionary = require("./Dictionary"),
-	Exporter = require("./Exporter"),
-	Server = require("./Server"),
-	Site = require("./Site");
-/* eslint-enable no-unused-vars */
+/**
+ * @typedef {import("./Action")} Action
+ * @typedef {import("./Exporter")} Exporter
+ * @typedef {import("./Site")} Site
+ */
 
 module.exports = class PluginContext {
 	/**

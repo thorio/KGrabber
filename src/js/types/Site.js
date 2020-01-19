@@ -1,8 +1,7 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const Dictionary = require("./Dictionary"),
-	Server = require("./Server");
-/* eslint-enable no-unused-vars */
+/**
+ * @typedef {import("./Dictionary")} Dictionary
+ * @typedef {import("./Server")} Server
+ */
 
 /**
  * @class Site

@@ -1,7 +1,6 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const { Exporter } = require("../types");
-/* eslint-enable no-unused-vars */
+/**
+ * @typedef {import("../types/Exporter")} Exporter
+ */
 
 /**
  * @type {Exporter[]}

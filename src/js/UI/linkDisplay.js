@@ -1,7 +1,6 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const { Episode } = require("../types");
-/* eslint-enable no-unused-vars */
+/**
+ * @typedef {import("../types/Episode")} Episode
+ */
 
 const shared = require("./shared"),
 	exporters = require("../exporters"),

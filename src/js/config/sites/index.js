@@ -1,7 +1,6 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const { Site } = require("../../types");
-/* eslint-enable no-unused-vars */
+/**
+ * @typedef {import("../../types/Site")} Site
+ */
 
 const { Dictionary } = require("../../types"),
 	page = require("../../UI/page");

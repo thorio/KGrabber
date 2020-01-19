@@ -1,7 +1,7 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const { Episode, Status } = require("../types");
-/* eslint-enable no-unused-vars */
+/**
+ * @typedef {import("../types/Episode")} Episode
+ * @typedef {import("../types/Status")} Status
+ */
 
 const util = require("../util"),
 	{ preferenceManager } = require("../config");

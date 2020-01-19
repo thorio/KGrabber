@@ -1,7 +1,6 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const Status = require("./Status");
-/* eslint-enable no-unused-vars */
+/**
+ * @typedef {import("./Status")} Status
+ */
 
 module.exports = class Exporter {
 	/**

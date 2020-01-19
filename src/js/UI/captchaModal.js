@@ -1,7 +1,6 @@
-// needed for jsdoc
-/* eslint-disable no-unused-vars */
-const { Captcha } = require("../types");
-/* eslint-enable no-unused-vars */
+/**
+ * @typedef {import("../types/Captcha")} Captcha
+ */
 
 const util = require("../util"),
 	html = require("../html"),

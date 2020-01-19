@@ -104,6 +104,6 @@ async function watch() {
 	gulp.watch(src_dir, build);
 }
 
-const build = gulp.series(gulp.parallel(js, css, html), bundle);
+const build = gulp.series(js, css, html, bundle);
 
 module.exports = { build, watch, clean };

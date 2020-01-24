@@ -33,6 +33,8 @@ exports.defaultGetLink = () => {
 	statusManager.save();
 };
 
-exports.defaultFinished = () => {
-	linkDisplay.load();
+exports.defaultFinished = (status, site) => {
+	if (site.onContentPath(page.location.pathname)) {
+		linkDisplay.load();
+	}
 };

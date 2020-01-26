@@ -1,5 +1,5 @@
 /**
- * @typedef {import("./node_modules/kgrabber-types/Captcha")} Captcha
+ * @typedef {import("kgrabber-types/Captcha")} Captcha
  */
 
 const util = require("../util"),

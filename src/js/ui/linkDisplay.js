@@ -1,5 +1,5 @@
 /**
- * @typedef {import("./node_modules/kgrabber-types/Episode")} Episode
+ * @typedef {import("kgrabber-types/Episode")} Episode
  */
 
 const shared = require("./shared"),

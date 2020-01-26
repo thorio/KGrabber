@@ -1,5 +1,5 @@
 /**
- * @typedef {import("kgrabber-types/Episode")} Episode
+ * @typedef {import("./node_modules/kgrabber-types/Episode")} Episode
  */
 
 const shared = require("./shared"),
@@ -33,7 +33,7 @@ let load = exports.load = () => {
 };
 
 /**
- * @param {Boolean} instant
+ * @param {Boolean} instant skip animation?
  */
 let show = exports.show = (instant) => {
 	if (!injected) inject();

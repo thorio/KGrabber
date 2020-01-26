@@ -5,8 +5,8 @@
 const util = require("../util"),
 	statusManager = require("../statusManager"),
 	config = require("../config"),
-	linkDisplay = require("../UI/linkDisplay"),
-	captchaModal = require("../UI/captchaModal"),
+	linkDisplay = require("../ui/linkDisplay"),
+	captchaModal = require("../ui/captchaModal"),
 	{ Captcha } = require("kgrabber-types");
 
 const status = statusManager.get();

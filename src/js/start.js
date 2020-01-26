@@ -1,7 +1,7 @@
 const config = require("./config"),
 	util = require("./util"),
 	steps = require("./steps"),
-	page = require("./UI/page"),
+	page = require("./ui/page"),
 	statusManager = require("./statusManager"),
 	{ Episode } = require("kgrabber-types");
 

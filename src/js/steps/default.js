@@ -1,7 +1,7 @@
 const statusManager = require("../statusManager"),
 	config = require("../config"),
-	linkDisplay = require("../UI/linkDisplay"),
-	page = require("../UI/page");
+	linkDisplay = require("../ui/linkDisplay"),
+	page = require("../ui/page");
 
 const status = statusManager.get();
 

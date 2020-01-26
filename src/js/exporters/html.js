@@ -3,7 +3,7 @@
  */
 
 const { LinkTypes, Exporter } = require("kgrabber-types"),
-	page = require("../UI/page");
+	page = require("../ui/page");
 
 module.exports = new Exporter({
 	name: "html list",

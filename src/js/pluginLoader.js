@@ -6,9 +6,9 @@ const util = require("./util"),
 	exporters = require("./exporters"),
 	steps = require("./steps"),
 	ui = {
-		captchaModal: require("./UI/captchaModal"),
-		linkDisplay: require("./UI/linkDisplay"),
-		page: require("./UI/page"),
+		captchaModal: require("./ui/captchaModal"),
+		linkDisplay: require("./ui/linkDisplay"),
+		page: require("./ui/page"),
 	};
 
 const $ = unsafeWindow.$, // use the jquery instance of the page, not the script

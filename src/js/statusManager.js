@@ -1,5 +1,5 @@
 const log = require("./util").log,
-	page = require("./UI/page"),
+	page = require("./ui/page"),
 	{ Status } = require("kgrabber-types");
 
 /**

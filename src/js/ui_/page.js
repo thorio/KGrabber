@@ -13,6 +13,12 @@ exports.title = () =>
 	$(".bigBarContainer a.bigChar").text();
 
 /**
+ * @returns {Boolean}
+ */
+exports.noTitle = () =>
+	exports.title() == "";
+
+/**
  * @returns {HTMLAnchorElement[]} List of the episode anchor elements
  */
 exports.episodeList = () =>

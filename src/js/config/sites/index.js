@@ -3,7 +3,7 @@
  */
 
 const { Dictionary } = require("kgrabber-types"),
-	page = require("../../UI/page");
+	page = require("../../ui/page");
 
 const sites = new Dictionary([
 	require("./kissanime"),

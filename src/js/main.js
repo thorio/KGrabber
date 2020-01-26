@@ -1,9 +1,9 @@
 const config = require("./config"),
 	{ log } = require("./util"),
 	steps = require("./steps"),
-	UI = require("./UI"),
+	ui = require("./ui"),
 	statusManager = require("./statusManager"),
-	page = require("./UI/page"),
+	page = require("./ui/page"),
 	pluginLoader = require("./pluginLoader");
 
 pluginLoader.load();
@@ -12,8 +12,8 @@ const status = statusManager.get(),
 	site = config.sites.current();
 
 if (site) {
-	if (site.onContentPath(page.location.pathname) && page.title() !== "") {
-		UI.injectAll();
+	if (site.onContentPath(page.location.pathname) && !page.noTitle()) {
+		ui.injectAll();
 		site.applyPatch();
 	}
 

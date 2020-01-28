@@ -32,9 +32,9 @@ function loadPlugins() {
 	let foundPlugins = discoverPlugins();
 	if (foundPlugins.length > 0) {
 		let context = new PluginContext({
-			addActionFunc: actions.add,
-			addSiteFunc: sites.add,
-			addExporterFunc: exporters.add,
+			addActionsFunc: actions.add,
+			addSitesFunc: sites.add,
+			addExportersFunc: exporters.add,
 			addStepsFunc: steps.add,
 			ui,
 			preferences,

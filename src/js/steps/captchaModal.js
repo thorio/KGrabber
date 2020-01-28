@@ -1,5 +1,7 @@
 /**
  * @typedef {import("kgrabber-types/Episode")} Episode
+ * @typedef {import("kgrabber-types/Site")} Site
+ * @typedef {import("kgrabber-types/Status")} Status
  */
 
 const util = require("../util"),
@@ -9,21 +11,22 @@ const util = require("../util"),
 	captchaModal = require("../ui/captchaModal"),
 	{ Captcha } = require("kgrabber-types");
 
-const status = statusManager.get();
-
-exports.modalBegin = async () => {
+/**
+ * @param {Status} status
+ */
+exports.modalBegin = async (status) => {
 	linkDisplay.show();
 	linkDisplay.showSpinner();
 	let progress = 0;
 	let func = async ( /** @type {Episode} */ episode) => {
 		let html = await doCaptcha(`${episode.kissLink}&s=${status.serverID}`);
-		getLink(html, episode);
+		getLink(html, episode, status.serverID);
 		progress++;
 		setStatusText(`${progress}/${promises.length}`);
 	};
 	let promises = [];
-	util.for(status.episodes, (i, /** @type {Episode} */ obj) => {
-		promises.push(func(obj));
+	util.for(status.episodes, (i, /** @type {Episode} */ episode) => {
+		promises.push(func(episode));
 	});
 	setStatusText(`0/${promises.length}`);
 	await Promise.all(promises);
@@ -32,6 +35,9 @@ exports.modalBegin = async () => {
 	linkDisplay.load();
 };
 
+/**
+ * @param {string} str
+ */
 function setStatusText(str) {
 	linkDisplay.setSpinnerText(str);
 	captchaModal.setStatusText(str);
@@ -65,9 +71,10 @@ async function doCaptcha(url) {
 /**
  * @param {String} html
  * @param {Episode} episode
+ * @param {string} serverID
  */
-function getLink(html, episode) {
-	let link = config.sites.current().servers.get(status.serverID).findLink(html);
+function getLink(html, episode, serverID) {
+	let link = config.sites.current().servers.get(serverID).findLink(html);
 	if (link) {
 		episode.grabbedLink = link;
 	} else {

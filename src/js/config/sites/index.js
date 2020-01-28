@@ -16,8 +16,8 @@ exports.current = () =>
 	sites.get(page.location.hostname);
 
 /**
- * @param {Site} site
+ * @param {Site} newSites
  */
-exports.add = (site) => {
-	sites.add(site);
+exports.add = (...newSites) => {
+	sites.add(...newSites);
 };

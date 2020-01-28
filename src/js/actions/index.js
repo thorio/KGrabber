@@ -37,8 +37,8 @@ exports.available = () =>
 /**
  * @param {Action} action
  */
-exports.add = (action) => {
-	actions.push(action);
+exports.add = (...action) => {
+	actions.push(...action);
 };
 
 /**

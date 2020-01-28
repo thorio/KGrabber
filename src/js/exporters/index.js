@@ -46,10 +46,10 @@ exports.sorted = (linkType, samePage) =>
 	.sort((a, b) => b.available - a.available);
 
 /**
- * @param {Exporter} exporter
+ * @param {Exporter} newExporters
  */
-exports.add = (exporter) => {
-	exporters.push(exporter);
+exports.add = (...newExporters) => {
+	exporters.push(...newExporters);
 };
 
 /**

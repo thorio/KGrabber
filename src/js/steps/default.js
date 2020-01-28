@@ -1,3 +1,8 @@
+/**
+ * @typedef {import("kgrabber-types/Site")} Site
+ * @typedef {import("kgrabber-types/Status")} Status
+ */
+
 const statusManager = require("../statusManager"),
 	config = require("../config"),
 	linkDisplay = require("../ui/linkDisplay"),
@@ -5,13 +10,19 @@ const statusManager = require("../statusManager"),
 
 const status = statusManager.get();
 
-exports.defaultBegin = () => {
+/**
+ * @param {Status} status
+ */
+exports.defaultBegin = (status) => {
 	status.func = "defaultGetLink";
 	statusManager.save();
 	page.href = status.episodes[status.current].kissLink + `&s=${status.serverID}`;
 };
 
-exports.defaultGetLink = () => {
+/**
+ * @param {Status} status
+ */
+exports.defaultGetLink = (status) => {
 	if (!config.sites.current().onContentPath(page.location.pathname)) { //captcha
 		return;
 	}
@@ -33,6 +44,10 @@ exports.defaultGetLink = () => {
 	statusManager.save();
 };
 
+/**
+ * @param {Status} status
+ * @param {Site} site
+ */
 exports.defaultFinished = (status, site) => {
 	if (site.onContentPath(page.location.pathname)) {
 		linkDisplay.load();

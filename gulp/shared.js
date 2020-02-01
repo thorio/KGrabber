@@ -11,7 +11,16 @@ const prelude_path = require.resolve("browser-pack").replace("index.js", "prelud
  * @returns {Promise<string>}
  */
 exports.readFile = (path) => {
-	return new Promise((resolve) => fs.readFile(path, (_err, data) => resolve(data.toString())));
+	return new Promise((resolve) => fs.readFile(path, (err, data) => resolve(data.toString())));
+};
+
+/**
+ * Promisified fs.writeFile
+ * @param {string} path
+ * @returns {Promise<string>}
+ */
+exports.writeFile = (path, data) => {
+	return new Promise((resolve) => fs.writeFile(path, data, () => resolve()));
 };
 
 /**
@@ -45,4 +54,19 @@ exports.copy = (src, dest) => {
 	return gulp
 		.src(src)
 		.pipe(gulp.dest(dest));
+};
+
+/**
+ * Generates a module that exports the selected packages version
+ * @param {string} packageDir
+ * @param {string} outFile
+ */
+exports.genversion = async (packageDir, outFile) => {
+	try {
+		let package = JSON.parse(await exports.readFile(`${packageDir}/package.json`));
+		let code = `// version of ${packageDir}\nmodule.exports = "${package.version}";`;
+		await exports.writeFile(outFile, code);
+	} catch (error) {
+		throw { message: "version module could not be generated", error };
+	}
 };

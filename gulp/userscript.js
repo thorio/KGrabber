@@ -63,6 +63,13 @@ async function html() {
 }
 
 /**
+ * Generate plugin version file
+ */
+async function pluginVersion() {
+	await shared.genversion(`${src_dir}/js/node_modules/kgrabber-plugin`, `${build_dir}/js/pluginVersion.js`);
+}
+
+/**
  * Bundle with browserify, add userscript header
  */
 async function bundle() {
@@ -94,6 +101,6 @@ async function watch() {
 	gulp.watch(src_dir, build);
 }
 
-const build = gulp.series(js, css, html, bundle);
+const build = gulp.series(js, css, html, bundle, pluginVersion);
 
 module.exports = { build, watch, clean };

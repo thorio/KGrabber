@@ -20,7 +20,6 @@ function copyModule(moduleName) {
  */
 function plugin() {
 	let moduleName = "kgrabber-plugin";
-
 	let copy = copyModule(moduleName);
 
 	let statusManager = gulp.src([`${src_dir}/statusManager.js`, `${src_dir}/ui/{pluginExposed,captchaModal,linkDisplay,page}.js`])
@@ -35,6 +34,14 @@ function plugin() {
 }
 
 /**
+ * Generate plugin version file
+ */
+async function pluginVersion() {
+	let moduleName = "kgrabber-plugin";
+	await shared.genversion(`${src_dir}/node_modules/${moduleName}`, `${build_dir}/${moduleName}/version.js`);
+}
+
+/**
  * Build kgrabber-types
  */
 function types() {
@@ -42,6 +49,6 @@ function types() {
 	return copyModule(moduleName);
 }
 
-const buildModules = gulp.parallel(types, plugin);
+const buildModules = gulp.series(gulp.parallel(types, plugin), pluginVersion);
 
 module.exports = { buildModules };

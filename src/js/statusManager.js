@@ -2,6 +2,8 @@ const log = require("./util").log,
 	page = require("./ui/page"),
 	{ Status } = require("kgrabber-types");
 
+const propName = "KG-status";
+
 /**
  * @type {Status}
  */
@@ -21,7 +23,7 @@ exports.get = () => {
  * Saves the status to sessionStorage
  */
 exports.save = () => {
-	sessionStorage["KG-status"] = JSON.stringify(status);
+	sessionStorage[propName] = JSON.stringify(status);
 };
 
 /**
@@ -29,7 +31,7 @@ exports.save = () => {
  */
 exports.clear = () => {
 	status.clear();
-	sessionStorage.removeItem("KG-data");
+	sessionStorage.removeItem(propName);
 };
 
 /**
@@ -53,7 +55,7 @@ exports.initialize = ({ title, serverID, linkType } = {}) => {
  * @returns {Status}
  */
 function load() {
-	let json = sessionStorage["KG-status"];
+	let json = sessionStorage[propName];
 	if (json) {
 		try {
 			return Status.deserialize(json);

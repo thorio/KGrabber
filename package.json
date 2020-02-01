@@ -4,7 +4,8 @@
 	"description": "Userscript for extracting links from kissanime.ru and similar sites",
 	"main": "src/js/main.js",
 	"dependencies": {
-		"http-status-codes": "^1.4.0"
+		"http-status-codes": "^1.4.0",
+		"semver": "^7.1.2"
 	},
 	"devDependencies": {
 		"browser-pack": "^6.1.0",

@@ -5,6 +5,8 @@ const util = require("./util"),
 	actions = require("./actions"),
 	exporters = require("./exporters"),
 	steps = require("./steps"),
+	version = require("./pluginVersion"),
+	semverSatisfies = require("semver/functions/satisfies"),
 	ui = require("./ui/pluginExposed");
 
 const $ = unsafeWindow.$, // use the jquery instance of the page, not the script
@@ -37,28 +39,33 @@ function loadPlugins() {
 			statusManager,
 		});
 
-		for (let pluginID of foundPlugins) {
-			if (!allowedPlugins.includes(pluginID)) {
-				if (confirm(`allow plugin '${pluginID}'?`)) {
-					allowPlugin(pluginID);
+		for (let plugin of foundPlugins) {
+			let expectedVersion = `^${version}`;
+			if (!plugin.version || !semverSatisfies(plugin.version, expectedVersion)) {
+				util.log.err(`plugin "${plugin.pluginID}" could not be loaded due to version mismatch: expected "${expectedVersion}", got "${plugin.version}"`);
+				continue;
+			}
+			if (!allowedPlugins.includes(plugin.pluginID)) {
+				if (confirm(`allow plugin '${plugin.pluginID}'?`)) {
+					allowPlugin(plugin.pluginID);
 				} else {
 					continue; // do not load the plugin
 				}
 			}
-			loadPlugin(pluginID, context);
+			loadPlugin(plugin.pluginID, context);
 		}
 	}
 }
 
 /**
  * Communicates with other scripts and returns a list of found plugins
- * @returns {String[]}
+ * @returns {{pluginID: string, version: string}[]}
  */
 function discoverPlugins() {
 	let foundPlugins = [];
 
-	$(document).on(`${applicationName}/DiscoverResponse`, (e, { pluginID }) => {
-		foundPlugins.push(pluginID.toString());
+	$(document).on(`${applicationName}/DiscoverResponse`, (e, { pluginID, version }) => {
+		foundPlugins.push({ pluginID, version });
 	});
 	$(document).trigger(`${applicationName}/DiscoverRequest`);
 	return foundPlugins;

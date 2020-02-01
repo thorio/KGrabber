@@ -37,7 +37,7 @@ exports.available = (linkType, samePage) =>
  * Returns all exporters, marked and sorted by availability
  * @param {String} linkType
  * @param {Boolean} samePage Is the browser on the same show's page?
- * @returns {{available:Boolean exporter:Exporter}[]}
+ * @returns {{available:Boolean; exporter:Exporter}[]}
  */
 exports.sorted = (linkType, samePage) =>
 	exporters.map((exporter) => {
@@ -46,7 +46,7 @@ exports.sorted = (linkType, samePage) =>
 	.sort((a, b) => b.available - a.available);
 
 /**
- * @param {Exporter} newExporters
+ * @param {...Exporter} newExporters
  */
 exports.add = (...newExporters) => {
 	exporters.push(...newExporters);

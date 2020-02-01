@@ -36,8 +36,8 @@ exports.reset = () =>
 	save({});
 
 /**
- * loads user preferences from GM storage, while  
- * 1) adding new keys from defaults  
+ * loads user preferences from GM storage, while
+ * 1) adding new keys from defaults
  * 2) removing keys that don't exist in defaults
  */
 function load(defaults) {

@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "CommonJS",
+		"noResolve": true,
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"outDir": "build/test",
+		"allowJs": true,
+	},
+	"include": ["./src/js/statusManager.js"]
+}

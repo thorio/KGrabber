@@ -24,9 +24,6 @@ exports.all = () =>
 
 /**
  * Filters actions
- * @param {String} server Identifier of the server
- * @param {String} linkType LinkType
- * @param {Boolean} automaticDone Were automatic actions already completed?
  * @returns {Action[]} List of available actions
  */
 exports.available = () =>
@@ -35,7 +32,7 @@ exports.available = () =>
 	);
 
 /**
- * @param {Action} action
+ * @param {...Action} action
  */
 exports.add = (...action) => {
 	actions.push(...action);

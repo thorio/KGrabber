@@ -8,8 +8,6 @@ const statusManager = require("../statusManager"),
 	linkDisplay = require("../ui/linkDisplay"),
 	page = require("../ui/page");
 
-const status = statusManager.get();
-
 /**
  * @param {Status} status
  */

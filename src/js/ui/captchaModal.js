@@ -20,7 +20,7 @@ function inject() {
 
 /**
  * @param {Captcha} captcha
- * @returns {number[]} indices of the two selected images
+ * @returns {Promise<number[]>} indices of the two selected images
  */
 exports.queue = (captcha) => {
 	return new Promise((resolve) => {
@@ -98,7 +98,7 @@ function load(captcha, resolve) {
 
 /**
  * Selects/Deselects and image and proceeds when two have been selected
- * @param {HTMLImageElement} image
+ * @param {HTMLElement} image
  * @param {Captcha} captcha
  * @param {Function} resolve
  */
@@ -108,7 +108,7 @@ async function toggleImage(image, captcha, resolve) {
 	if ($activeImages.length >= 2) {
 		let activeIndices = [];
 		$activeImages.each(
-			(i, obj) => activeIndices.push(Number(obj.dataset.index))
+			(i, obj) => void activeIndices.push(Number(obj.dataset.index))
 		);
 
 		resolve(activeIndices);

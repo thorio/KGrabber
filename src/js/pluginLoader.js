@@ -1,15 +1,11 @@
 const util = require("./util"),
-	{ PluginContext } = require("kgrabber-types"),
+	PluginContext = require("kgrabber-plugin/PluginContext"),
 	{ preferenceManager, sites } = require("./config"),
 	statusManager = require("./statusManager"),
 	actions = require("./actions"),
 	exporters = require("./exporters"),
 	steps = require("./steps"),
-	ui = {
-		captchaModal: require("./ui/captchaModal"),
-		linkDisplay: require("./ui/linkDisplay"),
-		page: require("./ui/page"),
-	};
+	ui = require("./ui/pluginExposed");
 
 const $ = unsafeWindow.$, // use the jquery instance of the page, not the script
 	applicationName = "KGrabberPlugin",

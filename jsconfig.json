@@ -3,6 +3,6 @@
 		"include": [
 			"jquery"
 		]
-	}
-
+	},
+	"exclude": ["build", "node_modules"]
 }

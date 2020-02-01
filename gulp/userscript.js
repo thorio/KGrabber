@@ -19,6 +19,7 @@ let watching = false;
 
 /**
  * Suppresses errors and keeps the watcher from crashing
+ * @param {Error} error
  */
 function swallowIfWatching(error) {
 	if (!watching) {

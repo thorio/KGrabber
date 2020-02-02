@@ -1,4 +1,6 @@
 # KGrabber
+![GitHub package.json version](https://img.shields.io/github/package-json/v/thorio/kgrabber)
+![AppVeyor](https://img.shields.io/appveyor/ci/thorio/kgrabber)
 
 Available on [GreasyFork](https://greasyfork.org/en/scripts/383649)!
 

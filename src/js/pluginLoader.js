@@ -40,9 +40,9 @@ function loadPlugins() {
 		});
 
 		for (let plugin of foundPlugins) {
-			let expectedVersion = `^${version}`;
-			if (!plugin.version || !semverSatisfies(plugin.version, expectedVersion)) {
-				util.log.err(`plugin "${plugin.pluginID}" could not be loaded due to version mismatch: expected "${expectedVersion}", got "${plugin.version}"`);
+			let expectedVersion = `^${plugin.version}`;
+			if (!plugin.version || !semverSatisfies(version, expectedVersion)) {
+				util.log.err(`plugin "${plugin.pluginID}" could not be loaded due to version mismatch: expected "${expectedVersion}", got "${version}"`);
 				continue;
 			}
 			if (!allowedPlugins.includes(plugin.pluginID)) {

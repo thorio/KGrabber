@@ -12,6 +12,7 @@ const gulp = require("gulp"),
 
 const src_dir = "./src",
 	build_dir = "./build",
+	file_name = "bundle.user.js",
 	header_path = `${src_dir}/header.txt`,
 	version_number = require("../package.json").version; // get version from package.json
 
@@ -81,7 +82,7 @@ async function bundle() {
 		})
 		.bundle() // run browserify
 		.on("error", swallowIfWatching) // suppress errors if using the watcher
-		.pipe(source("bundle.js"))
+		.pipe(source(file_name))
 		.pipe(header(await shared.readFile(header_path), { version: version_number })) // add the userscript header
 		.pipe(gulp.dest(build_dir));
 }

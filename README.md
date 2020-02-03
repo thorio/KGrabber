@@ -1,6 +1,8 @@
 # KGrabber
-![GitHub package.json version](https://img.shields.io/github/package-json/v/thorio/kgrabber)
-![AppVeyor](https://img.shields.io/appveyor/ci/thorio/kgrabber)
+
+[![package.json version](https://img.shields.io/github/package-json/v/thorio/kgrabber)](https://github.com/thorio/KGrabber/blob/master/package.json)
+[![Build status](https://ci.appveyor.com/api/projects/status/236duypshwl9p2v3?svg=true)](https://ci.appveyor.com/project/thorio/testrepo)
+[![Maintainability](https://api.codeclimate.com/v1/badges/689d75aa9039d54574ec/maintainability)](https://codeclimate.com/github/thorio/KGrabber/maintainability)
 
 Available on [GreasyFork](https://greasyfork.org/en/scripts/383649)!
 

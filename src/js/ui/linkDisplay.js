@@ -59,6 +59,9 @@ function loadLinks(episodes) {
 		let num = obj.episodeNumber.toString().padStart(padLength, "0");
 		let number = `<div class="KG-linkdisplay-episodenumber">E${num}:</div>`;
 		let link = `<a href="${obj.functionalLink}" target="_blank">${obj.displayLink}</a>`;
+		if (obj.error || obj.displayOverride) {
+			link = obj.displayLink;
+		}
 		html += `<div class="KG-linkdisplay-row">${number} ${link}</div>`;
 	});
 	$("#KG-linkdisplay-text").html(`<div class="KG-linkdisplay-table">${html}</div>`);

@@ -2,7 +2,7 @@ const { Server, Site, Dictionary, LinkTypes } = require("kgrabber-types");
 
 let servers = new Dictionary([
 		new Server("hydrax", {
-		regex: /"https:\/\/replay.watch\/hydrax.html\??.*?#slug=.*?"/,
+		regex: /"https:\/\/playhydrax.com\/\?v=.*?"/,
 		name: "HydraX (no captcha)",
 		linkType: LinkTypes.EMBED,
 		customStep: "modalBegin",
@@ -15,6 +15,13 @@ let servers = new Dictionary([
 		customStep: "modalBegin",
 	}),
 
+		new Server("beta", {
+		regex: /"https:\/\/redirector.googlevideo.com\/videoplayback\?.*?"/,
+		name: "Beta",
+		linkType: LinkTypes.DIRECT,
+		customStep: "modalBegin",
+	}),
+
 		new Server("beta2", {
 		regex: /"https:\/\/lh3.googleusercontent.com\/.*?"/,
 		name: "Beta2",
@@ -22,10 +29,10 @@ let servers = new Dictionary([
 		customStep: "modalBegin",
 	}),
 
-		new Server("openload", {
-		regex: /"https:\/\/openload.co\/embed\/.*?"/,
-		name: "Openload",
-		linkType: LinkTypes.EMBED,
+		new Server("beta3", {
+		regex: /"https:\/\/redirector.googlevideo.com\/videoplayback\?.*?"/,
+		name: "Beta3",
+		linkType: LinkTypes.DIRECT,
 		customStep: "modalBegin",
 	}),
 
@@ -33,20 +40,6 @@ let servers = new Dictionary([
 		regex: /"https:\/\/www.mp4upload.com\/embed-.*?"/,
 		name: "Mp4Upload",
 		linkType: LinkTypes.EMBED,
-		customStep: "modalBegin",
-	}),
-
-		new Server("streamango", {
-		regex: /"https:\/\/streamango.com\/embed\/.*?"/,
-		name: "Streamango",
-		linkType: LinkTypes.EMBED,
-		customStep: "modalBegin",
-	}),
-
-		new Server("beta", {
-		regex: /"https:\/\/redirector.googlevideo.com\/videoplayback\?.*?"/,
-		name: "Beta",
-		linkType: LinkTypes.DIRECT,
 		customStep: "modalBegin",
 	}),
 ]);

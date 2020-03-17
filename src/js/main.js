@@ -12,7 +12,7 @@ const status = statusManager.get(),
 	site = config.sites.current();
 
 if (site) {
-	if (site.onContentPath(page.location.pathname) && !page.noTitle()) {
+	if (site.onContentPath(page.location.pathname)) {
 		ui.injectAll();
 		site.applyPatch();
 	}

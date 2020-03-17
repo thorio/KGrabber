@@ -6,7 +6,8 @@ const { Dictionary } = require("kgrabber-types"),
 	page = require("../../ui/page");
 
 const sites = new Dictionary([
-	require("./kissanime"),
+	require("./kissanime_ru"),
+	require("./kissanime_nz"),
 	require("./kimcartoon"),
 	require("./kissasian"),
 	require("./kisstvshow"),

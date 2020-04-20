@@ -21,7 +21,7 @@ exports.defaultBegin = (status) => {
  * @param {Status} status
  */
 exports.defaultGetLink = (status) => {
-	if (!config.sites.current().onContentPath(page.location.pathname)) { //captcha
+	if (!config.sites.current().onEpisodePath(page.location.pathname)) { //captcha
 		return;
 	}
 	let episode = status.episodes[status.current];

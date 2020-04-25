@@ -20,7 +20,6 @@ exports.show = () => {
 function inject() {
 	$(`#rightside .rightBox:eq(0)`).after(html.widget);
 	config.sites.current().applyPatch("widget");
-	console.log(2)
 }
 
 function load() {

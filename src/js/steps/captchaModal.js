@@ -78,7 +78,7 @@ function getLink(html, episode, serverID) {
 	if (link) {
 		episode.grabbedLink = link;
 	} else {
-		episode.error = "server not available";
+		episode.error = "no link found";
 	}
 }
 

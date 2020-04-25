@@ -11,43 +11,39 @@ const util = require("../util"),
 const preferences = preferenceManager.get();
 
 module.exports = [
-	new Action("set quality", {
+	getAction(["beta", "beta5"], LinkTypes.DIRECT),
+	getAction(["beta360p"], LinkTypes.HLS),
+];
+
+/**
+ * @param {String[]} servers
+ * @param {String} resultType
+ */
+function getAction(servers, resultType) {
+	return new Action("decrypt", {
 		executeFunc: async (status, setProgress) => {
-			await shared.eachEpisode(status.episodes, tryGetQuality, setProgress);
+			await shared.eachEpisode(status.episodes, decrypt, setProgress);
+			status.linkType = resultType;
 		},
 		availableFunc: (action, status) => {
 			return shared.availableFunc(status, {
 				automatic: action.automatic,
-				linkType: LinkTypes.DIRECT,
-				servers: ["beta2"],
+				linkType: LinkTypes.OVELWRAP,
+				servers: servers,
 			});
 		},
 		automatic: true,
-	}),
-];
+	});
+}
 
 /**
- * Asynchronously sets the quality
+ * Decrypts the link using OvelWrap
  * @param {Episode} episode
  * @returns {Promise<void>}
  */
-async function tryGetQuality(episode) {
+async function decrypt(episode) {
 	if (episode.error) {
 		return;
 	}
-	if (!episode.functionalLink.match(/.*=m\d\d/)) {
-		util.log.warn(`invalid beta link "${episode.functionalLink}"`);
-		return;
-	}
-	let rawLink = episode.functionalLink.slice(0, -4);
-	let qualityStrings = { "1080": "=m37", "720": "=m22", "360": "=m18" };
-	let parsedQualityPrefs = preferences.general.quality_order.replace(/\s/g, "").split(",");
-	for (let i of parsedQualityPrefs) {
-		if (qualityStrings[i]) {
-			if (await util.ajax.head(rawLink + qualityStrings[i]).status == HttpStatusCodes.OK) {
-				episode.processedLink = rawLink + qualityStrings[i];
-				return;
-			}
-		}
-	}
+	episode.processedLink = await util.kissCrypto.decrypt(episode.functionalLink);
 }

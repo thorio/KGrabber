@@ -1,5 +1,6 @@
 exports.log = require("./log");
 exports.ajax = require("./ajax");
+exports.kissCrypto = require("./kissCrypto");
 
 /**
  * Iterates over an array with supplied function

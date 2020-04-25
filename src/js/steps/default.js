@@ -29,7 +29,7 @@ exports.defaultGetLink = (status) => {
 	if (link) {
 		episode.grabbedLink = link;
 	} else {
-		episode.error = "selected server may not be available";
+		episode.error = "no link found";
 	}
 
 	status.current++;

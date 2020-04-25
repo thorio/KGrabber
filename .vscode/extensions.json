@@ -4,7 +4,7 @@
 
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
-		"hookyqr.beautify",
+		"glavin001.unibeautify-vscode",
 		"dbaeumer.vscode-eslint",
 		"philfontaine.autolaunch",
 	],

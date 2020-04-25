@@ -1,0 +1,43 @@
+---
+# defaults
+
+jsbeautify: &jsbeautify
+  indent_style: tab
+  indent_size: 1
+  preserve_newlines: true
+  keep_array_indentation: true
+  end_with_newline: true
+  brace_style: collapse,preserve-inline
+  max_preserve_newlines: 2
+
+###############################
+
+JavaScript:
+  beautifiers:
+    - JS-Beautify
+    - ESLint
+  << : *jsbeautify
+  arrow_parens: always
+  end_with_semicolon: true
+
+JSON:
+  beautifiers:
+    - JS-Beautify
+  << : *jsbeautify
+
+HTML:
+  beautifiers:
+    - JS-Beautify
+  << : *jsbeautify
+
+Less:
+  beautifiers:
+    - Prettier
+    - Pretty Diff
+  indent_size: 1
+  indent_style: tab
+  max_preserve_newlines: 2
+  newline_between_rules: true
+  no_leading_zero: true
+  quotes: double
+  wrap_line_length: 99

@@ -1,5 +1,4 @@
 {
-	"editor.defaultFormatter": "HookyQR.beautify",
 	"editor.insertSpaces": false,
 	"files.exclude": {
 		".github": true,

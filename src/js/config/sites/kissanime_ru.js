@@ -1,7 +1,16 @@
 const { Server, Site, Dictionary, LinkTypes } = require("kgrabber-types");
 
 let servers = new Dictionary([
-		new Server("nova", {
+	new Server("hydrax", {
+		regex: /"(https:\/\/playhydrax.com\/\?v=.*?)"/,
+		captureGroup: 1,
+		trimQuotes: false,
+		name: "HydraX (no captcha)",
+		linkType: LinkTypes.EMBED,
+		customStep: "modalBegin",
+	}),
+
+	new Server("nova", {
 		regex: /"(https:\/\/www.novelplanet.me\/v\/.*?)"/,
 		captureGroup: 1,
 		trimQuotes: false,
@@ -19,7 +28,7 @@ let servers = new Dictionary([
 		customStep: "modalBegin",
 	}),
 
-		new Server("beta360p", {
+	new Server("beta360p", {
 		regex: /<select id="slcQualix"><option value="([^"]+)" ?(selected)?>/,
 		captureGroup: 1,
 		trimQuotes: false,
@@ -28,7 +37,7 @@ let servers = new Dictionary([
 		customStep: "modalBegin",
 	}),
 
-		new Server("beta5", {
+	new Server("beta5", {
 		regex: /<select id="slcQualix"><option value="([^"]+)" ?(selected)?>/,
 		captureGroup: 1,
 		trimQuotes: false,
@@ -37,7 +46,7 @@ let servers = new Dictionary([
 		customStep: "modalBegin",
 	}),
 
-		new Server("mp4upload", {
+	new Server("mp4upload", {
 		regex: /"(https:\/\/www.mp4upload.com\/embed-.*?)"/,
 		captureGroup: 1,
 		trimQuotes: false,

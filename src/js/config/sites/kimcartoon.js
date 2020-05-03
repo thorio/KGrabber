@@ -2,43 +2,43 @@ const { Server, Site, Dictionary, LinkTypes } = require("kgrabber-types"),
 	uiFix = require("./patches/kimcartoon_UIFix");
 
 let servers = new Dictionary([
-		new Server("openload", {
+	new Server("openload", {
 		regex: /"https:\/\/openload.co\/embed\/.*?"/,
 		name: "Openload",
 		linkType: LinkTypes.EMBED,
 	}),
 
-		new Server("streamango", {
+	new Server("streamango", {
 		regex: /"https:\/\/streamango.com\/embed\/.*?"/,
 		name: "Streamango",
 		linkType: LinkTypes.EMBED,
 	}),
 
-		new Server("beta", {
+	new Server("beta", {
 		regex: /"https:\/\/redirector.googlevideo.com\/videoplayback\?.*?"/,
 		name: "Beta",
 		linkType: LinkTypes.DIRECT,
 	}),
 
-		new Server("rapid", {
+	new Server("rapid", {
 		regex: /"https:\/\/w*?.*?rapidvid.to\/e\/.*?"/,
 		name: "RapidVideo",
 		linkType: LinkTypes.EMBED,
 	}),
 
-		new Server("fs", {
+	new Server("fs", {
 		regex: /"https:\/\/video.xx.fbcdn.net\/v\/.*?"/,
 		name: "FS (fbcdn.net)",
 		linkType: LinkTypes.DIRECT,
 	}),
 
-		new Server("gp", {
+	new Server("gp", {
 		regex: /"https:\/\/redirector.googlevideo.com\/videoplayback\?.*?"/,
 		name: "GP (googleusercontent.com)",
 		linkType: LinkTypes.DIRECT,
 	}),
 
-		new Server("fe", {
+	new Server("fe", {
 		regex: /"https:\/\/www.luxubu.review\/v\/.*?"/,
 		name: "FE (luxubu.review)",
 		linkType: LinkTypes.EMBED,

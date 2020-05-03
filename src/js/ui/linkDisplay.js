@@ -48,7 +48,7 @@ function setTitle(text) {
 }
 
 // TODO convert to html table
-// TODO add metadata display
+// TODO add LinkType indicator see #41
 /**
  * @param {Episode[]} episodes
  */

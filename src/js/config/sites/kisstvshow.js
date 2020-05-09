@@ -19,12 +19,6 @@ let servers = new Dictionary([
 		linkType: LinkTypes.DIRECT,
 	}),
 
-	new Server("rapid", {
-		regex: /"https:\/\/w*?.*?rapidvid.to\/e\/.*?"/,
-		name: "RapidVideo",
-		linkType: LinkTypes.EMBED,
-	}),
-
 	new Server("fb", {
 		regex: /"https:\/\/video.xx.fbcdn.net\/v\/.*?"/,
 		name: "FB (fbcdn.net)",

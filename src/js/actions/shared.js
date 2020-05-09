@@ -52,8 +52,8 @@ exports.availableFunc = (status, { automatic, linkType, servers }) => {
 	if (linkType != status.linkType) {
 		return false;
 	}
-	//exclude automatic actions if they were already completed or the user has disabled automatic actions
-	if (automatic && status.automaticDone || preferences.compatibility.disable_automatic_actions) {
+	//exclude automatic actions if they were already completed
+	if (automatic && status.automaticDone) {
 		return false;
 	}
 	return true;

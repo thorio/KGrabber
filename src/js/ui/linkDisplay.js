@@ -8,10 +8,12 @@ const shared = require("./shared"),
 	html = require("../html"),
 	actions = require("../actions"),
 	statusManager = require("../statusManager"),
+	preferenceManager = require("../config/preferenceManager"),
 	page = require("./page"),
 	{ sites } = require("../config");
 
-const status = statusManager.get();
+const status = statusManager.get(),
+	preferences = preferenceManager.get();
 let injected = false;
 
 function inject() {
@@ -70,7 +72,7 @@ function loadLinks(episodes) {
 function loadActions(actions) {
 	$("#KG-action-container .KG-button").remove(); //clear old buttons
 	for (let i in actions) {
-		if (actions[i].automatic) {
+		if (actions[i].automatic && !preferences.compatibility.disable_automatic_actions) {
 			util.defer(() => { //schedule automatic actions
 				executeAction(actions[i]);
 			});

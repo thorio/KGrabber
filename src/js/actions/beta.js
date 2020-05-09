@@ -3,12 +3,8 @@
  */
 
 const util = require("../util"),
-	preferenceManager = require("../config/preferenceManager"),
 	shared = require("./shared"),
-	{ Action, LinkTypes } = require("kgrabber-types"),
-	HttpStatusCodes = require("http-status-codes");
-
-const preferences = preferenceManager.get();
+	{ Action, LinkTypes } = require("kgrabber-types");
 
 module.exports = [
 	getAction(["beta", "beta5"], LinkTypes.DIRECT),

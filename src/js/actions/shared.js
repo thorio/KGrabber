@@ -3,10 +3,7 @@
  * @typedef {import("kgrabber-types/Status")} Status
  */
 
-const util = require("../util"),
-	{ preferenceManager } = require("../config");
-
-const preferences = preferenceManager.get();
+const util = require("../util");
 
 /**
  * Executes a function for each episode and awaits them all

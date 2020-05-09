@@ -18,7 +18,6 @@ module.exports = [
 		},
 		availableFunc: (action, status) => {
 			return shared.availableFunc(status, {
-				automatic: action.automatic,
 				linkType: LinkTypes.EMBED,
 				servers: ["nova"],
 			});

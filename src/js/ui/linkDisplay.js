@@ -72,7 +72,7 @@ function loadLinks(episodes) {
 function loadActions(actions) {
 	$("#KG-action-container .KG-button").remove(); //clear old buttons
 	for (let i in actions) {
-		if (actions[i].automatic && !preferences.compatibility.disable_automatic_actions) {
+		if (actions[i].automatic && !status.hasReset && !preferences.compatibility.disable_automatic_actions) {
 			util.defer(() => { //schedule automatic actions
 				executeAction(actions[i]);
 			});

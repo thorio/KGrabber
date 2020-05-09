@@ -40,17 +40,13 @@ exports.eachEpisode = (episodes, func, setProgress) => {
  * @param {String[]} obj.servers
  * @returns {Boolean}
  */
-exports.availableFunc = (status, { automatic, linkType, servers }) => {
+exports.availableFunc = (status, { linkType, servers }) => {
 	//exclude actions that don't support the current server
 	if (!servers.includes(status.serverID)) {
 		return false;
 	}
 	//exclude actions with the wrong link type
 	if (linkType != status.linkType) {
-		return false;
-	}
-	//exclude automatic actions if they were already completed
-	if (automatic && status.automaticDone) {
 		return false;
 	}
 	return true;

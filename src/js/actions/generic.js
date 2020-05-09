@@ -11,11 +11,11 @@ module.exports = [
 		executeFunc: async (status, setProgress) => {
 			await shared.eachEpisode(status.episodes, reset, setProgress);
 			status.linkType = config.sites.current().servers.get(status.serverID).linkType;
-			status.automaticDone = false;
+			status.hasReset = true;
 		},
 		availableFunc: (action, status) => {
 			for (let episode of status.episodes) {
-				if (episode.error || episode.processedLink) {
+				if ((episode.error && episode.grabbedLink) || episode.processedLink) {
 					return true;
 				}
 			}

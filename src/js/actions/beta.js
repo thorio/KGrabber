@@ -23,7 +23,6 @@ function getAction(servers, resultType) {
 		},
 		availableFunc: (action, status) => {
 			return shared.availableFunc(status, {
-				automatic: action.automatic,
 				linkType: LinkTypes.OVELWRAP,
 				servers: servers,
 			});

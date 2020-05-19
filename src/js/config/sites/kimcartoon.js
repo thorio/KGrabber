@@ -2,40 +2,36 @@ const { Server, Site, Dictionary, LinkTypes } = require("kgrabber-types"),
 	uiFix = require("./patches/kimcartoon_UIFix");
 
 let servers = new Dictionary([
-	new Server("openload", {
-		regex: /"https:\/\/openload.co\/embed\/.*?"/,
-		name: "Openload",
+	new Server("hx", {
+		regex: /src="(\/\/playhydrax.com\/\?v=.*?)"/,
+		captureGroup: 1,
+		trimQuotes: false,
+		name: "HX (hydrax)",
 		linkType: LinkTypes.EMBED,
 	}),
 
-	new Server("streamango", {
-		regex: /"https:\/\/streamango.com\/embed\/.*?"/,
-		name: "Streamango",
+	new Server("fe", {
+		regex: /"(https:\/\/www.luxubu.review\/v\/.*?)"/,
+		captureGroup: 1,
+		trimQuotes: false,
+		name: "FE (luxubu.review)",
 		linkType: LinkTypes.EMBED,
 	}),
 
 	new Server("beta", {
-		regex: /"https:\/\/redirector.googlevideo.com\/videoplayback\?.*?"/,
+		regex: /"(https:\/\/redirector.googlevideo.com\/videoplayback\?.*?)"/,
+		captureGroup: 1,
+		trimQuotes: false,
 		name: "Beta",
 		linkType: LinkTypes.DIRECT,
 	}),
 
-	new Server("fs", {
-		regex: /"https:\/\/video.xx.fbcdn.net\/v\/.*?"/,
-		name: "FS (fbcdn.net)",
+	new Server("alpha", {
+		regex: /"(https:\/\/redirector.googlevideo.com\/videoplayback\?.*?)"/,
+		captureGroup: 1,
+		trimQuotes: false,
+		name: "Alpha (googleusercontent.com)",
 		linkType: LinkTypes.DIRECT,
-	}),
-
-	new Server("gp", {
-		regex: /"https:\/\/redirector.googlevideo.com\/videoplayback\?.*?"/,
-		name: "GP (googleusercontent.com)",
-		linkType: LinkTypes.DIRECT,
-	}),
-
-	new Server("fe", {
-		regex: /"https:\/\/www.luxubu.review\/v\/.*?"/,
-		name: "FE (luxubu.review)",
-		linkType: LinkTypes.EMBED,
 	}),
 ]);
 

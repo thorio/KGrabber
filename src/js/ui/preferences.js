@@ -29,17 +29,15 @@ let load = (preferences) => {
 		for (let j in preferences[i]) {
 			let html = "";
 			switch (typeof group[j]) {
-				case "string":
-					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="text" value="${group[j]}" class="KG-preferences-input-text right" id="KG-preference-${i}-${j}"></div>`;
-					break;
-				case "boolean":
-					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="checkbox" ${group[j] ? "checked" : ""} class="KG-preferences-input-checkbox right" id="KG-preference-${i}-${j}"></div>`;
-					break;
-				case "number":
-					html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="number" value="${group[j]}" class="KG-preferences-input-text right" id="KG-preference-${i}-${j}"></div>`;
-					break;
-				default:
-					log.err(`unknown type "${typeof group[j]}" of preferences.${i}.${j}`);
+			case "string":
+			case "number":
+				html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="${typeof group[j]}" value="${group[j]}" class="KG-preferences-input-text right" id="KG-preference-${i}-${j}"></div>`;
+				break;
+			case "boolean":
+				html = `<div><span>${j.replace(/_/g, " ")}:</span><input type="checkbox" ${group[j] ? "checked" : ""} class="KG-preferences-input-checkbox right" id="KG-preference-${i}-${j}"></div>`;
+				break;
+			default:
+				log.err(`unknown type "${typeof group[j]}" of preferences.${i}.${j}`);
 			}
 			$group.append(html);
 		}
@@ -70,12 +68,12 @@ function read() {
 		let ids = obj.id.slice(14).match(/[^-]+/g);
 		let value;
 		switch (obj.type) {
-			case "checkbox":
-				value = obj.checked;
-				break;
-			default:
-				value = obj.value;
-				break;
+		case "checkbox":
+			value = obj.checked;
+			break;
+		default:
+			value = obj.value;
+			break;
 		}
 		if (!preferences[ids[0]]) {
 			preferences[ids[0]] = {};

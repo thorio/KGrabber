@@ -23,7 +23,7 @@ exports.noTitle = () =>
  */
 exports.episodeList = () =>
 	$(`.listing a`).get()
-	.reverse(); // get chronological order
+		.reverse(); // get chronological order
 
 /**
  * Reloads the page
@@ -33,7 +33,7 @@ exports.reload = () =>
 
 Object.defineProperty(exports, "href", {
 	get: () => location.href,
-	set: (href) => location.href = href,
+	set: (href) => { location.href = href; },
 });
 
 Object.defineProperty(exports, "location", {

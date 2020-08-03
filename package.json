@@ -11,7 +11,7 @@
 		"browser-pack": "^6.1.0",
 		"browserify": "^16.5.1",
 		"del": "^5.1.0",
-		"eslint": "^6.8.0",
+		"eslint": "^7.6.0",
 		"gulp": "^4.0.2",
 		"gulp-concat": "^2.6.1",
 		"gulp-header": "^2.0.9",
@@ -21,7 +21,7 @@
 		"map-stream": "0.0.7",
 		"merge-stream": "^2.0.0",
 		"strictify": "^0.2.0",
-		"typescript": "^3.8.3",
+		"typescript": "^3.9.7",
 		"vinyl-source-stream": "^2.0.0"
 	},
 	"scripts": {

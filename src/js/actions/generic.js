@@ -32,4 +32,5 @@ module.exports = [
 async function reset(episode) {
 	episode.error = "";
 	episode.processedLink = "";
+	episode.displayOverride = "";
 }

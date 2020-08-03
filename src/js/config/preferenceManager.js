@@ -65,6 +65,13 @@ function savePreferredServers(servers) {
 	GM_setValue("preferredServers", JSON.stringify(servers));
 }
 
+/**
+ * @returns {string[]}
+ */
+exports.getQualityPriority = () => {
+	return preferences.general.quality_order.replace(/\s/g, "").split(",");
+};
+
 exports.getPreferredServer = (host) =>
 	getPreferredServers()[host];
 

@@ -11,6 +11,7 @@ const status = statusManager.get();
  */
 let actions = [].concat(
 	require("./generic"),
+	require("./hydrax"),
 	require("./beta"),
 	require("./nova")
 );

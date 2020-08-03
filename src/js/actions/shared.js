@@ -5,6 +5,7 @@
 
 const util = require("../util");
 
+// TODO: add concurrency limit
 /**
  * Executes a function for each episode and awaits them all
  * @param {Episode[]} episodes

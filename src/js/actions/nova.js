@@ -8,8 +8,6 @@ const ajax = require("../util/ajax"),
 	shared = require("./shared"),
 	{ Action, LinkTypes } = require("kgrabber-types");
 
-const preferences = preferenceManager.get();
-
 module.exports = [
 	new Action("get direct links", {
 		executeFunc: async (status, setProgress) => {
@@ -48,7 +46,7 @@ async function getDirect(episode) {
 	}
 	let sources = json.data;
 
-	let parsedQualityPrefs = preferences.general.quality_order.replace(/\s/g, "").split(",");
+	let parsedQualityPrefs = preferenceManager.getQualityPriority();
 	for (let i of parsedQualityPrefs) {
 		for (let j of sources) {
 			if (j.label == i + "p") {

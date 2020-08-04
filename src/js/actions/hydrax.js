@@ -8,6 +8,8 @@ const ajax = require("../util/ajax"),
 	shared = require("./shared"),
 	{ Action, LinkTypes } = require("kgrabber-types");
 
+const IDOCDN = "https://ping.idocdn.com/";
+
 module.exports = [
 	new Action("get referer links", {
 		executeFunc: async (status, setProgress) => {
@@ -35,16 +37,17 @@ async function getDirect(episode) {
 	let { success, url, response } = await getUrl(episode);
 	if (!success) return;
 
-	url = "https://" + findQuality(response.sources, url);
-	if (url) {
-		let referer = episode.functionalLink;
-		episode.processedLink = { url, referer };
-		episode.displayOverride = `${url} | ${referer}`;
+	url = findQuality(response.sources, url);
+	if (!url) {
+		episode.error = "preferred qualities not found";
+		util.log.err(`hydrax: ${episode.error}`, { response, url });
 		return;
 	}
 
-	episode.error = "preferred qualities not found";
-	util.log.err(`hydrax: ${episode.error}`, { response, url });
+	url = "https://" + url;
+	let referer = episode.functionalLink;
+	episode.processedLink = { url, referer };
+	episode.displayOverride = `${url} | ${referer}`;
 }
 
 /**
@@ -62,8 +65,8 @@ async function getDirect(episode) {
  * @returns {{success:Boolean, url?:string, response?:Response}}
  */
 async function getUrl(episode) {
-	let slug = episode.functionalLink.match(/v=(.*?)(?:&|$)/)[1];
-	let response = await ajax.post("https://ping.idocdn.com/", `slug=${slug}`, { "content-type": "application/x-www-form-urlencoded" });
+	let slug = new URL(episode.functionalLink).searchParams.get("v");
+	let response = await ajax.post(IDOCDN, `slug=${slug}`, { "content-type": "application/x-www-form-urlencoded" });
 	let data = JSON.parse(response.response);
 
 	if (data.status != true) {
@@ -79,6 +82,7 @@ async function getUrl(episode) {
 /**
  * @param {string[]} sources
  * @param {string} url
+ * @returns {string|undefined}
  */
 function findQuality(sources, url) {
 	for (let quality of preferenceManager.getQualityPriority()) {
@@ -88,4 +92,6 @@ function findQuality(sources, url) {
 			return "www." + url;
 		}
 	}
+
+	return undefined;
 }

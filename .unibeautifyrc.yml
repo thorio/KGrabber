@@ -3,7 +3,6 @@
 
 jsbeautify: &jsbeautify
   indent_style: tab
-  indent_size: 1
   preserve_newlines: true
   keep_array_indentation: true
   end_with_newline: true
@@ -15,10 +14,7 @@ jsbeautify: &jsbeautify
 JavaScript:
   beautifiers:
     - JS-Beautify
-    - ESLint
   << : *jsbeautify
-  arrow_parens: always
-  end_with_semicolon: true
 
 JSON:
   beautifiers:

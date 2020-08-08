@@ -19,6 +19,9 @@ const defaultPreferences = {
 
 let preferences;
 
+/**
+ * @returns {defaultPreferences}
+ */
 exports.get = () => {
 	if (preferences === undefined) {
 		preferences = load(defaultPreferences);

@@ -18,11 +18,13 @@ exports.for = (array, func, { min = 0, max = array.length - 1 } = {}) => {
 };
 
 /**
- * Replaces characters that have special meaning in a batch file or are forbidden in directory names
+ * Replaces
+ * - illegal characters in windows/unix filenames
+ * - special characters in batch files
  * @param {String} str
  * @returns {String}
  */
-exports.makeBatSafe = (str) => {
+exports.replaceSpecialCharacters = (str) => {
 	return str.replace(/[%^&<>|:\\/?*"]/g, "_");
 };
 

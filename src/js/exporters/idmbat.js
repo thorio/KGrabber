@@ -2,9 +2,12 @@
  * @typedef {import("kgrabber-types/Status")} Status
  */
 
-const { LinkTypes, Exporter } = require("kgrabber-types"),
-	util = require("../util"),
-	preferenceManager = require("../config/preferenceManager");
+const util = require("../util"),
+	{ LinkTypes, Exporter } = require("kgrabber-types"),
+	{ preferenceManager } = require("../config/"),
+	shared = require("./shared");
+
+const EXTENSION = ".mp4";
 
 const preferences = preferenceManager.get();
 
@@ -25,30 +28,24 @@ function runExport(status) {
 	let str = getHeader(title);
 	for (let episode of status.episodes) {
 		if (!episode.error) {
-			let epTitle = util.replaceSpecialCharacters(listing[episode.episodeNumber - 1].innerText);
-			if (!preferences.internet_download_manager.keep_title_in_episode_name &&
-				epTitle.slice(0, title.length) === title) {
-				epTitle = epTitle.slice(title.length + 1);
-			}
-			str += `"%idm%" /n /p "%dir%\\%title%" /f "${epTitle}.mp4" /d "${episode.functionalLink}" %args%\n`;
+			let { dir, filename } = shared.getDirAndFilename(status, episode, "%~dp0", EXTENSION, listing);
+			str += `"%idm%" /n /p "${dir}" /f "${filename}" /d "${episode.functionalLink}" %args%\n`;
 		}
 	}
 	return str;
 }
 
 /**
- * @param {String} title
- * @returns {String}
+ * @param {string} title
+ * @param {string} dir
+ * @returns {string}
  */
-function getHeader(title) {
+function getHeader() {
 	return `::download and double click me!
 @echo off
-set title=${title}
 set idm=${preferences.internet_download_manager.idm_path}
 set args=${preferences.internet_download_manager.arguments}
-set dir=${preferences.internet_download_manager.download_path}
 if not exist "%idm%" echo IDM not found && echo check your IDM path in preferences && pause && goto eof
-mkdir "%title%" > nul
 start "" "%idm%"
 ping localhost -n 2 > nul\n\n`;
 }

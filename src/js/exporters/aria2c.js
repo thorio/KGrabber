@@ -3,11 +3,12 @@
  * @typedef {import("kgrabber-types/Episode")} Episode
  */
 
-const { LinkTypes, Exporter } = require("kgrabber-types"),
-	page = require("../ui/page"),
-	util = require("../util");
+const page = require("../ui/page"),
+	{ LinkTypes, Exporter } = require("kgrabber-types"),
+	shared = require("./shared");
 
-const REFERER_HEADER = `# CAUTION:\n# After a substantial delay (> 5 hours) the download may fail\n# due to the server invalidating the session. Use immediately.\n#\n`;
+const REFERER_HEADER = `# CAUTION:\n# After a substantial delay (> 5 hours) the download may fail\n# due to the server invalidating the session. Use immediately.\n#\n`,
+	EXTENSION = ".mp4";
 
 module.exports = new Exporter({
 	name: "aria2c file",
@@ -34,9 +35,10 @@ function runExport(status) {
  * @returns {String}
  */
 function exportDirect(status) {
-	return baseExport(status, (episode, title) => {
+	return baseExport(status, (episode, dir, filename) => {
 		return `${episode.functionalLink}\n` +
-			`  out=${title}.mp4\n`;
+			`  dir=${dir}\n` +
+			`  out=${filename}\n`;
 	});
 }
 
@@ -45,26 +47,29 @@ function exportDirect(status) {
  * @returns {String}
  */
 function exportReferer(status) {
-	return REFERER_HEADER + baseExport(status, (episode, title) => {
+	return REFERER_HEADER + baseExport(status, (episode, dir, filename) => {
 		return `${episode.functionalLink.url}\n` +
-			`  out=${title}.mp4\n` +
+			`  dir=${dir}\n` +
+			`  out=${filename}\n` +
 			`  header=Referer: ${episode.functionalLink.referer}\n`;
 	});
 }
 
 /**
  * @param {Status} status
- * @param {function(Episode, string):string} exportEpisode
+ * @param {function(Episode, string, string):string} exportEpisode
  * @returns {String}
  */
 function baseExport(status, exportEpisode) {
 	let listing = page.episodeList();
 	let str = "";
+
 	for (let episode of status.episodes) {
 		if (!episode.error) {
-			let title = listing[episode.episodeNumber - 1].innerText;
-			str += exportEpisode(episode, util.replaceSpecialCharacters(title));
+			let { dir, filename } = shared.getDirAndFilename(status, episode, ".", EXTENSION, listing);
+			str += exportEpisode(episode, dir, filename);
 		}
 	}
+
 	return str;
 }

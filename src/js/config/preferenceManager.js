@@ -4,11 +4,12 @@ const defaultPreferences = {
 	general: {
 		quality_order: "1080, 720, 480, 360",
 	},
+	downloads: {
+		download_path: "{currentDirectory}/{showTitle}/{episodeName}",
+	},
 	internet_download_manager: {
 		idm_path: "C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe",
-		download_path: "%~dp0",
 		arguments: "/a",
-		keep_title_in_episode_name: false,
 	},
 	compatibility: {
 		force_default_grabber: false,
@@ -16,13 +17,14 @@ const defaultPreferences = {
 		disable_automatic_actions: false,
 	},
 };
+const PATH_FILENAME_REGEX = /[/\\]((?:.(?![/\\]))+)$/;
 
 let preferences;
 
 /**
  * @returns {defaultPreferences}
  */
-exports.get = () => {
+let get = exports.get = () => {
 	if (preferences === undefined) {
 		preferences = load(defaultPreferences);
 	}
@@ -60,24 +62,64 @@ function load(defaults) {
 	return util.merge(util.clone(defaults), saved);
 }
 
+/**
+ * @returns {string[]}
+ */
+exports.getQualityPriority = () =>
+	get().general.quality_order.replace(/\s/g, "").split(",");
+
+/**
+ * @typedef PathArgs
+ * @property {string} currentDirectory e.g. `%~dp0` for batch files
+ * @property {string} showTitle
+ * @property {string} episodeName
+ */
+
+/**
+ * @param {PathArgs} args
+ */
+exports.getDownloadPath = (args) => {
+	return util.replaceTags(get().downloads.download_path, args);
+};
+
+/**
+ * @param {PathArgs} args
+ */
+exports.getDownloadDir = (args) => {
+	return this.getDownloadPath(args).replace(PATH_FILENAME_REGEX, "");
+};
+
+/**
+ * @param {PathArgs} args
+ */
+exports.getDownloadFilename = (args) => {
+	return this.getDownloadPath(args).match(PATH_FILENAME_REGEX)[1];
+};
+
+/**
+ * @returns {Object<string, string>}
+ */
 function getPreferredServers() {
 	return JSON.parse(GM_getValue("preferredServers", "{}"));
 }
 
+/**
+ * @param {Object<string, string>} servers
+ */
 function savePreferredServers(servers) {
 	GM_setValue("preferredServers", JSON.stringify(servers));
 }
 
 /**
- * @returns {string[]}
+ * @param {string} host
  */
-exports.getQualityPriority = () => {
-	return preferences.general.quality_order.replace(/\s/g, "").split(",");
-};
-
 exports.getPreferredServer = (host) =>
 	getPreferredServers()[host];
 
+/**
+ * @param {string} host
+ * @param {string} server
+ */
 exports.setPreferredServer = (host, server) => {
 	let saved = getPreferredServers();
 	saved[host] = server;

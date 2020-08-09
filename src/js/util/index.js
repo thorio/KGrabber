@@ -29,6 +29,19 @@ exports.replaceSpecialCharacters = (str) => {
 };
 
 /**
+ * Replaces tags in the format of `{key}` with the corresponding value.
+ * Unresolved keys are ignored.
+ * @param {string} str
+ * @param {Object<string, string>} values
+ */
+exports.replaceTags = (str, values) => {
+	return str.replace(/{(.*?)}/g, (match, key) => {
+		let value = values[key];
+		return value === undefined ? match : value;
+	});
+};
+
+/**
  * Promisified setTimeout
  * @param {number} time Wait time in milliseconds
  * @returns {Promise<void>} Promise resolves after timeout

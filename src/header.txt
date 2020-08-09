@@ -13,7 +13,7 @@
 // @connect       rapidvideo.com
 // @connect       googleusercontent.com
 // @connect       googlevideo.com
-// @connect       novelplanet.me
+// @connect       fembed.com
 // @grant         GM_xmlhttpRequest
 // @grant         GM_getValue
 // @grant         GM_setValue

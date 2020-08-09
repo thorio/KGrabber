@@ -11,7 +11,7 @@ let servers = new Dictionary([
 	}),
 
 	new Server("nova", {
-		regex: /"(https:\/\/www.novelplanet.me\/v\/.*?)"/,
+		regex: /"(https:\/\/(?:www).feurl.com\/v\/.*?)"/,
 		captureGroup: 1,
 		trimQuotes: false,
 		name: "Nova",

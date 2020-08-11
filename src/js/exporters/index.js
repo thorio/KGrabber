@@ -13,6 +13,8 @@ const exporters = [
 	require("./csv"),
 	require("./aria2c"),
 	require("./idmbat"),
+	require("./curl-shell"),
+	require("./iwr-bat")
 ];
 
 /**

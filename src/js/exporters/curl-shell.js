@@ -26,7 +26,7 @@ downloadHydraXVideo(){
 		url="www.$url";
 	fi
 
-	curl --insecure "https://$url" -# -C - -H "Referer: https://playhydrax.com/?v=$1" -o "$2";
+	curl --insecure "https://$url" -# -C - --referer "https://playhydrax.com/?v=$1" -o "$2";
 }
 `
 .replace(/\t/g, " ".repeat(4));
@@ -64,7 +64,7 @@ function runExport(status) {
 			script.push(`downloadHydraXVideo "${slug}" "${name}"`);
 		}
 		else if(status.linkType == LinkTypes.REFERER)
-			script.push(`curl -# -C - -H "Referer: ${referer}" ${link}" -o "${name}"`);
+			script.push(`curl -# -C - --referer "${referer}" "${link}" -o "${name}"`);
 		else
 			script.push(`curl -# -C - "${link}" -o "${name}"`);
 	

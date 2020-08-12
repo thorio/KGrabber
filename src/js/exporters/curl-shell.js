@@ -15,7 +15,7 @@ const SHEBANG = "#!/use/bin/sh";
 
 const HYDRAX_DOWNLOADER = `
 # downloadHydraXVideo <slug> <output file> [hd|sd]
-downloadHydraXVideo(){	
+downloadHydraXVideo(){
 	url=\`
 		curl "https://ping.idocdn.com/" -d "slug=$1" |
 		sed -r 's/.*"url":"([a-zA-Z0-9=+-]*)".*/\\1/;s/(.*)(.)/\\2\\1/' |
